@@ -1,5 +1,8 @@
 package output;
 
-public abstract class ImageOutputter {
+
+import utilities.Image;
+
+public interface ImageOutputter {
     void outputImage(Image image, String filename);
 }
