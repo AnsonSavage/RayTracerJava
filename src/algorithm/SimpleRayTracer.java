@@ -1,5 +1,6 @@
 package algorithm;
 
+import algorithm.illumination_model.PhongIlluminationModel;
 import utilities.Color;
 import utilities.Ray;
 import utilities.Vector3;
@@ -37,11 +38,21 @@ public class SimpleRayTracer extends RayTracer{
         assert closestObject != null;
 
 
-        return new Color(0, 0, 0);// TODO: Implement this
+        return computeColor(ray, minT, closestObject);
     }
 
     private Color computeColor(Ray ray, double t, RenderableObject object) {
         Vector3 pointOfIntersection = ray.getRayEnd(t);
         Vector3 normal = object.getNormal(pointOfIntersection);
+        PhongIlluminationModel phongIlluminationModel = new PhongIlluminationModel(
+                object.getMaterial(),
+                ray.getDirection().multiplyNew(-1), // The direction from the point to the viewer
+                normal,
+                pointOfIntersection,
+                world.getLights(),
+                world.getBackground()
+        );
+
+        return phongIlluminationModel.computeColor();
     }
 }

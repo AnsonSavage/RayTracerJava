@@ -17,6 +17,10 @@ public abstract class Light extends WorldObject {
 
     public abstract Ray getRayToLight(Vector3 point);
 
+    public Vector3 getDirectionToLight(Vector3 point) {
+        return this.getRayToLight(point).getDirection();
+    }
+
     public double getIntensity() {
         return intensity;
     }

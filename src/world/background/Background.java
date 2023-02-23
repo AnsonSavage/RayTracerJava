@@ -4,16 +4,16 @@ import utilities.Color;
 import utilities.Vector3;
 
 public abstract class Background {
-    private double ambientLight;
-    public double getAmbientLight() {
-        return ambientLight;
+    private double ambientIntensity;
+    public double getAmbientIntensity() {
+        return ambientIntensity;
     }
 
-    public void setAmbientLight(double ambientLight) {
-        this.ambientLight = ambientLight;
+    public void setAmbientIntensity(double ambientIntensity) {
+        this.ambientIntensity = ambientIntensity;
     }
-    public Background(double ambientLight) {
-        this.ambientLight = ambientLight;
+    public Background(double ambientIntensity) {
+        this.ambientIntensity = ambientIntensity;
     }
     public abstract Color getColor(Vector3 rayDirection);
 }

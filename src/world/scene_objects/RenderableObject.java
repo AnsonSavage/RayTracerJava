@@ -20,4 +20,8 @@ public abstract class RenderableObject extends WorldObject {
      * @return the parameter t such that the point of intersection is given by ray.getPoint(t), or -1 if there is no intersection
      */
     public abstract double getRayIntersectionParameter(Ray ray);
+
+    public Material getMaterial() {
+        return material;
+    }
 }
