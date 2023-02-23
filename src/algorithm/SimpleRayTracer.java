@@ -12,6 +12,7 @@ public class SimpleRayTracer extends RayTracer{
     @Override
     Color traceRay(Ray ray) {
         // Test
-        return new Color(0, 0, 0);
+//        return new Color(0, 0, 0);
+        return new Color(1, 1, 1);
     }
 }

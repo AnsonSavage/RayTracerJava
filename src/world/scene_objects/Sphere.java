@@ -10,4 +10,11 @@ public class Sphere extends RenderableObject {
         super(position, material);
         this.radius = radius;
     }
+
+    @Override
+    public Vector3 getNormal(Vector3 positionOnSurface) {
+        Vector3 normal = positionOnSurface.subtractNew(position);
+        normal.normalize();
+        return normal;
+    }
 }

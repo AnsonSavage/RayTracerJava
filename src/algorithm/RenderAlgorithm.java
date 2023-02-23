@@ -14,6 +14,10 @@ public abstract class RenderAlgorithm {
         image = new Image(settings.getResolutionX(), settings.getResolutionY());
     }
 
+    public Image getImage() {
+        return image;
+    }
+
     public void render() {
         renderImplementation();
     }

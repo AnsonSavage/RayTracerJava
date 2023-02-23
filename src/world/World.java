@@ -1,7 +1,7 @@
 package world;
 
 import world.scene_objects.Camera;
-import world.scene_objects.Light;
+import world.scene_objects.light.Light;
 import world.scene_objects.WorldObject;
 
 import java.util.ArrayList;

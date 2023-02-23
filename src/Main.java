@@ -1,8 +1,12 @@
 import algorithm.RenderSettings;
 import algorithm.SimpleRayTracer;
+import output.ImageOutputter;
+import output.PPMOutputter;
 import utilities.Vector3;
 import world.World;
 import world.scene_objects.Camera;
+
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,5 +28,13 @@ public class Main {
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 1, 1);
         SimpleRayTracer simpleRayTracer = new SimpleRayTracer(settings, world);
         simpleRayTracer.render();
+
+        ImageOutputter imageOutputter = new PPMOutputter();
+
+        try {
+            imageOutputter.outputImage(simpleRayTracer.getImage(), "test.ppm");
+        } catch (IOException e) {
+            System.out.println("Could not write to file");
+        }
     }
 }
