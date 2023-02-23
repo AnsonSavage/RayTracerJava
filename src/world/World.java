@@ -59,4 +59,16 @@ public class World {
     public Background getBackground() {
         return background;
     }
+
+    public void addRenderableObject(RenderableObject object) {
+        renderableObjects.add(object);
+    }
+
+    public void addLight(Light light) {
+        lights.add(light);
+    }
+
+    public void setBackground(Background background) {
+        this.background = background;
+    }
 }

@@ -142,4 +142,8 @@ public class Vector3 {
         double epsilon = 0.00001;
         return Math.abs(this.magnitude() - 1) < epsilon;
     }
+
+    public Color convertToColor() {
+        return new Color(this.x, this.y, this.z);
+    }
 }
