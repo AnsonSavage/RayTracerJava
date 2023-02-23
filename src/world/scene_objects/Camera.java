@@ -8,11 +8,18 @@ public class Camera extends WorldObject {
     private double focalLength;
     private Vector3 up;
 
-    public Camera() {
+    public Camera(Vector3 position, Vector3 lookAt, double fieldOfViewX, double aspectRatio, double focalLength, Vector3 up) {
+        super(position, lookAt);
+        this.focalLength = focalLength;
+        this.fieldOfViewX = fieldOfViewX * Math.PI / 180;
+        this.up = up;
+        this.fieldOfViewY = computeFieldOfViewY(aspectRatio);
+        this.orientation.normalize(); // Normalize the lookat vector for ease of use in computation
+
+        // Note that both fieldOfViewX and fieldOfView Y are in radians
     }
 
     public Vector3 getLookAt() {
-        this.orientation.normalize();
         return this.orientation;
     }
 
@@ -21,11 +28,11 @@ public class Camera extends WorldObject {
         return this.position.addNew(lookAtVector.multiplyNew(this.focalLength));
     }
 
-    double getImagePlaneLengthX() {
+    public double getImagePlaneLengthX() {
         return 2 * this.focalLength * Math.tan(this.fieldOfViewX / 2);
     }
 
-    double getImagePlaneLengthY() {
+    public double getImagePlaneLengthY() {
         return 2 * this.focalLength * Math.tan(this.fieldOfViewY / 2);
     }
 
@@ -45,4 +52,18 @@ public class Camera extends WorldObject {
         return up;
     }
 
+    private double computeFieldOfViewY(double aspectRatio) {
+        double x = focalLength * Math.tan(fieldOfViewX / 2);
+        // normalize x with respect to focal length
+        x /= focalLength;
+        // Multiply x by 2
+        x *= 2;
+
+        // Now the y length is equal to x over the aspect ratio
+        double y = x / aspectRatio;
+        // But, we need to divide y by 2 to get the actual length for the triangle
+        y /= 2;
+        // And finally, the field of view is just the inverse tangent of this value times two
+        return 2 * Math.atan(y);
+    }
 }

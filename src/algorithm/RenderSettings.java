@@ -28,4 +28,12 @@ public class RenderSettings {
     public int getSamplesPerPixel() {
         return samplesPerPixel;
     }
+
+    public double getResolutionX() {
+        return imageWidth;
+    }
+
+    public double getResolutionY() {
+        return imageHeight;
+    }
 }

@@ -18,4 +18,8 @@ public class WorldObject {
     public void setOrientation(Vector3 orientation) {
         this.orientation = orientation;
     }
+
+    public Vector3 getPosition() {
+        return position;
+    }
 }
