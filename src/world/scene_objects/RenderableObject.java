@@ -1,6 +1,7 @@
 package world.scene_objects;
 
 import utilities.Material;
+import utilities.Ray;
 import utilities.Vector3;
 
 public abstract class RenderableObject extends WorldObject {
@@ -12,4 +13,6 @@ public abstract class RenderableObject extends WorldObject {
     }
 
     public abstract Vector3 getNormal(Vector3 positionOnSurface);
+
+    public abstract double getRayIntersectionParameter(Ray ray);
 }

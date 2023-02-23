@@ -120,4 +120,9 @@ public class Vector3 {
     public String toString() {
         return "(" + x + ", " + y + ", " + z + ")";
     }
+
+    public boolean isNormalized() {
+        double epsilon = 0.00001;
+        return Math.abs(this.magnitude() - 1) < epsilon;
+    }
 }

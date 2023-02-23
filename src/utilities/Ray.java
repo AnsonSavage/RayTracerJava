@@ -9,6 +9,10 @@ public class Ray {
         this.direction = direction;
     }
 
+    public Vector3 getRayEnd(double t) {
+        return origin.addNew(direction.multiplyNew(t));
+    }
+
     public Vector3 getOrigin() {
         return origin;
     }
@@ -19,5 +23,9 @@ public class Ray {
 
     public String toString() {
         return "Ray: " + origin + " -> " + direction;
+    }
+
+    public boolean isNormalized() {
+        return direction.isNormalized();
     }
 }
