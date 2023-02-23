@@ -23,4 +23,8 @@ public class Image {
     public int getResolutionY() {
         return resolutionY;
     }
+
+    public void setPixel(int x, int y, Color color) {
+        pixels[x][y] = color;
+    }
 }

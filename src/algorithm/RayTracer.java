@@ -16,6 +16,18 @@ public abstract class RayTracer extends RenderAlgorithm {
         super(settings, world);
     }
 
+    @Override
+    protected void renderImplementation() {
+        for (int i = 0; i < settings.getResolutionX(); i++) {
+            for (int j = 0; j < settings.getResolutionY(); j++) {
+                Ray ray = getRayDirection(i, j);
+                System.out.println(ray);
+                Color color = traceRay(ray);
+                image.setPixel(i, j, color);
+            }
+        }
+    }
+
     protected Ray getRayDirection(int pixelX, int pixelY) {
         if (!isInitialized) {
             initialize();

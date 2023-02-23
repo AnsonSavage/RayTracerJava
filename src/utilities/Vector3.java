@@ -109,8 +109,15 @@ public class Vector3 {
 
     public void normalize() {
         double magnitude = this.magnitude();
+        if (magnitude == 0) {
+            return;
+        }
         this.x /= magnitude;
         this.y /= magnitude;
         this.z /= magnitude;
+    }
+
+    public String toString() {
+        return "(" + x + ", " + y + ", " + z + ")";
     }
 }

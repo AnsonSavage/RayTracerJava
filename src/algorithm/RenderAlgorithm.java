@@ -11,6 +11,7 @@ public abstract class RenderAlgorithm {
     public RenderAlgorithm(RenderSettings settings, World world) {
         this.settings = settings;
         this.world = world;
+        image = new Image(settings.getResolutionX(), settings.getResolutionY());
     }
 
     public void render() {

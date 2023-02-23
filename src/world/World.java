@@ -28,4 +28,8 @@ public class World {
     public double getAmbientLight() {
         return ambientLight;
     }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
 }

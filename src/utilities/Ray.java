@@ -16,4 +16,8 @@ public class Ray {
     public Vector3 getDirection() {
         return direction;
     }
+
+    public String toString() {
+        return "Ray: " + origin + " -> " + direction;
+    }
 }

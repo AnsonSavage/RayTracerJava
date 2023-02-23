@@ -9,7 +9,7 @@ public class Camera extends WorldObject {
     private Vector3 up;
 
     public Camera(Vector3 position, Vector3 lookAt, double fieldOfViewX, double aspectRatio, double focalLength, Vector3 up) {
-        super(position, lookAt);
+        super(position, lookAt.subtractNew(position));
         this.focalLength = focalLength;
         this.fieldOfViewX = fieldOfViewX * Math.PI / 180;
         this.up = up;
@@ -19,12 +19,12 @@ public class Camera extends WorldObject {
         // Note that both fieldOfViewX and fieldOfView Y are in radians
     }
 
-    public Vector3 getLookAt() {
+    public Vector3 getLookAtVector() {
         return this.orientation;
     }
 
     public Vector3 getImagePlaneCenter() {
-        Vector3 lookAtVector = this.getLookAt();
+        Vector3 lookAtVector = this.getLookAtVector();
         return this.position.addNew(lookAtVector.multiplyNew(this.focalLength));
     }
 

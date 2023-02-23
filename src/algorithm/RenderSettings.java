@@ -6,7 +6,7 @@ public class RenderSettings {
     private int imageHeight;
     private int samplesPerPixel;
 
-    public RenderSettings(int maxBounces, int imageWidth, int imageHeight, int samplesPerPixel) {
+    public RenderSettings(int imageWidth, int imageHeight, int maxBounces, int samplesPerPixel) {
         this.maxBounces = maxBounces;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
@@ -17,23 +17,15 @@ public class RenderSettings {
         return maxBounces;
     }
 
-    public int getImageWidth() {
-        return imageWidth;
-    }
-
-    public int getImageHeight() {
-        return imageHeight;
-    }
-
     public int getSamplesPerPixel() {
         return samplesPerPixel;
     }
 
-    public double getResolutionX() {
+    public int getResolutionX() {
         return imageWidth;
     }
 
-    public double getResolutionY() {
+    public int getResolutionY() {
         return imageHeight;
     }
 }
