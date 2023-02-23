@@ -44,10 +44,31 @@ public class Sphere extends RenderableObject {
         double B = computeB(rayOrigin, rayDirection, sphereOrigin);
         double C = computeC(rayOrigin, sphereOrigin, radius);
         double discriminant = computeDiscriminant(B, C);
+        double t;
 
         if (discriminant < 0) { // This means that there are no real solutions
-            return Double.POSITIVE_INFINITY;
+            return -1;
         }
+        else if (discriminant == 0) {
+            return -B / 2; // This is the solution to the simplified quadratic when the discriminant is 0
+        }
+        else {
+            double t1 = (-B - Math.sqrt(discriminant)) / 2;
+            if (t1 <= 0) {
+                double t2 = (-B + Math.sqrt(discriminant)) / 2;
+                if (t2 <= 0) {
+                    return -1; // Both solutions are negative, so there is no intersection
+                }
+                else { // In this case, t2 is the only positive solution
+                    t = t2;
+                }
+            }
+            else { // In this case, t1 is the only positive solution and t1 is the smaller of the two solutions
+                t = t1;
+            }
+        }
+
+        return t;
     }
 
     private double computeB(Vector3 rayOrigin, Vector3 rayDirection, Vector3 sphereOrigin) {

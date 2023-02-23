@@ -14,5 +14,10 @@ public abstract class RenderableObject extends WorldObject {
 
     public abstract Vector3 getNormal(Vector3 positionOnSurface);
 
+    /**
+     * Returns the parameter t such that the point of intersection is given by ray.getPoint(t)
+     * @param ray
+     * @return the parameter t such that the point of intersection is given by ray.getPoint(t), or -1 if there is no intersection
+     */
     public abstract double getRayIntersectionParameter(Ray ray);
 }
