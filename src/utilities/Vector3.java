@@ -95,6 +95,23 @@ public class Vector3 {
         return this.x * v.x + this.y * v.y + this.z * v.z;
     }
 
+    public Vector3 componentWiseMultiply(Vector3 v) {
+        return new Vector3(this.x * v.x, this.y * v.y, this.z * v.z);
+    }
+
+    /**
+     * Computes the reflection of this vector across a given normal
+     * @param normal
+     * @return The reflection of this vector across a given normal
+     */
+    public Vector3 reflect(Vector3 normal) {
+        double dot = this.dot(normal);
+        double distanceFromSurface = 2 * dot;
+        Vector3 vectorDistanceFromSurface = normal.multiplyNew(distanceFromSurface);
+        vectorDistanceFromSurface.subtract(this); // This is now the reflected vector
+        return vectorDistanceFromSurface;
+    }
+
     public Vector3 cross(Vector3 v) {
         return new Vector3(
                 this.y * v.z - this.z * v.y,

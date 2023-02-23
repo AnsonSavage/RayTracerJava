@@ -3,10 +3,11 @@ package world.background;
 import utilities.Color;
 import utilities.Vector3;
 
-public class ConstantBackground implements Background {
+public class ConstantBackground extends Background {
     private Color color;
 
-    public ConstantBackground(Color color) {
+    public ConstantBackground(Color color, double ambientLight) {
+        super(ambientLight);
         this.color = color;
     }
 

@@ -1,5 +1,8 @@
 package world;
 
+import utilities.Color;
+import world.background.Background;
+import world.background.ConstantBackground;
 import world.scene_objects.Camera;
 import world.scene_objects.RenderableObject;
 import world.scene_objects.light.Light;
@@ -9,10 +12,11 @@ import java.util.List;
 
 public class World {
 
+
     private List<RenderableObject> renderableObjects;
     private List<Light> lights;
     private Camera camera;
-    double ambientLight;
+    Background background;
 
 
     public World() { // Default constructor
@@ -23,15 +27,15 @@ public class World {
                 new ArrayList<RenderableObject>(),
                 new ArrayList<Light>(),
                 camera,
-                0.0
+                new ConstantBackground(new Color(0,0,0), 0.1)
         );
     }
 
-    public World(List<RenderableObject> renderableObjects, List<Light> lights, Camera camera, double ambientLight) {
+    public World(List<RenderableObject> renderableObjects, List<Light> lights, Camera camera, Background background) {
         this.renderableObjects = renderableObjects;
         this.lights = lights;
         this.camera = camera;
-        this.ambientLight = ambientLight;
+        this.background = background;
     }
 
 
@@ -44,15 +48,15 @@ public class World {
         return camera;
     }
 
-    public double getAmbientLight() {
-        return ambientLight;
-    }
-
     public void setCamera(Camera camera) {
         this.camera = camera;
     }
 
-    public void setAmbientLight(double ambientLight) {
-        this.ambientLight = ambientLight;
+    public List<RenderableObject> getRenderableObjects() {
+        return renderableObjects;
+    }
+
+    public Background getBackground() {
+        return background;
     }
 }

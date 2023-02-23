@@ -36,4 +36,15 @@ public class Color extends Vector3 {
     public int getBInt() {
         return (int) (getZ() * 255);
     }
+    public void clamp() {
+        if (getX() > 1) {
+            setX(1);
+        }
+        if (getY() > 1) {
+            setY(1);
+        }
+        if (getZ() > 1) {
+            setZ(1);
+        }
+    }
 }
