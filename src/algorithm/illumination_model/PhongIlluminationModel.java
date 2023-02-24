@@ -67,10 +67,17 @@ public class PhongIlluminationModel {
         Color resultantColor = new Color(0.0, 0.0, 0.0);
         for (Light light : lights) {
             currentLight = light;
-            resultantColor.add(computeSpecularComponent());
-            resultantColor.add(computeDiffuseComponent());
+
+            Color specularComponent = computeSpecularComponent();
+            assert specularComponent.colorIsValid();
+            resultantColor.add(specularComponent);
+
+            Color diffuseComponent = computeDiffuseComponent();
+            assert diffuseComponent.colorIsValid();
+            resultantColor.add(diffuseComponent);
         }
         resultantColor.add(computeAmbientComponent());
+        assert resultantColor.colorIsValid();
         return resultantColor;
     }
 }

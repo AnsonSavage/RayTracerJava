@@ -30,6 +30,9 @@ public class PPMOutputter implements ImageOutputter{
             for (int x = 0; x < image.getResolutionX(); x++) {
                 // Write the RGB values for each pixel
                 Color colorAtPixel = image.getColorAtPixel(x, y);
+                assert colorAtPixel.getRInt() >= 0 && colorAtPixel.getRInt() <= 255;
+                assert colorAtPixel.getGInt() >= 0 && colorAtPixel.getGInt() <= 255;
+                assert colorAtPixel.getBInt() >= 0 && colorAtPixel.getBInt() <= 255;
                 writer.print(colorAtPixel.getRInt() + " " + colorAtPixel.getGInt() + " " + colorAtPixel.getBInt() + " ");
             }
         }

@@ -18,10 +18,11 @@ public abstract class RayTracer extends RenderAlgorithm {
 
     @Override
     protected void renderImplementation() {
+        int totalPixels = settings.getResolutionX() * settings.getResolutionY();
         for (int i = 0; i < settings.getResolutionX(); i++) {
             for (int j = 0; j < settings.getResolutionY(); j++) {
                 Ray ray = getRayDirection(i, j);
-                System.out.println(ray);
+                System.out.println("Progress: " + (i * settings.getResolutionY() + j) / (double) totalPixels * 100 + "%");
                 Color color = traceRay(ray);
                 image.setPixel(i, j, color);
             }

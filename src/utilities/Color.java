@@ -47,4 +47,8 @@ public class Color extends Vector3 {
             setZ(1);
         }
     }
+
+    public boolean colorIsValid() {
+        return getX() >= 0 && getY() >= 0 && getZ() >= 0;
+    }
 }
