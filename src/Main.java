@@ -17,13 +17,12 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        // Simple test:
         World world = createMyOwnWorld(500, 500);
 //        World world = createPurpleSphereWorld();
 //        World world = createWhiteRedAndGreenSphereWorld();
 //        World world = createPurpleAndYellowSphereWorld();
-        int imageWidth = 50;
-        int imageHeight = 50;
+        int imageWidth = 1000;
+        int imageHeight = 1000;
         double aspectRatio = (double) imageWidth / imageHeight;
 
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 1, 1);
@@ -33,7 +32,7 @@ public class Main {
         ImageOutputter imageOutputter = new PPMOutputter();
 
         try {
-            imageOutputter.outputImage(simpleRayTracer.getImage(), "test.ppm");
+            imageOutputter.outputImage(simpleRayTracer.getImage(), "redWhiteAndGreen.ppm");
         } catch (IOException e) {
             System.out.println("Could not write to file");
         }
