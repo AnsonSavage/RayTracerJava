@@ -17,12 +17,12 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        World world = createMyOwnWorld(500, 500);
-//        World world = createPurpleSphereWorld();
+//        World world = createMyOwnWorld(500, 500);
+        World world = createPurpleSphereWorld();
 //        World world = createWhiteRedAndGreenSphereWorld();
 //        World world = createPurpleAndYellowSphereWorld();
-        int imageWidth = 1000;
-        int imageHeight = 1000;
+        int imageWidth = 500;
+        int imageHeight = 500;
         double aspectRatio = (double) imageWidth / imageHeight;
 
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 1, 1);

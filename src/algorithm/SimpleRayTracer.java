@@ -1,6 +1,8 @@
 package algorithm;
 
 import algorithm.illumination_model.PhongIlluminationModel;
+import algorithm.utils.ObjectDistancePair;
+import algorithm.utils.RayOperations;
 import utilities.Color;
 import utilities.Ray;
 import utilities.Vector3;
@@ -19,17 +21,10 @@ public class SimpleRayTracer extends RayTracer{
 
     @Override
     Color traceRay(Ray ray) {
-        // Set the ray parameter t to be infinity
-        double minT = Double.MAX_VALUE;
-        RenderableObject closestObject = null;
 
-        for (RenderableObject object : world.getRenderableObjects()) {
-            double t = object.getRayIntersectionParameter(ray);
-            if (t > 0 && t < minT) {
-                minT = t;
-                closestObject = object;
-            }
-        }
+        ObjectDistancePair closestObjectDistancePair = RayOperations.getClosestObject(ray, world);
+        double minT = closestObjectDistancePair.getDistance();
+        RenderableObject closestObject = closestObjectDistancePair.getObject();
 
         if (minT == Double.MAX_VALUE) { // We didn't hit anything, so just return the background of the world
             return world.getBackground().getColor(ray.getDirection());

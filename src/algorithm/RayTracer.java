@@ -60,5 +60,6 @@ public abstract class RayTracer extends RenderAlgorithm {
         isInitialized = true;
     }
 
+
     abstract Color traceRay(Ray ray);
 }
