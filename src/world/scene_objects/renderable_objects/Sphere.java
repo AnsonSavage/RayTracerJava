@@ -1,4 +1,4 @@
-package world.scene_objects;
+package world.scene_objects.renderable_objects;
 
 import utilities.Material;
 import utilities.Ray;

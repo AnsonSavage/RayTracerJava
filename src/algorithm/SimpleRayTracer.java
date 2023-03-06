@@ -5,7 +5,7 @@ import utilities.Color;
 import utilities.Ray;
 import utilities.Vector3;
 import world.World;
-import world.scene_objects.RenderableObject;
+import world.scene_objects.renderable_objects.RenderableObject;
 
 /**
  * This is a simple ray tracer that uses the Phong Illumination Model and only computes one ray per pixel.
