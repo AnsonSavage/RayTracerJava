@@ -9,6 +9,11 @@ public class Triangle extends RenderableObject {
     private Vector3 normal;
     public Triangle(Vector3 position, Material material, Vector3 v1, Vector3 v2, Vector3 v3) {
         super(position, material);
+        // Offset each of v1, v2, and v3 by position... If an orientation vector were implemented, we'd do the same thing here:)
+        v1.add(position);
+        v2.add(position);
+        v3.add(position);
+
         vertices = new Vector3[]{v1, v2, v3};
         normal = computeNormal();
     }
