@@ -1,6 +1,5 @@
 package algorithm.utils;
 
-import utilities.Color;
 import utilities.Ray;
 import utilities.Vector3;
 import world.World;
@@ -44,11 +43,12 @@ public class RayOperations {
         return shadowRays;
     }
 
-    public static List<Light> getLightsCastingShadows(List<Ray> shadowRays, World world) { // TODO: implement this
+    public static List<Light> getNonShadowCastingLights(List<Ray> shadowRays, World world) { // TODO: implement this
         // Note, this code assumes that the shadowRays list is the the same order as the world's light list
         assert shadowRays.size() == world.getLights().size();
 
         List<Light> lightsCastingShadows = new ArrayList<>();
+        List<Light> lightsNotCastingShadows = new ArrayList<>();
         for (int i = 0; i < shadowRays.size(); i++) {
             Ray shadowRay = shadowRays.get(i);
             Light light = world.getLights().get(i);
@@ -58,11 +58,18 @@ public class RayOperations {
                 if (t > 0 && t < distanceToLight) { // If t is positive and less than the distance to the light, then the shadow ray is blocked by an object
                     lightsCastingShadows.add(light);
                     break;
+                } else {
+                    lightsNotCastingShadows.add(light);
                 }
             }
         }
-        return lightsCastingShadows;
+        return lightsNotCastingShadows;
     }
 
-    public Color computeIlluminationModel() // TODO:
+    public static Ray createReflectionRay(Ray incomingRay, Vector3 pointOfIntersection, Vector3 normal) {
+        Vector3 reflectedLightDirection = incomingRay.getDirection().reflect(normal);
+        Ray reflectionRay = new Ray(pointOfIntersection, reflectedLightDirection);
+        reflectionRay.offsetFromOrigin();
+        return reflectionRay;
+    }
 }

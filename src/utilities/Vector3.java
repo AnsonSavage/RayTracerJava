@@ -115,7 +115,7 @@ public class Vector3 {
     public Vector3 cross(Vector3 v) {
         return new Vector3(
                 this.y * v.z - this.z * v.y,
-                this.z * v.x - this.x * v.z,
+                this.z * v.x - this.x * v.z, // the negative sign is shown just by subtracting in a different order
                 this.x * v.y - this.y * v.x
         );
     }
