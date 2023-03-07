@@ -58,8 +58,10 @@ public class RayTreeNode {
             return resultantColor;
         }
 
-        for (RayTreeNode child : this.children) { // TODO: figure out how reflectivity plays into this!
-            resultantColor.add(child.getColorContribution());
+        for (RayTreeNode child : this.children) {
+            // TODO: This would have to be refactored if we had multiple children
+            double reflectivity = this.hitObject.getMaterial().getReflectivity();
+            resultantColor.add(child.getColorContribution().multiply(reflectivity));
         }
 
         return resultantColor;

@@ -71,10 +71,11 @@ public class Vector3 {
         return new Vector3(this.x - v.x, this.y - v.y, this.z - v.z);
     }
 
-    public void multiply(double scalar) {
+    public Vector3 multiply(double scalar) {
         this.x *= scalar;
         this.y *= scalar;
         this.z *= scalar;
+        return this;
     }
 
     public Vector3 multiplyNew(double scalar) {
