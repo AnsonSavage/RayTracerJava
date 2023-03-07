@@ -5,7 +5,10 @@ import algorithm.utils.RayOperations;
 import utilities.Color;
 import utilities.Ray;
 import world.World;
+import world.scene_objects.light.Light;
 import world.scene_objects.renderable_objects.RenderableObject;
+
+import java.util.List;
 
 public class RayTreeNode {
     private Ray incomingRay;
@@ -28,9 +31,10 @@ public class RayTreeNode {
             return world.getBackground().getColor(null); // Todo: if you actually cared about this, you would do this after computing reflection ray
         }
 
-        shadowRay = computeShadowRay(incomingRay);
+        List<Ray> shadowRays = RayOperations.getShadowRays(incomingRay.getOrigin(), world);
 
-        if (RayOperations.RayInShadow(shadowRay, world)) {
+        List<Light> lightsCastingShadows = RayOperations.getLightsCastingShadows(shadowRays, world);
+        if (lightsCastingShadows.size()==0) {
             return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
         }
 
