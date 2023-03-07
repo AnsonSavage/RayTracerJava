@@ -7,8 +7,6 @@ public class Material {
     private double specularCoefficient;
     private double specularExponent;
     private double reflectivity;
-
-
     private Color diffuseColor;
     private Color specularColor;
 
