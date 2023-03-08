@@ -43,12 +43,21 @@ public class RayTreeNode {
         this.intersectionPoint = this.incomingRay.getRayEnd(this.incomingRayLength);
         this.normalAtIntersection = this.hitObject.getNormal(this.intersectionPoint);
 
-        List<Ray> shadowRays = RayOperations.getShadowRays(this.intersectionPoint, world);
-
-        List<Light> lightsNotCastingShadows = RayOperations.getNonShadowCastingLights(shadowRays, world, this.hitObject);
-        if (lightsNotCastingShadows.size()==0) {
+        Ray shadowRay = RayOperations.getShadowRays(this.intersectionPoint, world).get(0);
+//        List<Ray> shadowRays = RayOperations.getShadowRays(this.intersectionPoint, world);
+//
+        List<Ray> shadowRays = new ArrayList<>();
+        shadowRays.add(shadowRay);
+//        List<Light> lightsNotCastingShadows = RayOperations.getNonShadowCastingLights(shadowRays, world, this.hitObject);
+//        if (lightsNotCastingShadows.size()==0) {
+//            return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
+//        }
+        if (RayOperations.isShadowRayInShadowForLight(shadowRay, world, world.getLights().get(0), this.hitObject)) {
             return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
         }
+
+        List<Light> lightsNotCastingShadows = new ArrayList<>();
+        lightsNotCastingShadows.add(world.getLights().get(0));
 
         Color resultantColor = computeIlluminationModel(lightsNotCastingShadows);
 

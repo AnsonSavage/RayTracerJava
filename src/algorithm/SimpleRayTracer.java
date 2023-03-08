@@ -26,12 +26,9 @@ public class SimpleRayTracer extends RayTracer {
         double minT = closestObjectDistancePair.getDistance();
         RenderableObject closestObject = closestObjectDistancePair.getObject();
 
-        if (minT == Double.MAX_VALUE) { // We didn't hit anything, so just return the background of the world
+        if (closestObject == null) { // We didn't hit anything, so just return the background of the world
             return world.getBackground().getColor(ray.getDirection());
         }
-
-        assert closestObject != null;
-
 
         return computeColor(ray, minT, closestObject);
     }

@@ -44,33 +44,37 @@ public class RayOperations {
     }
 
     public static List<Light> getNonShadowCastingLights(List<Ray> shadowRays, World world, RenderableObject objectToAvoid) {
-        // Note, this code assumes that the shadowRays list is the the same order as the world's light list
+        // Note, this code assumes that the shadowRays list is the same order as the world's light list
         assert shadowRays.size() == world.getLights().size();
 
-        List<Light> lightsCastingShadows = new ArrayList<>();
         List<Light> lightsNotCastingShadows = new ArrayList<>();
         for (int i = 0; i < shadowRays.size(); i++) {
             Ray shadowRay = shadowRays.get(i);
             Light light = world.getLights().get(i);
-            double distanceToLight = light.getDistanceToLight(shadowRay.getOrigin());
-            for (RenderableObject object : world.getRenderableObjects()) {
-                if (object == objectToAvoid) {
-                    continue;
-                }
-                double t = object.getRayIntersectionParameter(shadowRay);
-                if (t > 0 && t < distanceToLight) { // If t is positive and less than the distance to the light, then the shadow ray is blocked by an object
-                    lightsCastingShadows.add(light);
-                    break;
-                } else {
-                    lightsNotCastingShadows.add(light); // TODO: this is a bug, because we're adding the light to the list multiple times if it's not casting shadows
-                }
+            if (!isShadowRayInShadowForLight(shadowRay, world, light, objectToAvoid)) {
+                lightsNotCastingShadows.add(light);
             }
         }
         return lightsNotCastingShadows;
     }
 
+    public static boolean isShadowRayInShadowForLight(Ray shadowRay, World world, Light light, RenderableObject objectToAvoid) {
+        double distanceToLight = light.getDistanceToLight(shadowRay.getOrigin());
+        for (RenderableObject object : world.getRenderableObjects()) {
+            if (object == objectToAvoid) {
+                continue;
+            }
+            double t = object.getRayIntersectionParameter(shadowRay);
+            if (t > 0 && t < distanceToLight) {
+                return true;
+            }
+        }
+        return false;
+    }
     public static Ray createReflectionRay(Ray incomingRay, Vector3 pointOfIntersection, Vector3 normal) {
         Vector3 reflectedLightDirection = incomingRay.getDirection().reflect(normal);
+        reflectedLightDirection.normalize();
+        reflectedLightDirection.multiply(-1); // TODO: This is a random test, but it does seem to be helping
         Ray reflectionRay = new Ray(pointOfIntersection, reflectedLightDirection);
         reflectionRay.offsetFromOrigin();
         return reflectionRay;

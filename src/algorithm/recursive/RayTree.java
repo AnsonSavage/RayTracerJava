@@ -9,6 +9,7 @@ public class RayTree {
     private int maxBounces;
     public RayTree(Ray cameraRay, World world, int maxBounces) {
         root = new RayTreeNode(cameraRay, world, 1, this);
+        this.maxBounces = maxBounces;
     }
 
     public Color getPixelColor() {

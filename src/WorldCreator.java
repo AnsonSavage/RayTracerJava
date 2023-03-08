@@ -76,13 +76,13 @@ public class WorldCreator {
 
         Light sunLight = new SunLight(
                 null, // sunlight position is ignored?
-                (new Vector3(0, 1, 0)).multiply(1),
+                (new Vector3(0, 1, 0)).multiply(-1),
                 1,
                 new Color(1, 1, 1)
         );
         world.addLight(sunLight);
 
-        Background background = new ConstantBackground(new Color(0.2, 0.2, 0.2), 5);
+        Background background = new ConstantBackground(new Color(0.2, 0.2, 0.2), 0);
 
         world.setBackground(background);
 

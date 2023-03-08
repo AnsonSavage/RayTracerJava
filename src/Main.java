@@ -1,6 +1,6 @@
 import algorithm.RayTracer;
 import algorithm.RenderSettings;
-import algorithm.SimpleRayTracer;
+import algorithm.SimpleRecursiveRayTracer;
 import output.ImageOutputter;
 import output.PPMOutputter;
 import world.World;
@@ -9,13 +9,13 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        World world = WorldCreator.createPurpleSphereWorld();
+        World world = WorldCreator.createScene1World();
         int imageWidth = 500;
-        int imageHeight = 500;
+        int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 2, 1);
-        RayTracer simpleRecursiveRayTracer = new SimpleRayTracer(settings, world);
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 3, 1);
+        RayTracer simpleRecursiveRayTracer = new SimpleRecursiveRayTracer(settings, world);
         simpleRecursiveRayTracer.render();
 
         ImageOutputter imageOutputter = new PPMOutputter();
