@@ -76,13 +76,13 @@ public class WorldCreator {
 
         Light sunLight = new SunLight(
                 null, // sunlight position is ignored?
-                (new Vector3(0, 1, 0)).multiply(-1),
+                (new Vector3(0, 1, 0)).multiply(1),
                 1,
                 new Color(1, 1, 1)
         );
         world.addLight(sunLight);
 
-        Background background = new ConstantBackground(new Color(0.2, 0.2, 0.2), 0);
+        Background background = new ConstantBackground(new Color(0.2, 0.2, 0.2), 5);
 
         world.setBackground(background);
 
@@ -140,6 +140,76 @@ public class WorldCreator {
         );
 
         world.addRenderableObject(yellowTriangle);
+
+        return world;
+    }
+
+    public static World createPurpleSphereWorld() {
+        /** This is the description of the world that it creates:
+         * CameraLookAt 0 0 0
+         * CameraLookFrom 0 0 1
+         * CameraLookUp 0 1 0
+         * FieldOfView 90
+         *
+         * DirectionToLight 0.0 1.0 0.0
+         * LightColor 1.0 1.0 1.0
+         * AmbientLight 0.0 0.0 0.0
+         * BackgroundColor 0.2 0.2 0.2
+         *
+         * # purple sphere
+         * Sphere
+         *   Center 0.0 0.0 0.0
+         *   Radius .4
+         *   Kd 0.7
+         *   Ks 0.2
+         *   Ka 0.1
+         *   Od 1.0 0.0 1.0
+         *   Os 1.0 1.0 1.0
+         *   Kgls 16.0
+         *   Refl .9
+         */
+        World world = new World();
+        Camera camera = new Camera(
+                new Vector3(0,0,1),
+                new Vector3(0,0,0),
+                new Vector3(0,1,0),
+                90,
+                1,
+                1
+        );
+        world.setCamera(camera);
+
+        // Create a sun light
+        Light sunLight = new SunLight(
+                new Vector3(0,0,0),
+                new Vector3(0,-1.0,0),
+                1,
+                new Color(1,1,1)
+        );
+        world.addLight(sunLight);
+
+        Background background = new ConstantBackground(
+                new Color(0.2, 0.2, 0.2),
+                0.0
+        );
+        world.setBackground(background);
+
+
+        // Create a purple sphere
+        Sphere sphere = new Sphere(
+                new Vector3(0,0,0),
+                new Material(
+                        0.1,
+                        0.7,
+                        0.2,
+                        16.0,
+                        0,
+                        new Color(1.0, 0.5, 1.0),
+                        new Color(1.0, 1.0, 1.0)
+                ),
+                0.5
+        );
+        world.addRenderableObject(sphere);
 
         return world;
     }

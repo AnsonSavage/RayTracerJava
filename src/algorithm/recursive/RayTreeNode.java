@@ -36,9 +36,8 @@ public class RayTreeNode {
     }
 
     public Color getColorContribution() {
-        Ray shadowRay = null;
         if (this.hitObject == null) {
-            return world.getBackground().getColor(null); // Todo: if you actually cared about this, you would do this after computing reflection ray
+            return world.getBackground().getColor(null); // NOTE: if you actually cared about this, you would do this after computing reflection ray
         }
 
         this.intersectionPoint = this.incomingRay.getRayEnd(this.incomingRayLength);

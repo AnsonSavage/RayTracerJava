@@ -32,7 +32,7 @@ public class Triangle extends RenderableObject {
     }
 
     @Override
-    public double getRayIntersectionParameter(Ray ray) { // ISSUE: This method isn't set up to work with our system because it doesn't take into account the position of the triangle
+    public double getRayIntersectionParameter(Ray ray) {
         double t = getPlaneIntersectionParameter(ray); // Now we need to test if this point lies within the triangle
         if (t == -1) {
             return -1;
@@ -47,7 +47,6 @@ public class Triangle extends RenderableObject {
             Vector3 edge = nextVertex.subtractNew(currentVertex);
             Vector3 pointToVertex = pointOfIntersection.subtractNew(currentVertex);
 
-            assert backfaceCulling;
             if (edge.cross(pointToVertex).dot(normal) < 0) {
                 return -1; // The point of intersection is outside the triangle
             }

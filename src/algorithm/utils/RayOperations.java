@@ -43,7 +43,7 @@ public class RayOperations {
         return shadowRays;
     }
 
-    public static List<Light> getNonShadowCastingLights(List<Ray> shadowRays, World world, RenderableObject objectToAvoid) { // TODO: implement this
+    public static List<Light> getNonShadowCastingLights(List<Ray> shadowRays, World world, RenderableObject objectToAvoid) {
         // Note, this code assumes that the shadowRays list is the the same order as the world's light list
         assert shadowRays.size() == world.getLights().size();
 
@@ -62,7 +62,7 @@ public class RayOperations {
                     lightsCastingShadows.add(light);
                     break;
                 } else {
-                    lightsNotCastingShadows.add(light);
+                    lightsNotCastingShadows.add(light); // TODO: this is a bug, because we're adding the light to the list multiple times if it's not casting shadows
                 }
             }
         }
