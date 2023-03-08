@@ -43,7 +43,7 @@ public class RayOperations {
         return shadowRays;
     }
 
-    public static List<Light> getNonShadowCastingLights(List<Ray> shadowRays, World world) { // TODO: implement this
+    public static List<Light> getNonShadowCastingLights(List<Ray> shadowRays, World world, RenderableObject objectToAvoid) { // TODO: implement this
         // Note, this code assumes that the shadowRays list is the the same order as the world's light list
         assert shadowRays.size() == world.getLights().size();
 
@@ -54,6 +54,9 @@ public class RayOperations {
             Light light = world.getLights().get(i);
             double distanceToLight = light.getDistanceToLight(shadowRay.getOrigin());
             for (RenderableObject object : world.getRenderableObjects()) {
+                if (object == objectToAvoid) {
+                    continue;
+                }
                 double t = object.getRayIntersectionParameter(shadowRay);
                 if (t > 0 && t < distanceToLight) { // If t is positive and less than the distance to the light, then the shadow ray is blocked by an object
                     lightsCastingShadows.add(light);

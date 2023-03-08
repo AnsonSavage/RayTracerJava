@@ -16,6 +16,7 @@ public class Triangle extends RenderableObject {
         v3.add(position);
 
         vertices = new Vector3[]{v1, v2, v3};
+        assert vertices.length == 3; // This is a triangle, so it should have 3 vertices
         normal = computeNormal();
         backfaceCulling = true;
     }
@@ -27,11 +28,35 @@ public class Triangle extends RenderableObject {
 
     @Override
     public Vector3 getNormal(Vector3 positionOnSurface) {
-        return normal;
+        return normal; // Triangles are flat, so the normal is constant
     }
 
     @Override
     public double getRayIntersectionParameter(Ray ray) { // ISSUE: This method isn't set up to work with our system because it doesn't take into account the position of the triangle
+        double t = getPlaneIntersectionParameter(ray); // Now we need to test if this point lies within the triangle
+        if (t == -1) {
+            return -1;
+        }
+
+        Vector3 pointOfIntersection = ray.getRayEnd(t);
+
+        for (int i = 0; i < vertices.length; i++) {
+            Vector3 currentVertex = vertices[i];
+            Vector3 nextVertex = vertices[(i + 1) % vertices.length];
+
+            Vector3 edge = nextVertex.subtractNew(currentVertex);
+            Vector3 pointToVertex = pointOfIntersection.subtractNew(currentVertex);
+
+            assert backfaceCulling;
+            if (edge.cross(pointToVertex).dot(normal) < 0) {
+                return -1; // The point of intersection is outside the triangle
+            }
+        }
+
+        return t;
+    }
+
+    private double getPlaneIntersectionParameter(Ray ray) {
         Vector3 rayOrigin = ray.getOrigin();
         Vector3 rayDirection = ray.getDirection();
 

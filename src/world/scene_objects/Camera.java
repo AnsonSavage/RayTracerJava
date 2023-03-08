@@ -8,7 +8,7 @@ public class Camera extends WorldObject {
     private double focalLength;
     private Vector3 up;
 
-    public Camera(Vector3 position, Vector3 lookAt, double fieldOfViewX, double aspectRatio, double focalLength, Vector3 up) {
+    public Camera(Vector3 position, Vector3 lookAt, Vector3 up, double fieldOfViewX, double aspectRatio, double focalLength) {
         super(position, lookAt.subtractNew(position));
         this.focalLength = focalLength;
         this.fieldOfViewX = fieldOfViewX * Math.PI / 180;

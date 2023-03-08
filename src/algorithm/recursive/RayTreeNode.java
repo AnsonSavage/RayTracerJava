@@ -46,7 +46,7 @@ public class RayTreeNode {
 
         List<Ray> shadowRays = RayOperations.getShadowRays(this.intersectionPoint, world);
 
-        List<Light> lightsNotCastingShadows = RayOperations.getNonShadowCastingLights(shadowRays, world);
+        List<Light> lightsNotCastingShadows = RayOperations.getNonShadowCastingLights(shadowRays, world, this.hitObject);
         if (lightsNotCastingShadows.size()==0) {
             return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
         }
@@ -61,7 +61,7 @@ public class RayTreeNode {
         for (RayTreeNode child : this.children) {
             // TODO: This would have to be refactored if we had multiple children
             double reflectivity = this.hitObject.getMaterial().getReflectivity();
-            resultantColor.add(child.getColorContribution().multiply(reflectivity));
+            resultantColor.add(child.getColorContribution().multiply(reflectivity)); // TODO: Need to find a way to have falloff
         }
 
         return resultantColor;

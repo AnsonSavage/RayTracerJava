@@ -14,7 +14,7 @@ import world.scene_objects.renderable_objects.RenderableObject;
  * It doesn't even compute shadow rays.
  * It can't compute transparency rays either.
  */
-public class SimpleRayTracer extends RayTracer{
+public class SimpleRayTracer extends RayTracer {
     public SimpleRayTracer(RenderSettings settings, World world) {
         super(settings, world);
     }
