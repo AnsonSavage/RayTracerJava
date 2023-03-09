@@ -18,7 +18,7 @@ public class Main {
         imageWidth += 1;
         imageWidth -= 1;
 
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 2, 1);
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 5, 1);
         RayTracer simpleRecursiveRayTracer = new SimpleRecursiveRayTracer(settings, world);
         simpleRecursiveRayTracer.render();
 
