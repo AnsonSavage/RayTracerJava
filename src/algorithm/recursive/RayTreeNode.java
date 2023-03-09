@@ -69,7 +69,7 @@ public class RayTreeNode {
         for (RayTreeNode child : this.children) {
             // TODO: This would have to be refactored if we had multiple children
             double reflectivity = this.hitObject.getMaterial().getReflectivity();
-            resultantColor.add(child.getColorContribution().multiply(reflectivity)); // TODO: Need to find a way to have falloff
+            resultantColor.add(child.getColorContribution().multiplyNew(reflectivity)); // TODO: Need to find a way to have falloff
         }
 
         return resultantColor;
