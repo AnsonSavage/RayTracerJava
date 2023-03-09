@@ -145,31 +145,6 @@ public class WorldCreator {
     }
 
     public static World createReflectivePlaneWorld() {
-        /** This is the description of the world that it creates:
-         * CameraLookAt 0 0 0
-         * CameraLookFrom 0 0 1
-         * CameraLookUp 0 1 0
-         * FieldOfView 90
-         *
-         * DirectionToLight 0.0 1.0 0.0
-         * LightColor 1.0 1.0 1.0
-         * AmbientLight 0.0 0.0 0.0
-         * BackgroundColor 0.2 0.2 0.2
-         *
-         * # reflective plane
-         * Triangle
-         *   1.0 -1.0 1.0
-         *   1.0 -1.0 -1.0
-         *   -1.0 -1.0 -1.0
-         *   Kd 0.0
-         *   Ks 0.0
-         *   Ka 0.1
-         *   Od 0.75 0.75 0.75
-         *   Os 1.0 1.0 1.0
-         *   Kgls 10.0
-         *   Refl .9
-         */
-
         World world = new World();
         Camera camera = new Camera(
                 new Vector3(0, 0, 1),
@@ -223,6 +198,9 @@ public class WorldCreator {
         );
 
         world.addRenderableObject(reflectivePlaneHalf2);
+
+
+        // Let's make a sphere to view in the reflective plane
 
         return world;
     }

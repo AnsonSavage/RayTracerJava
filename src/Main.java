@@ -18,14 +18,14 @@ public class Main {
         imageWidth += 1;
         imageWidth -= 1;
 
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 1, 1);
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 2, 1);
         RayTracer simpleRecursiveRayTracer = new SimpleRecursiveRayTracer(settings, world);
         simpleRecursiveRayTracer.render();
 
         ImageOutputter imageOutputter = new PPMOutputter();
 
         try {
-            imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "reflectivePlane.ppm");
+            imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "reflectivePlane2Bounces.ppm");
         } catch (IOException e) {
             System.out.println("Could not write to file");
         }

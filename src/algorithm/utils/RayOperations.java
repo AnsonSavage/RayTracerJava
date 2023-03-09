@@ -72,9 +72,9 @@ public class RayOperations {
         return false;
     }
     public static Ray createReflectionRay(Ray incomingRay, Vector3 pointOfIntersection, Vector3 normal) {
-        Vector3 reflectedLightDirection = incomingRay.getDirection().reflect(normal);
+        // The incoming ray's direction is multiplied by -1 because we want the direction from the point of intersection to the viewer
+        Vector3 reflectedLightDirection = incomingRay.getDirection().multiplyNew(-1).reflect(normal); // The direction of the reflected light
         reflectedLightDirection.normalize();
-        reflectedLightDirection.multiply(-1); // TODO: This is a random test, but it does seem to be helping
         Ray reflectionRay = new Ray(pointOfIntersection, reflectedLightDirection);
         reflectionRay.offsetFromOrigin();
         return reflectionRay;
