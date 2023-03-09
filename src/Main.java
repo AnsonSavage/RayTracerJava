@@ -9,19 +9,23 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        World world = WorldCreator.createScene1World();
+        World world = WorldCreator.createReflectivePlaneWorld();
         int imageWidth = 500;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 3, 1);
+        // Watcher test
+        imageWidth += 1;
+        imageWidth -= 1;
+
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 1, 1);
         RayTracer simpleRecursiveRayTracer = new SimpleRecursiveRayTracer(settings, world);
         simpleRecursiveRayTracer.render();
 
         ImageOutputter imageOutputter = new PPMOutputter();
 
         try {
-            imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "purple.ppm");
+            imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "reflectivePlane.ppm");
         } catch (IOException e) {
             System.out.println("Could not write to file");
         }

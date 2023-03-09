@@ -31,6 +31,6 @@ public class Ray {
     }
 
     public void offsetFromOrigin() {
-        origin.add(direction.multiplyNew(originOffset));
+        origin = origin.addNew(direction.multiplyNew(originOffset));
     }
 }
