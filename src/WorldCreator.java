@@ -82,7 +82,7 @@ public class WorldCreator {
         );
         world.addLight(sunLight);
 
-        Background background = new ConstantBackground(new Color(0.2, 0.2, 0.2), 0);
+        Background background = new ConstantBackground(new Color(0.2, 0.2, 0.2), 0.0);
 
         world.setBackground(background);
 
@@ -144,8 +144,96 @@ public class WorldCreator {
         return world;
     }
 
-    public static World createReflectivePlaneWorld() {
+    public static World createScene2World() {
+        /**
+         * CameraLookAt 0 0 0
+         * CameraLookFrom 0 0 1
+         * CameraLookUp 0 1 0
+         * FieldOfView 90
+         *
+         * DirectionToLight 1.0 0.0 0.0
+         * LightColor 1.0 1.0 1.0
+         * AmbientLight 0.1 0.1 0.1
+         * BackgroundColor 0.2 0.2 0.2
+         *
+         *
+         * # white sphere
+         * Sphere
+         *   Center 0.5 0.0 -0.15
+         *   Radius 0.05
+         *   Kd 0.8
+         *   Ks 0.1
+         *   Ka 0.3
+         *   Od 1.0, 1.0, 1.0
+         *   Os 1.0, 1.0, 1.0
+         *   Kgls 4.0
+         *   Refl 0.0
+         *
+         * # red sphere
+         * Sphere
+         *   Center 0.3 0.0 -0.1
+         *   Radius 0.08
+         *   Kd 0.8
+         *   Ks 0.8
+         *   Ka 0.1
+         *   Od 1.0 0.0 0.0
+         *   Os 0.5 1.0 0.5
+         *   Kgls 32.0
+         *   Refl 0.0
+         *
+         * # green sphere
+         * Sphere
+         *   Center -0.6 0.0 0.0
+         *   Radius .3
+         *   Kd 0.7
+         *   Ks 0.5
+         *   Ka 0.1
+         *   Od 0.0 1.0 0.0
+         *   Os 0.5 1.0 0.5
+         *   Kgls 64.0
+         *   Refl 0.0
+         *
+         * # reflective sphere
+         * Sphere
+         *   Center 0.1 -0.55 0.25
+         *   Radius 0.3
+         *   Kd 0.0
+         *   Ks 0.1
+         *   Ka 0.1
+         *   Od 0.75 0.75 0.75
+         *   Os 1.0 1.0 1.0
+         *   Kgls 10.0
+         *   Refl 0.9
+         *
+         * # blue triangle
+         * Triangle
+         *   0.3 -0.3 -0.4
+         *   0.0 0.3 -0.1
+         *   -0.3 -0.3 0.2
+         *   Kd 0.9
+         *   Ks 0.9
+         *   Ka 0.1
+         *   Od 0.0 0.0 1.0
+         *   Os 1.0 1.0 1.0
+         *   Kgls 32.0
+         *   Refl 0.0
+         *
+         * # yellow triangle
+         * Triangle
+         *   -0.2 0.1 0.1
+         *   -0.2 -0.5 0.2
+         *   -0.2 0.1 -0.3
+         *   Kd 0.9
+         *   Ks 0.5
+         *   Ka 0.1
+         *   Od 1.0 1.0 0.0
+         *   Os 1.0 1.0 1.0
+         *   Kgls 4.0
+         *   Refl 0.0
+         */
+
         World world = new World();
+
         Camera camera = new Camera(
                 new Vector3(0, 0, 1),
                 new Vector3(0, 0, 0),
@@ -157,120 +245,122 @@ public class WorldCreator {
         world.setCamera(camera);
 
         Light sunLight = new SunLight(
-                null, // sunlight position is ignored?
-                (new Vector3(0, 1, 0)).multiply(-1),
-                1,
+                null,
+                (new Vector3(1, 0, 0)).multiply(-1),
+                1.0,
                 new Color(1, 1, 1)
         );
 
         world.addLight(sunLight);
 
-        Background background = new ConstantBackground(new Color(0.2, 0.2, 0.2), 0);
-
+        Background background = new ConstantBackground(new Color(0.2, 0.2, 0.2), 0.1);
         world.setBackground(background);
 
-        Material reflectiveMaterial = new Material(
+        // Create white sphere
+        RenderableObject whiteSphere = new Sphere(
+                new Vector3(0.5, 0, -0.15),
+                new Material(
+                        0.3,
+                        0.8,
                         0.1,
-                        1.0,
+                        4,
                         0.0,
+                        new Color(1, 1, 1),
+                        new Color(1, 1, 1)
+                    ),
+            0.05
+        );
+
+        world.addRenderableObject(whiteSphere);
+
+        // Create red sphere
+        RenderableObject redSphere = new Sphere(
+                new Vector3(0.3, 0, -0.1),
+                new Material(
+                        0.1,
+                        0.8,
+                        0.8,
+                        32,
+                        0.0,
+                        new Color(1, 0, 0),
+                        new Color(0.5, 1, 0.5)
+                    ),
+            0.08
+        );
+        world.addRenderableObject(redSphere);
+
+        // Create green sphere
+        RenderableObject greenSphere = new Sphere(
+                new Vector3(-0.6, 0, 0),
+                new Material(
+                        0.1,
+                        0.7,
+                        0.5,
+                        64,
+                        0.0,
+                        new Color(0, 1, 0),
+                        new Color(0.5, 1, 0.5)
+                    ),
+            0.3
+        );
+
+        world.addRenderableObject(greenSphere);
+
+        // Create reflective sphere
+        RenderableObject reflectiveSphere = new Sphere(
+                new Vector3(0.1, -0.55, 0.25),
+                new Material(
+                        0.1,
+                        0.0,
+                        0.1,
                         10,
                         0.9,
                         new Color(0.75, 0.75, 0.75),
                         new Color(1, 1, 1)
-                );
-
-        // Create reflective plane:
-        RenderableObject reflectivePlaneHalf1 = new Triangle(
-                new Vector3(0,0,0),
-                reflectiveMaterial,
-                new Vector3(1, -1, 1),
-                new Vector3(1, -1, -1),
-                new Vector3(-1, -1, -1)
-        );
-        world.addRenderableObject(reflectivePlaneHalf1);
-
-        RenderableObject reflectivePlaneHalf2 = new Triangle(
-                new Vector3(0,0,0),
-                reflectiveMaterial,
-                new Vector3(1, -1, 1),
-                new Vector3(-1, -1, -1),
-                new Vector3(-1, -1, 1)
+                    ),
+            0.3
         );
 
-        world.addRenderableObject(reflectivePlaneHalf2);
+        world.addRenderableObject(reflectiveSphere);
 
-
-        // Let's make a sphere to view in the reflective plane
-
-        return world;
-    }
-    public static World createPurpleSphereWorld() {
-        /** This is the description of the world that it creates:
-         * CameraLookAt 0 0 0
-         * CameraLookFrom 0 0 1
-         * CameraLookUp 0 1 0
-         * FieldOfView 90
-         *
-         * DirectionToLight 0.0 1.0 0.0
-         * LightColor 1.0 1.0 1.0
-         * AmbientLight 0.0 0.0 0.0
-         * BackgroundColor 0.2 0.2 0.2
-         *
-         * # purple sphere
-         * Sphere
-         *   Center 0.0 0.0 0.0
-         *   Radius .4
-         *   Kd 0.7
-         *   Ks 0.2
-         *   Ka 0.1
-         *   Od 1.0 0.0 1.0
-         *   Os 1.0 1.0 1.0
-         *   Kgls 16.0
-         *   Refl .9
-         */
-        World world = new World();
-        Camera camera = new Camera(
-                new Vector3(0,0,1),
-                new Vector3(0,0,0),
-                new Vector3(0,1,0),
-                90,
-                1,
-                1
-        );
-        world.setCamera(camera);
-
-        // Create a sun light
-        Light sunLight = new SunLight(
-                new Vector3(0,0,0),
-                new Vector3(0,-1.0,0),
-                1,
-                new Color(1,1,1)
-        );
-        world.addLight(sunLight);
-
-        Background background = new ConstantBackground(
-                new Color(0.2, 0.2, 0.2),
-                0.0
-        );
-        world.setBackground(background);
-
-
-        // Create a purple sphere
-        Sphere sphere = new Sphere(
-                new Vector3(0,0,0),
+        // Create blue triangle
+        RenderableObject blueTriangle = new Triangle(
+                new Vector3(0, 0, 0),
                 new Material(
                         0.1,
-                        0.7,
-                        0.2,
-                        16.0,
-                        0,
-                        new Color(1.0, 0.5, 1.0),
-                        new Color(1.0, 1.0, 1.0)
-                ),
-                0.5
+                        0.9,
+                        0.9,
+                        32,
+                        0.0,
+                        new Color(0, 0, 1),
+                        new Color(1, 1, 1)
+                    ),
+                new Vector3(0.3, -0.3, -0.4),
+                new Vector3(0, 0.3, -0.1),
+                new Vector3(-0.3, -0.3, 0.2)
         );
-        world.addRenderableObject(sphere);
+
+        world.addRenderableObject(blueTriangle);
+
+        // Create yellow triangle
+        RenderableObject yellowTriangle = new Triangle(
+                new Vector3(0, 0, 0),
+                new Material(
+                        0.1,
+                        0.9,
+                        0.5,
+                        4,
+                        0.0,
+                        new Color(1, 1, 0),
+                        new Color(1, 1, 1)
+                    ),
+                new Vector3(-0.2, 0.1, 0.1),
+                new Vector3(-0.2, -0.5, 0.2),
+                new Vector3(-0.2, 0.1, -0.3)
+        );
+        world.addRenderableObject(yellowTriangle);
 
         return world;
     }
+
 }

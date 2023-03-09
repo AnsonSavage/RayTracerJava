@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        World world = WorldCreator.createScene1World();
+        World world = WorldCreator.createScene2World();
         int imageWidth = 500;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
@@ -25,7 +25,7 @@ public class Main {
         ImageOutputter imageOutputter = new PPMOutputter();
 
         try {
-            imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "scene1.ppm");
+            imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "scene2withoutbfculling.ppm");
         } catch (IOException e) {
             System.out.println("Could not write to file");
         }
