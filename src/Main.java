@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        World world = WorldCreator.createScene2World();
-        int imageWidth = 500;
+        World world = WorldCreator.createMyOwnWorld();
+        int imageWidth = 1500;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 

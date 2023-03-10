@@ -11,6 +11,9 @@ import world.scene_objects.renderable_objects.RenderableObject;
 import world.scene_objects.renderable_objects.Sphere;
 import world.scene_objects.renderable_objects.Triangle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WorldCreator {
     public static World createScene1World() {
         /**
@@ -460,6 +463,125 @@ public class WorldCreator {
                 new Vector3(-1, 0, 1)
         );
         world.addRenderableObject(shadowPlaneHalf2);
+
+        return world;
+    }
+
+    public static List<Triangle> createCheckerboard(double startX, double endX, double yLevel, double startZ, double endZ, int numDivisionsX, int numDivisionsZ, Material material1, Material material2) {
+        List<Triangle> triangles = new ArrayList<>();
+        double xStep = (endX - startX) / numDivisionsX;
+        double zStep = (endZ - startZ) / numDivisionsZ;
+        for (int i = 0; i < numDivisionsX; i++) {
+            for (int j = 0; j < numDivisionsZ; j++) {
+                double x1 = startX + i * xStep;
+                double x2 = startX + (i + 1) * xStep;
+                double z1 = startZ + j * zStep;
+                double z2 = startZ + (j + 1) * zStep;
+                if ((i + j) % 2 == 0) {
+                    triangles.add(new Triangle(new Vector3(0,0,0), material1, new Vector3(x1, yLevel, z1), new Vector3(x1, yLevel, z2), new Vector3(x2, yLevel, z2)));
+                    triangles.add(new Triangle(new Vector3(0,0,0), material1, new Vector3(x1, yLevel, z1), new Vector3(x2, yLevel, z2), new Vector3(x2, yLevel, z1)));
+                } else {
+                    triangles.add(new Triangle(new Vector3(0,0,0), material2, new Vector3(x1, yLevel, z1), new Vector3(x1, yLevel, z2), new Vector3(x2, yLevel, z2)));
+                    triangles.add(new Triangle(new Vector3(0,0,0), material2, new Vector3(x1, yLevel, z1), new Vector3(x2, yLevel, z2), new Vector3(x2, yLevel, z1)));
+                }
+            }
+        }
+        return triangles;
+    }
+    public static World createMyOwnWorld() {
+        World world = new World();
+        Camera camera = new Camera(
+                new Vector3(0, 0, 2),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                90,
+                1,
+                1
+        );
+
+        world.setCamera(camera);
+
+        Light sunLight = new SunLight(
+                null, // sunlight position is ignored?
+                (new Vector3(0, 1, 1)).multiply(-1),
+                1,
+                new Color(1, 1, 1)
+        );
+
+        world.addLight(sunLight);
+
+        Background background = new ConstantBackground(new Color(0.1, 0.2, 0.3), 0);
+
+        world.setBackground(background);
+
+        Material reflectiveMaterial1 = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.1,
+                new Color(0.1, 0.05, 0.05),
+                new Color(1, 1, 1)
+        );
+
+        Material reflectiveMaterial2 = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.9,
+                new Color(0.8, 0.95, 0.9),
+                new Color(1, 1, 1)
+        );
+
+        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
+
+        for (Triangle triangle : checkerboard) {
+            world.addRenderableObject(triangle);
+        }
+
+        Material metal = new Material(
+                0.2,
+                0.2,
+                0.5,
+                .5,
+                1,
+                new Color(.8, .8, .8),
+                new Color(1, 1, 1)
+        );
+
+        RenderableObject sphere = new Sphere(
+                new Vector3(0, 0, 0),
+                metal,
+                0.5
+        );
+        world.addRenderableObject(sphere);
+
+        // Now let's create a spiral of spheres:
+        double radius = .8;
+        double theta = 0;
+        double dTheta = 0.3;
+        double dRadius = -0.01;
+        double y = -.9;
+        double dy = 0.15;
+        while (y < 3 && radius > 0) {
+            double x = radius * Math.cos(theta);
+            double z = radius * Math.sin(theta);
+            RenderableObject sphere2 = new Sphere(
+                    new Vector3(x, y, z),
+                    metal,
+                    Math.abs(1/(y/1.2 + 1) / 15)
+            );
+            world.addRenderableObject(sphere2);
+            theta += dTheta;
+            radius += dRadius;
+            if (dy > 0) {
+                y += dy;
+                dy -= 0.004;
+            } else {
+                y += 0.00001;
+            }
+        }
 
         return world;
     }
