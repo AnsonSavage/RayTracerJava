@@ -25,4 +25,6 @@ public abstract class RenderableObject extends WorldObject {
     public Material getMaterial() {
         return material;
     }
+
+    public abstract void scale(double scaleFactor);
 }

@@ -10,7 +10,10 @@ import java.util.List;
 
 public class Triangle extends RenderableObject {
     private List<Vector3> vertices;
-    private Vector3 normal;
+    private final Vector3 normal;
+    private Vector3 normalForIntersectionTests;
+    private double d;
+    private boolean vertexOrderReversed = false;
     public Triangle(Vector3 position, Material material, Vector3 v1, Vector3 v2, Vector3 v3) {
         super(position, material);
         // Offset each of v1, v2, and v3 by position... If an orientation vector were implemented, we'd do the same thing here:)
@@ -18,13 +21,15 @@ public class Triangle extends RenderableObject {
         v2.add(position);
         v3.add(position);
 
-        vertices = new ArrayList<Vector3>();
+        vertices = new ArrayList<>();
         vertices.add(v1);
         vertices.add(v2);
         vertices.add(v3);
 
         assert vertices.size() == 3; // This is a triangle, so it should have 3 vertices
         normal = computeNormal();
+        normalForIntersectionTests = normal.copy();
+        d = -normalForIntersectionTests.dot(vertices.get(0)); // We can take any of the vertices, since they're all on the plane
     }
 
     @Override
@@ -48,12 +53,25 @@ public class Triangle extends RenderableObject {
             Vector3 edge = nextVertex.subtractNew(currentVertex);
             Vector3 pointToVertex = pointOfIntersection.subtractNew(currentVertex);
 
-            if (edge.cross(pointToVertex).dot(normal) < 0) {
+            if (edge.cross(pointToVertex).dot(normalForIntersectionTests) < 0) {
                 return -1; // The point of intersection is outside the triangle
             }
         }
 
+        if (vertexOrderReversed) {
+            flipNormal();
+        }
+
+        assert !vertexOrderReversed;
+
         return t;
+    }
+
+    @Override
+    public void scale(double scaleFactor) {
+        for (Vector3 vertex : vertices) {
+            vertex.multiply(scaleFactor);
+        }
     }
 
     private double getPlaneIntersectionParameter(Ray ray) {
@@ -61,19 +79,19 @@ public class Triangle extends RenderableObject {
         Vector3 rayDirection = ray.getDirection();
 
         // Imagine the plane equation is ax + by + cz + d = 0. Then
-        double d = -normal.dot(vertices.get(0)); // We can take any of the vertices, since they're all on the plane
-        double normalDotRayDirection = normal.dot(rayDirection);
+        double normalDotRayDirection = normalForIntersectionTests.dot(rayDirection);
 
         if (normalDotRayDirection == 0) {
             return -1; // The ray is parallel to the plane, and does not intersect
         }
 
         if (normalDotRayDirection > 0) {
-//            flipNormal();
-            return -1;
+            flipNormal();
+//            normalDotRayDirection = normalForIntersectionTests.dot(rayDirection);
+//            return -1;
         }
 
-        double t = -(normal.dot(rayOrigin) + d) / normalDotRayDirection;
+        double t = -(normalForIntersectionTests.dot(rayOrigin) + d) / normalDotRayDirection;
 
         if (t < 0) {
             return -1; // The ray is pointing away from the triangle
@@ -95,8 +113,9 @@ public class Triangle extends RenderableObject {
     }
 
     private void flipNormal() {
-        normal = normal.multiplyNew(-1);
+//        normalForIntersectionTests.multiply(-1);
         // Reverse the vertices
         Collections.reverse(vertices);
+        vertexOrderReversed = !vertexOrderReversed;
     }
 }

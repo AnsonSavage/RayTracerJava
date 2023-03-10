@@ -363,4 +363,104 @@ public class WorldCreator {
         return world;
     }
 
+    public static World createPlaneShadowTestWorld() {
+        World world = new World();
+        Camera camera = new Camera(
+                new Vector3(0, 0, 1),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0), 90,
+                1,
+                1
+        );
+
+        world.setCamera(camera);
+
+        Light sunLight = new SunLight(
+                null, // sunlight position is ignored?
+                (new Vector3(0, 1, 0)).multiply(-1),
+                1,
+                new Color(1, 1, 1)
+        );
+
+        world.addLight(sunLight);
+
+        Background background = new ConstantBackground(new Color(1.0, 0.0, 0.0), 0);
+
+        world.setBackground(background);
+
+        Material reflectiveMaterial = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.9,
+                new Color(0.75, 0.75, 0.75),
+                new Color(1, 1, 1)
+        );
+
+        double scaleFactor = 6;
+
+        // Create reflective plane:
+        RenderableObject reflectivePlaneHalf1 = new Triangle(
+                new Vector3(0,0,0),
+                reflectiveMaterial,
+                new Vector3(1, -1/scaleFactor, 1),
+                new Vector3(1, -1/scaleFactor, -1),
+                new Vector3(-1, -1/scaleFactor, -1)
+        );
+        reflectivePlaneHalf1.scale(scaleFactor);
+        world.addRenderableObject(reflectivePlaneHalf1);
+
+
+        RenderableObject reflectivePlaneHalf2 = new Triangle(
+                new Vector3(0,0,0),
+                reflectiveMaterial,
+                new Vector3(1, -1/scaleFactor, 1),
+                new Vector3(-1, -1/scaleFactor, -1),
+                new Vector3(-1, -1/scaleFactor, 1)
+        );
+        reflectivePlaneHalf2.scale(scaleFactor);
+
+        world.addRenderableObject(reflectivePlaneHalf2);
+
+
+        // Create a sphere to cast a shadow
+        RenderableObject sphereToCastShadow = new Sphere(
+                new Vector3(0, 0, 0),
+                new Material(
+                        0.1,
+                        0.9,
+                        0.5,
+                        4,
+                        0.0,
+                        new Color(1, 0, 0),
+                        new Color(1, 0, 0)
+                    ),
+                .5
+        );
+//        world.addRenderableObject(sphereToCastShadow);
+
+        // Create a plane to cast a shadow at the same place as the sphere
+
+        RenderableObject shadowPlaneHalf1 = new Triangle(
+                new Vector3(0,0,0),
+                reflectiveMaterial,
+                new Vector3(1, 0, 1),
+                new Vector3(1, 0, -1),
+                new Vector3(-1, 0, -1)
+        );
+        world.addRenderableObject(shadowPlaneHalf1);
+
+
+        RenderableObject shadowPlaneHalf2 = new Triangle(
+                new Vector3(0,0,0),
+                reflectiveMaterial,
+                new Vector3(1, 0, 1),
+                new Vector3(-1, 0, -1),
+                new Vector3(-1, 0, 1)
+        );
+        world.addRenderableObject(shadowPlaneHalf2);
+
+        return world;
+    }
 }

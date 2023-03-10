@@ -52,7 +52,8 @@ public class RayTreeNode {
 //        if (lightsNotCastingShadows.size()==0) {
 //            return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
 //        }
-        if (RayOperations.isShadowRayInShadowForLight(shadowRay, world, world.getLights().get(0), this.hitObject)) {
+        boolean rayInShadow = RayOperations.isShadowRayInShadowForLight(shadowRay, world, world.getLights().get(0), this.hitObject);
+        if (rayInShadow) {
             return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
         }
 
@@ -61,7 +62,7 @@ public class RayTreeNode {
 
         Color resultantColor = computeIlluminationModel(lightsNotCastingShadows);
 
-        populateChildNodes();
+//        populateChildNodes();
         if (this.children == null) {
             return resultantColor;
         }

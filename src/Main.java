@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        World world = WorldCreator.createScene2World();
+        World world = WorldCreator.createPlaneShadowTestWorld();
         int imageWidth = 500;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
@@ -18,14 +18,15 @@ public class Main {
         imageWidth += 1;
         imageWidth -= 1;
 
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 5, 1);
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 1, 1);
         RayTracer simpleRecursiveRayTracer = new SimpleRecursiveRayTracer(settings, world);
         simpleRecursiveRayTracer.render();
 
         ImageOutputter imageOutputter = new PPMOutputter();
 
         try {
-            imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "scene2withoutbfculling.ppm");
+            // Set the file name to be the current time in seconds
+            imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "output:" + System.currentTimeMillis() / 1000 + ".ppm");
         } catch (IOException e) {
             System.out.println("Could not write to file");
         }

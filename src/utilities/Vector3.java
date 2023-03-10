@@ -167,4 +167,11 @@ public class Vector3 {
         Vector3 v = (Vector3) o;
         return isClose(this.x, v.x) && isClose(this.y, v.y) && isClose(this.z, v.z);
     }
+
+    /**
+     * Copy
+     */
+    public Vector3 copy() {
+        return new Vector3(this.x, this.y, this.z);
+    }
 }

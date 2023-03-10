@@ -71,6 +71,12 @@ public class Sphere extends RenderableObject {
         return t;
     }
 
+    @Override
+    public void scale(double scaleFactor) {
+        assert scaleFactor > 0;
+        radius *= scaleFactor;
+    }
+
     private double computeB(Vector3 rayOrigin, Vector3 rayDirection, Vector3 sphereOrigin) {
 //        return 2 * (rayOrigin.getX() * rayDirection.getX() - rayOrigin.getX() * sphereOrigin.getX() + rayOrigin.getY() * rayDirection.getY() - rayOrigin.getY() * sphereOrigin.getY() + rayOrigin.getZ() * rayDirection.getZ() - rayOrigin.getZ() * sphereOrigin.getZ());
         double rayOriginDotDirection = rayOrigin.dot(rayDirection);
