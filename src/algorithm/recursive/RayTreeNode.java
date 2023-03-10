@@ -62,7 +62,7 @@ public class RayTreeNode {
 
         Color resultantColor = computeIlluminationModel(lightsNotCastingShadows);
 
-//        populateChildNodes();
+        populateChildNodes();
         if (this.children == null) {
             return resultantColor;
         }

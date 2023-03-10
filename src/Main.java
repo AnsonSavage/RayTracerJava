@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        World world = WorldCreator.createPlaneShadowTestWorld();
+        World world = WorldCreator.createScene2World();
         int imageWidth = 500;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
@@ -18,7 +18,7 @@ public class Main {
         imageWidth += 1;
         imageWidth -= 1;
 
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 1, 1);
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 4, 1);
         RayTracer simpleRecursiveRayTracer = new SimpleRecursiveRayTracer(settings, world);
         simpleRecursiveRayTracer.render();
 
