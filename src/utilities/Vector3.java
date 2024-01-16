@@ -71,10 +71,11 @@ public class Vector3 {
         return new Vector3(this.x - v.x, this.y - v.y, this.z - v.z);
     }
 
-    public void multiply(double scalar) {
+    public Vector3 multiply(double scalar) {
         this.x *= scalar;
         this.y *= scalar;
         this.z *= scalar;
+        return this;
     }
 
     public Vector3 multiplyNew(double scalar) {
@@ -105,6 +106,7 @@ public class Vector3 {
      * @return The reflection of this vector across a given normal
      */
     public Vector3 reflect(Vector3 normal) {
+        assert normal.isNormalized();
         double dot = this.dot(normal);
         double distanceFromSurface = 2 * dot;
         Vector3 vectorDistanceFromSurface = normal.multiplyNew(distanceFromSurface);
@@ -115,7 +117,7 @@ public class Vector3 {
     public Vector3 cross(Vector3 v) {
         return new Vector3(
                 this.y * v.z - this.z * v.y,
-                this.z * v.x - this.x * v.z,
+                this.z * v.x - this.x * v.z, // the negative sign is shown just by subtracting in a different order
                 this.x * v.y - this.y * v.x
         );
     }
@@ -139,11 +141,37 @@ public class Vector3 {
     }
 
     public boolean isNormalized() {
-        double epsilon = 0.00001;
-        return Math.abs(this.magnitude() - 1) < epsilon;
+        // Check if the magnitude is close to 1
+        return isClose(this.magnitude(), 1);
+    }
+
+    private boolean isClose(double a, double b) {
+        double epsilon = 0.0001;
+        return Math.abs(a - b) < epsilon;
     }
 
     public Color convertToColor() {
         return new Color(this.x, this.y, this.z);
+    }
+
+    /**
+     * Equality
+     */
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Vector3)) {
+            return false;
+        }
+        Vector3 v = (Vector3) o;
+        return isClose(this.x, v.x) && isClose(this.y, v.y) && isClose(this.z, v.z);
+    }
+
+    /**
+     * Copy
+     */
+    public Vector3 copy() {
+        return new Vector3(this.x, this.y, this.z);
     }
 }

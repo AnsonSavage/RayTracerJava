@@ -1,8 +1,9 @@
-package world.scene_objects;
+package world.scene_objects.renderable_objects;
 
 import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
+import world.scene_objects.WorldObject;
 
 public abstract class RenderableObject extends WorldObject {
     private Material material;
@@ -24,4 +25,6 @@ public abstract class RenderableObject extends WorldObject {
     public Material getMaterial() {
         return material;
     }
+
+    public abstract void scale(double scaleFactor);
 }

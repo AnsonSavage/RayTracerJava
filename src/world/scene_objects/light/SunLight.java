@@ -15,4 +15,9 @@ public class SunLight extends Light{
         rayDirection.normalize();
         return new Ray(point, rayDirection);
     }
+
+    @Override
+    public double getDistanceToLight(Vector3 point) {
+        return Double.POSITIVE_INFINITY;
+    }
 }

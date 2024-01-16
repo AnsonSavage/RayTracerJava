@@ -4,7 +4,7 @@ import utilities.Color;
 import world.background.Background;
 import world.background.ConstantBackground;
 import world.scene_objects.Camera;
-import world.scene_objects.RenderableObject;
+import world.scene_objects.renderable_objects.RenderableObject;
 import world.scene_objects.light.Light;
 
 import java.util.ArrayList;

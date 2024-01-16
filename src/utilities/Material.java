@@ -6,18 +6,18 @@ public class Material {
     private double diffuseCoefficient;
     private double specularCoefficient;
     private double specularExponent;
-
-
+    private double reflectivity;
     private Color diffuseColor;
     private Color specularColor;
 
-    public Material(double ambientCoefficient, double diffuseCoefficient, double specularCoefficient, double specularExponent, Color diffuseColor, Color specularColor) {
+    public Material(double ambientCoefficient, double diffuseCoefficient, double specularCoefficient, double specularExponent, double reflectivity, Color diffuseColor, Color specularColor) {
         this.ambientCoefficient = ambientCoefficient;
         this.diffuseCoefficient = diffuseCoefficient;
         this.specularCoefficient = specularCoefficient;
         this.specularExponent = specularExponent;
         this.diffuseColor = diffuseColor;
         this.specularColor = specularColor;
+        this.reflectivity = reflectivity;
     }
     public double getDiffuseCoefficient() {
         return diffuseCoefficient;
@@ -64,5 +64,12 @@ public class Material {
 
     public void setAmbientCoefficient(double ambientCoefficient) {
         this.ambientCoefficient = ambientCoefficient;
+    }
+    public double getReflectivity() {
+        return reflectivity;
+    }
+
+    public void setReflectivity(double reflectivity) {
+        this.reflectivity = reflectivity;
     }
 }
