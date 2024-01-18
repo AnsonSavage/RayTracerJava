@@ -8,19 +8,23 @@ public class Camera extends WorldObject {
     private double focalLength;
     private Vector3 up;
 
+    private Vector3 lookAt;
+
     public Camera(Vector3 position, Vector3 lookAt, Vector3 up, double fieldOfViewX, double aspectRatio, double focalLength) {
-        super(position, lookAt.subtractNew(position));
+        super(position);
+
+        this.lookAt = lookAt.subtractNew(position); // The lookat vector is the vector from the camera position to the lookat point
+        this.lookAt.normalize();
+
         this.focalLength = focalLength;
         this.fieldOfViewX = fieldOfViewX * Math.PI / 180;
         this.up = up;
         this.fieldOfViewY = computeFieldOfViewY(aspectRatio);
-        this.orientation.normalize(); // Normalize the lookat vector for ease of use in computation
-
         // Note that both fieldOfViewX and fieldOfView Y are in radians
     }
 
     public Vector3 getLookAtVector() {
-        return this.orientation;
+        return this.lookAt;
     }
 
     public Vector3 getImagePlaneCenter() {
