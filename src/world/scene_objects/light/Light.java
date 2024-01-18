@@ -9,8 +9,11 @@ public abstract class Light extends WorldObject {
     private double intensity;
     private Color color;
 
+    protected Vector3 direction;
+
     public Light(Vector3 position, Vector3 direction, double intensity, Color color) {
-        super(position, direction);
+        super(position);
+        this.direction = direction;
         this.intensity = intensity;
         this.color = color;
     }

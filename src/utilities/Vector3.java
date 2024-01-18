@@ -96,7 +96,7 @@ public class Vector3 {
         return this.x * v.x + this.y * v.y + this.z * v.z;
     }
 
-    public Vector3 componentWiseMultiply(Vector3 v) {
+    public Vector3 componentWiseMultiplyNew(Vector3 v) {
         return new Vector3(this.x * v.x, this.y * v.y, this.z * v.z);
     }
 

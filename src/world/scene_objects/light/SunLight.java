@@ -11,7 +11,7 @@ public class SunLight extends Light{
 
     @Override
     public Ray getRayToLight(Vector3 point) {
-        Vector3 rayDirection = orientation.multiplyNew(-1); // Ray direction is independent of the starting point for a sun style light
+        Vector3 rayDirection = direction.multiplyNew(-1); // Ray direction is independent of the starting point for a sun style light
         rayDirection.normalize();
         return new Ray(point, rayDirection);
     }

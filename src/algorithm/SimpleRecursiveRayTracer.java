@@ -11,8 +11,12 @@ public class SimpleRecursiveRayTracer extends RayTracer {
         super(settings, world);
     }
 
+    public SimpleRecursiveRayTracer(RenderSettings settings, World world, boolean isMultithreaded) {
+        super(settings, world, isMultithreaded);
+    }
+
     @Override
-    Color traceRay(Ray ray) {
+    protected Color traceRay(Ray ray) {
         RayTree rayTree = new RayTree(ray, world, settings.getMaxBounces());
         return rayTree.getPixelColor();
     }

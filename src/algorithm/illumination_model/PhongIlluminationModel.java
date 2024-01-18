@@ -41,7 +41,7 @@ public class PhongIlluminationModel {
         double ambientCoefficient = material.getAmbientCoefficient();
         double ambientIntensity = background.getAmbientIntensity();
         Color ambientColor = background.getColor(viewingDirection);
-        return ambientColor.componentWiseMultiply(material.getDiffuseColor().multiplyNew(ambientCoefficient * ambientIntensity)).convertToColor(); // Apparently the ambient light is only dependent on the material's diffuse color.
+        return ambientColor.componentWiseMultiply(material.getDiffuseColor().multiplyNew(ambientCoefficient * ambientIntensity)); // Apparently the ambient light is only dependent on the material's diffuse color.
     }
 
     private Color computeSpecularComponent() {
@@ -49,20 +49,18 @@ public class PhongIlluminationModel {
         double specularCoefficient = material.getSpecularCoefficient();
         Vector3 reflectedLightDirection = currentLight.getDirectionToLight(positionOnSurface).reflect(normal);
         double viewingAngleDependentIntensityFactor = Math.pow(Math.max(0.0, viewingDirection.dot(reflectedLightDirection)), material.getSpecularExponent());
-//        double viewingAngleDependentIntensityFactor = Math.pow(Math.abs(viewingDirection.dot(reflectedLightDirection)), material.getSpecularExponent());
 
         Color lightColor = currentLight.getColor();
         Color specularColor = material.getSpecularColor();
 
-        return lightColor.componentWiseMultiply(specularColor.multiplyNew(specularCoefficient * viewingAngleDependentIntensityFactor)).convertToColor();
+        return lightColor.componentWiseMultiply(specularColor.multiplyNew(specularCoefficient * viewingAngleDependentIntensityFactor));
     }
 
     private Color computeDiffuseComponent() {
         double diffuseCoefficient = material.getDiffuseCoefficient();
         double angleDependentIntensityFactor = Math.max(0.0, normal.dot(currentLight.getDirectionToLight(positionOnSurface))); // if it's less than 0, then we don't need any diffuse contribution
-//        double angleDependentIntensityFactor = Math.abs(normal.dot(currentLight.getDirectionToLight(positionOnSurface))); // if it's less than 0, then we don't need any diffuse contribution
         Color lightColor = currentLight.getColor();
-        return lightColor.componentWiseMultiply(material.getDiffuseColor().multiplyNew(diffuseCoefficient * angleDependentIntensityFactor)).convertToColor();
+        return lightColor.componentWiseMultiply(material.getDiffuseColor().multiplyNew(diffuseCoefficient * angleDependentIntensityFactor));
     }
 
     public Color computeColor() {
