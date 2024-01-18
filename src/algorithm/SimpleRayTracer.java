@@ -15,9 +15,14 @@ import world.scene_objects.renderable_objects.RenderableObject;
  * It can't compute transparency rays either.
  */
 public class SimpleRayTracer extends RayTracer {
+
     public SimpleRayTracer(RenderSettings settings, World world) {
         super(settings, world);
     }
+    public SimpleRayTracer(RenderSettings settings, World world, boolean isMultiThreaded) {
+        super(settings, world, isMultiThreaded);
+    }
+
 
     @Override
     Color traceRay(Ray ray) {

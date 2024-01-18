@@ -1,6 +1,6 @@
 import algorithm.RayTracer;
 import algorithm.RenderSettings;
-import algorithm.RayTracerWithMultiSampling;
+import algorithm.MultiSampleRayTracer;
 import output.ImageOutputter;
 import output.PPMOutputter;
 import world.World;
@@ -10,7 +10,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         World world = WorldCreator.createMyOwnWorld();
-        int imageWidth = 1500;
+        int imageWidth = 500;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
@@ -19,7 +19,7 @@ public class Main {
         imageWidth -= 1;
 
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 4, 8);
-        RayTracer simpleRecursiveRayTracer = new RayTracerWithMultiSampling(settings, world);
+        RayTracer simpleRecursiveRayTracer = new MultiSampleRayTracer(settings, world);
         simpleRecursiveRayTracer.render();
 
         ImageOutputter imageOutputter = new PPMOutputter();

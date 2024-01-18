@@ -1,7 +1,5 @@
 package algorithm;
 
-import algorithm.RenderSettings;
-import algorithm.SimpleRecursiveRayTracer;
 import utilities.Color;
 import utilities.Ray;
 import utilities.Vector3;
@@ -9,11 +7,15 @@ import world.World;
 
 import java.util.Random;
 
-public class RayTracerWithMultiSampling extends SimpleRecursiveRayTracer {
+public class MultiSampleRayTracer extends SimpleRecursiveRayTracer {
     private Random random = new Random();
 
-    public RayTracerWithMultiSampling(RenderSettings settings, World world) {
+    public MultiSampleRayTracer(RenderSettings settings, World world) {
         super(settings, world);
+    }
+
+    public MultiSampleRayTracer(RenderSettings settings, World world, boolean isMultithreaded) {
+        super(settings, world, isMultithreaded);
     }
 
     @Override
@@ -21,7 +23,7 @@ public class RayTracerWithMultiSampling extends SimpleRecursiveRayTracer {
         Color finalColor = new Color(0, 0, 0);
         for (int i = 0; i < settings.getSamplesPerPixel(); i++) {
             Ray ray = getRayDirection(pixelX, pixelY);
-            Color rayContribution = (Color) traceRay(ray).multiply(1 / (double) settings.getSamplesPerPixel());
+            Color rayContribution = traceRay(ray).multiplyNew(1 / (double) settings.getSamplesPerPixel());
             finalColor.add(rayContribution);
         }
         return finalColor;

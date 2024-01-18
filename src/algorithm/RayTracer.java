@@ -16,16 +16,34 @@ public abstract class RayTracer extends RenderAlgorithm {
     protected Vector3 cameraPosition;
     protected double xIncrement;
     protected double yIncrement;
+    private boolean isMultiThreaded;
 
 
-    public RayTracer(RenderSettings settings, World world) {
+    public RayTracer(RenderSettings settings, World world, boolean isMultiThreaded) {
         super(settings, world);
+        this.isMultiThreaded = isMultiThreaded;
         initialize();
+    }
+    public RayTracer(RenderSettings settings, World world) {
+        this(settings, world, true);
     }
 
     @Override
     protected void renderImplementation() {
-        multithreadedRenderImplementation();
+        if (isMultiThreaded) {
+            multithreadedRenderImplementation();
+        } else {
+            singleThreadedRenderImplementation();
+        }
+    }
+
+    private void singleThreadedRenderImplementation() {
+        for (int i = 0; i < settings.getResolutionX(); i++) { // Each thread renders all x pixels for a given range of y pixels
+            for (int j = 0; j < settings.getResolutionY(); j++) {
+                Color color = computePixelValue(i, j);
+                image.setPixel(i, j, color);
+            }
+        }
     }
 
     private void multithreadedRenderImplementation() {
@@ -42,7 +60,7 @@ public abstract class RayTracer extends RenderAlgorithm {
             final int end = (t == numThreads - 1) ? settings.getResolutionY() : (t + 1) * chunkSize;
 
             executor.execute(() -> {
-                for (int i = 0; i < settings.getResolutionX(); i++) {
+                for (int i = 0; i < settings.getResolutionX(); i++) { // Each thread renders all x pixels for a given range of y pixels
                     for (int j = start; j < end; j++) {
                         Color color = computePixelValue(i, j);
                         image.setPixel(i, j, color);
