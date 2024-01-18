@@ -8,16 +8,19 @@ import world.World;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.Random;
 
 public abstract class RayTracer extends RenderAlgorithm {
     protected boolean isInitialized = false;
     protected Vector3 topLeftImagePlanePosition;
     protected Vector3 cameraPosition;
-    private double xIncrement;
-    private double yIncrement;
+    protected double xIncrement;
+    protected double yIncrement;
+
 
     public RayTracer(RenderSettings settings, World world) {
         super(settings, world);
+        initialize();
     }
 
     @Override
@@ -41,8 +44,7 @@ public abstract class RayTracer extends RenderAlgorithm {
             executor.execute(() -> {
                 for (int i = 0; i < settings.getResolutionX(); i++) {
                     for (int j = start; j < end; j++) {
-                        Ray ray = getRayDirection(i, j);
-                        Color color = traceRay(ray);
+                        Color color = computePixelValue(i, j);
                         image.setPixel(i, j, color);
 //                        System.out.println("Rendered pixel: " + (i * settings.getResolutionY() + j) + "/" + totalPixels + "");
                     }
@@ -61,19 +63,30 @@ public abstract class RayTracer extends RenderAlgorithm {
 
     }
 
+    protected Color computePixelValue(int pixelX, int pixelY) {
+        Ray ray = getRayDirection(pixelX, pixelY);
+        return traceRay(ray);
+    }
+
     protected Ray getRayDirection(int pixelX, int pixelY) {
+        Vector3 pixelRayEnd = getPixelWorldSpaceLocation(pixelX, pixelY);
+
+        Vector3 rayDirection = pixelRayEnd.subtractNew(cameraPosition);
+        rayDirection.normalize(); // Normalize ray direction for simplicity of code when testing sphere intersection
+
+        return new Ray(cameraPosition, rayDirection);
+    }
+
+    protected Vector3 getPixelWorldSpaceLocation(int pixelX, int pixelY) {
         if (!isInitialized) {
             initialize();
         }
         double xOffset = pixelX * xIncrement + xIncrement / 2;
         double yOffset = -1 * (pixelY * yIncrement + yIncrement / 2);
 
-        Vector3 pixelRayEnd = topLeftImagePlanePosition.addNew(new Vector3(xOffset, yOffset, 0));
+        Vector3 worldSpaceLocation = topLeftImagePlanePosition.addNew(new Vector3(xOffset, yOffset, 0)); // TODO: This assumes the viewing plane is always in the XY plane
 
-        Vector3 rayDirection = pixelRayEnd.subtractNew(cameraPosition);
-        rayDirection.normalize(); // Normalize ray direction for simplicity of code when testing sphere intersection
-
-        return new Ray(cameraPosition, rayDirection);
+        return worldSpaceLocation;
     }
 
     protected void initialize() {

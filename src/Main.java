@@ -1,6 +1,6 @@
 import algorithm.RayTracer;
 import algorithm.RenderSettings;
-import algorithm.SimpleRecursiveRayTracer;
+import algorithm.RayTracerWithMultiSampling;
 import output.ImageOutputter;
 import output.PPMOutputter;
 import world.World;
@@ -18,8 +18,8 @@ public class Main {
         imageWidth += 1;
         imageWidth -= 1;
 
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 4, 1);
-        RayTracer simpleRecursiveRayTracer = new SimpleRecursiveRayTracer(settings, world);
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 4, 8);
+        RayTracer simpleRecursiveRayTracer = new RayTracerWithMultiSampling(settings, world);
         simpleRecursiveRayTracer.render();
 
         ImageOutputter imageOutputter = new PPMOutputter();
