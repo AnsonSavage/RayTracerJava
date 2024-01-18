@@ -14,17 +14,14 @@ public class Main {
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
-        // Watcher test
-        imageWidth += 1;
-        imageWidth -= 1;
-
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 4, 8);
+
         RayTracer simpleRecursiveRayTracer = new MultiSampleRayTracer(settings, world);
         simpleRecursiveRayTracer.render();
 
-        ImageOutputter imageOutputter = new PPMOutputter();
 
         try {
+            ImageOutputter imageOutputter = new PPMOutputter();
             // Set the file name to be the current time in seconds
             imageOutputter.outputImage(simpleRecursiveRayTracer.getImage(), "output:" + System.currentTimeMillis() / 1000 + ".ppm");
         } catch (IOException e) {
