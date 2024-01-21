@@ -1,5 +1,7 @@
 package utilities;
 
+import algorithm.utils.MathUtils;
+
 public class Vector3 {
     private double x;
     private double y;
@@ -142,14 +144,8 @@ public class Vector3 {
 
     public boolean isNormalized() {
         // Check if the magnitude is close to 1
-        return isClose(this.magnitude(), 1);
+        return MathUtils.isClose(this.magnitude(), 1);
     }
-
-    private boolean isClose(double a, double b) {
-        double epsilon = 0.0001;
-        return Math.abs(a - b) < epsilon;
-    }
-
     public Color convertToColor() {
         return new Color(this.x, this.y, this.z);
     }
@@ -165,7 +161,7 @@ public class Vector3 {
             return false;
         }
         Vector3 v = (Vector3) o;
-        return isClose(this.x, v.x) && isClose(this.y, v.y) && isClose(this.z, v.z);
+        return MathUtils.isClose(this.x, v.x) &&  MathUtils.isClose(this.y, v.y) && MathUtils.isClose(this.z, v.z);
     }
 
     /**

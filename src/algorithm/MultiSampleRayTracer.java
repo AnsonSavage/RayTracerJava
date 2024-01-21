@@ -20,13 +20,13 @@ public class MultiSampleRayTracer extends SimpleRecursiveRayTracer {
 
     @Override
     protected Color computePixelValue(int pixelX, int pixelY) {
-        Color finalColor = new Color(0, 0, 0);
+        Color finalColor = new Color(0, 0, 0); // Initialize the final color of the pixel to black
         for (int i = 0; i < settings.getSamplesPerPixel(); i++) {
             Ray ray = getRayDirection(pixelX, pixelY);
-            Color rayContribution = traceRay(ray).multiplyNew(1 / (double) settings.getSamplesPerPixel());
+            Color rayContribution = traceRay(ray);
             finalColor.add(rayContribution);
         }
-        return finalColor;
+        return finalColor.multiplyNew(1 / (double) settings.getSamplesPerPixel());
     }
 
     @Override

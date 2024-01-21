@@ -64,6 +64,9 @@ public class RayOperations {
             if (object == objectToAvoid) {
                 continue;
             }
+            if (object.getMaterial().isRefractive()) { // TODO: For now, we're just ignoring refractive objects in shadow calculations
+                continue;
+            }
             double t = object.getRayIntersectionParameter(shadowRay);
             if (t > 0 && t < distanceToLight) {
                 return true;
@@ -78,5 +81,45 @@ public class RayOperations {
         Ray reflectionRay = new Ray(pointOfIntersection, reflectedLightDirection);
         reflectionRay.offsetFromOrigin();
         return reflectionRay;
+    }
+
+    public static Ray createRefractionRay(Ray incomingRay, Vector3 pointOfIntersection, Vector3 effectiveSurfaceNormal, double IORRatio) {
+        // pre-checks
+        assert incomingRay.getDirection().isNormalized();
+        assert effectiveSurfaceNormal.isNormalized();
+        Vector3 incomingDirection = incomingRay.getDirection();
+
+//        if (outgoingRayIOR == 1) {
+//            // Keep the ray direction the same
+//            return incomingRay;
+//        }
+
+//        if (incomingRayIOR == outgoingRayIOR) { // Then the ray is not refracted
+//            if ()
+//        }
+
+//        double IORRatio = incomingRayIOR / outgoingRayIOR;
+//        Vector3 effectiveSurfaceNormal;
+//        if (incomingDirection.dot(normal) > 0) { // This means that the ray is exiting the object
+//            // So we need to compute the normal pointing towards the ray
+//            effectiveSurfaceNormal = normal.multiplyNew(-1);
+//
+//            // We also need to invert the IOR ratio
+//            IORRatio = 1 / IORRatio;
+//        } else {
+//            effectiveSurfaceNormal = normal;
+//        }
+
+        double cosine = -1 * incomingDirection.dot(effectiveSurfaceNormal);
+
+        Vector3 componentParallelToIncomingRay = incomingDirection.multiplyNew(IORRatio);
+        Vector3 componentParallelToNormal = effectiveSurfaceNormal.multiplyNew(IORRatio * cosine - Math.sqrt(1 + (IORRatio * IORRatio) * (cosine * cosine - 1)));
+
+        Vector3 refractedRayDirection = componentParallelToIncomingRay.addNew(componentParallelToNormal);
+        refractedRayDirection.normalize();
+        Ray refractedRay = new Ray(pointOfIntersection, refractedRayDirection);
+        refractedRay.offsetFromOrigin();
+
+        return refractedRay;
     }
 }

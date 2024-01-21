@@ -4,6 +4,7 @@ import algorithm.illumination_model.PhongIlluminationModel;
 import algorithm.utils.ObjectDistancePair;
 import algorithm.utils.RayOperations;
 import utilities.Color;
+import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
 import world.World;
@@ -14,15 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RayTreeNode {
+    // A ray tree node holds some data about the ray on its path to the object it hits, hit object.
+    // For example, an initial RayTreeNode object will be a ray coming from the camera to the first object it hits. It will have an IOR Of 1 because it's traveling through air.
+
     private Ray incomingRay;
     private RenderableObject hitObject;
     private double incomingRayLength;
     private World world;
-    private List<RayTreeNode> children;
+
+    private RayTreeNode reflectionRayTree; // It has two leaves which point to more nodes
+    private RayTreeNode refractionRayTree;
     private Vector3 intersectionPoint;
     private Vector3 normalAtIntersection;
     private int nodeDepth;
     private RayTree myTree;
+
     public RayTreeNode(Ray incomingRay, World world, int nodeDepth, RayTree myTree) {
         this.myTree = myTree;
         this.nodeDepth = nodeDepth;
@@ -48,10 +55,18 @@ public class RayTreeNode {
 //
         List<Ray> shadowRays = new ArrayList<>();
         shadowRays.add(shadowRay);
+
 //        List<Light> lightsNotCastingShadows = RayOperations.getNonShadowCastingLights(shadowRays, world, this.hitObject);
 //        if (lightsNotCastingShadows.size()==0) {
 //            return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
 //        }
+
+
+        // So here's the thing... We have a number of things going on.
+        // Shadow rays (The lack of light... Depends on # of lights, etc.)
+        // Reflection Rays (mirror reflections)
+        // The Phong illumination model, which needs all the lights that aren't casting shadows
+        // Refraction rays
         boolean rayInShadow = RayOperations.isShadowRayInShadowForLight(shadowRay, world, world.getLights().get(0), this.hitObject);
         if (rayInShadow) {
             return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
@@ -62,15 +77,70 @@ public class RayTreeNode {
 
         Color resultantColor = computeIlluminationModel(lightsNotCastingShadows);
 
-        populateChildNodes();
-        if (this.children == null) {
+        if (this.nodeDepth >= this.myTree.getMaxTreeDepth()) {
             return resultantColor;
         }
 
-        for (RayTreeNode child : this.children) {
-            // TODO: This would have to be refactored if we had multiple children
-            double reflectivity = this.hitObject.getMaterial().getReflectivity();
-            resultantColor.add(child.getColorContribution().multiplyNew(reflectivity));
+        // Compute reflection ray
+        Material material = this.hitObject.getMaterial();
+
+        double reflectivity = material.getReflectivity();
+        if (reflectivity > 0) {
+            Ray reflectionRay = RayOperations.createReflectionRay(
+                    this.incomingRay,
+                    this.intersectionPoint,
+                    this.normalAtIntersection
+            );
+            this.reflectionRayTree = new RayTreeNode(reflectionRay, this.world, this.nodeDepth+1, myTree);
+            resultantColor.add(this.reflectionRayTree.getColorContribution().multiplyNew(reflectivity));
+        }
+
+
+        // Compute refraction ray
+        // First test to see if the material is refractive
+        double transmission = material.getTransmission();
+        if (transmission > 0) {
+
+            // Set the IOR RATIO
+            double currentIOR;
+            double nextIOR;
+            Vector3 effectiveSurfaceNormal;
+
+            // Determine whether we are entering or exiting the object
+            if (this.normalAtIntersection.dot(this.incomingRay.getDirection()) > 0) { // Exiting
+//                assert this.myTree.getCurrentMediumIOR() == material.getIndexOfRefraction();
+                currentIOR = material.getIndexOfRefraction();
+//                this.myTree.popMedium();
+//                nextIOR = this.myTree.getCurrentMediumIOR();
+                nextIOR = 1;
+                effectiveSurfaceNormal = this.normalAtIntersection.multiplyNew(-1);
+            } else { // Entering
+//                assert this.myTree.getCurrentMediumIOR() == 1;
+//                currentIOR = this.myTree.getCurrentMediumIOR();
+                currentIOR = 1;
+//                this.myTree.pushMedium(this.hitObject);
+                nextIOR = material.getIndexOfRefraction();
+                effectiveSurfaceNormal = this.normalAtIntersection;
+            }
+
+            double IORRatio = currentIOR / nextIOR;
+
+            Ray refractionRay = RayOperations.createRefractionRay(
+                    this.incomingRay,
+                    this.intersectionPoint,
+                    effectiveSurfaceNormal,
+                    IORRatio
+            );
+            this.refractionRayTree = new RayTreeNode(
+                    refractionRay,
+                    this.world,
+                    this.nodeDepth + 1,
+                    myTree
+            );
+
+            // Now, we need to set the resultant color to be a lerp between what it was before and the results of the transmission color
+            Color transmissionRayColor = this.refractionRayTree.getColorContribution();
+            resultantColor = resultantColor.multiplyNew(1 - transmission).addNew(transmissionRayColor.multiplyNew(transmission)); // Convex composition
         }
 
         return resultantColor;
@@ -89,15 +159,5 @@ public class RayTreeNode {
         );
 
         return phongIlluminationModel.computeColor();
-    }
-
-    private void populateChildNodes() {
-        if (this.nodeDepth >= this.myTree.getMaxTreeDepth()) {
-            return;
-        }
-
-        Ray reflectionRay = RayOperations.createReflectionRay(this.incomingRay, this.intersectionPoint, this.normalAtIntersection);
-        this.children = new ArrayList<>();
-        this.children.add(new RayTreeNode(reflectionRay, this.world, this.nodeDepth+1, myTree));
     }
 }
