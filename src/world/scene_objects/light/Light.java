@@ -9,11 +9,9 @@ public abstract class Light extends WorldObject {
     private double intensity;
     private Color color;
 
-    protected Vector3 direction;
 
-    public Light(Vector3 position, Vector3 direction, double intensity, Color color) {
+    public Light(Vector3 position, double intensity, Color color) {
         super(position);
-        this.direction = direction;
         this.intensity = intensity;
         this.color = color;
     }
@@ -40,4 +38,10 @@ public abstract class Light extends WorldObject {
     public void setColor(Color color) {
         this.color = color;
     }
+
+    public Color getColorFromPoint(Vector3 point) {
+        return this.getColor().multiplyNew(this.getIntensity() * this.getFallOff(this.getDistanceToLight(point)));
+    }
+
+    protected abstract double getFallOff(double distance);
 }

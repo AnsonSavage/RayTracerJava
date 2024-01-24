@@ -33,4 +33,8 @@ public class Ray {
     public void offsetFromOrigin() {
         origin = origin.addNew(direction.multiplyNew(originOffset));
     }
+
+    public void offsetFromOrigin(Vector3 direction) {
+        origin = origin.addNew(direction.multiplyNew(originOffset));
+    }
 }
