@@ -4,21 +4,21 @@ public class RenderSettings {
     private int maxBounces;
     private int imageWidth;
     private int imageHeight;
-    private int samplesPerPixel;
+    private int squareSamplesPerPixel;
 
-    public RenderSettings(int imageWidth, int imageHeight, int maxBounces, int samplesPerPixel) {
+    public RenderSettings(int imageWidth, int imageHeight, int maxBounces, int squareSamplesPerPixel) {
         this.maxBounces = maxBounces;
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
-        this.samplesPerPixel = samplesPerPixel;
+        this.squareSamplesPerPixel = squareSamplesPerPixel;
     }
 
     public int getMaxBounces() {
         return maxBounces;
     }
 
-    public int getSamplesPerPixel() {
-        return samplesPerPixel;
+    public int getSquareSamplesPerPixel() {
+        return squareSamplesPerPixel;
     }
 
     public int getResolutionX() {

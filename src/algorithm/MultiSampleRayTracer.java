@@ -21,21 +21,26 @@ public class MultiSampleRayTracer extends SimpleRecursiveRayTracer {
     @Override
     protected Color computePixelValue(int pixelX, int pixelY) {
         Color finalColor = new Color(0, 0, 0); // Initialize the final color of the pixel to black
-        for (int i = 0; i < settings.getSamplesPerPixel(); i++) {
-            Ray ray = getRayDirection(pixelX, pixelY);
-            Color rayContribution = traceRay(ray);
-            finalColor.add(rayContribution);
+        double subPixelOffset = 1.0 / settings.getSquareSamplesPerPixel();
+        for (int i = 0; i < settings.getSquareSamplesPerPixel(); i++) {
+            double subPixelXOffset = subPixelOffset * i;
+            for (int j = 0; j < settings.getSquareSamplesPerPixel(); j++) {
+                double subPixelYOffset = subPixelOffset * j;
+                Ray ray = getRayDirection(pixelX + subPixelXOffset, pixelY + subPixelYOffset);
+                Color rayContribution = traceRay(ray);
+                finalColor.add(rayContribution);
+            }
         }
-        return finalColor.multiplyNew(1 / (double) settings.getSamplesPerPixel());
+        return finalColor.multiplyNew(1.0 / (settings.getSquareSamplesPerPixel() * settings.getSquareSamplesPerPixel()));
     }
 
     @Override
-    protected Vector3 getPixelWorldSpaceLocation(int pixelX, int pixelY) {
+    protected Vector3 getPixelWorldSpaceLocation(double pixelX, double pixelY) {
         if (!isInitialized) {
             initialize();
         }
-        double xOffset = pixelX * xIncrement + xIncrement * random.nextDouble();
-        double yOffset = -1 * (pixelY * yIncrement + yIncrement * random.nextDouble());
+        double xOffset = pixelX * xIncrement + xIncrement * random.nextDouble() / settings.getSquareSamplesPerPixel();
+        double yOffset = -1 * (pixelY * yIncrement + yIncrement * random.nextDouble() / settings.getSquareSamplesPerPixel());
 
         Vector3 worldSpaceLocation = topLeftImagePlanePosition.addNew(new Vector3(xOffset, yOffset, 0)); // TODO: This assumes the viewing plane is always in the XY plane
 

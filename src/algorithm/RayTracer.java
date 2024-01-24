@@ -90,7 +90,7 @@ public abstract class RayTracer extends RenderAlgorithm {
         return traceRay(ray);
     }
 
-    protected Ray getRayDirection(int pixelX, int pixelY) {
+    protected Ray getRayDirection(double pixelX, double pixelY) {
         Vector3 pixelRayEnd = getPixelWorldSpaceLocation(pixelX, pixelY);
 
         Vector3 rayDirection = pixelRayEnd.subtractNew(cameraPosition);
@@ -99,7 +99,7 @@ public abstract class RayTracer extends RenderAlgorithm {
         return new Ray(cameraPosition, rayDirection);
     }
 
-    protected Vector3 getPixelWorldSpaceLocation(int pixelX, int pixelY) {
+    protected Vector3 getPixelWorldSpaceLocation(double pixelX, double pixelY) {
         if (!isInitialized) {
             initialize();
         }
