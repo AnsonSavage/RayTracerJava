@@ -58,4 +58,9 @@ class RayOperationsTest {
 
         Assertions.assertEquals(expectedDirection, outgoingRay.getDirection());
     }
+
+    @org.junit.jupiter.api.Test
+    void createRefractionRay() {
+
+    }
 }

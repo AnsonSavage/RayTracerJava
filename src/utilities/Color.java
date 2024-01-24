@@ -102,4 +102,8 @@ public class Color {
     public Color componentWiseMultiply(Color c) {
         return new Color(rgbColor.componentWiseMultiplyNew(c.rgbColor));
     }
+
+    public String toString() {
+        return "Color(" + getRDouble() + ", " + getGDouble() + ", " + getBDouble() + ")";
+    }
 }

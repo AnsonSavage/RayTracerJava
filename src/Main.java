@@ -15,11 +15,11 @@ public class Main {
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
-        for (double ior = 1.0; ior <= 2.0; ior += 0.05) {
+        for (double ior = 2.5; ior <= 6.0; ior += 0.05) {
             World world = WorldCreator.createRefractivityTest(ior);
             RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 8, 2);
 
-            RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world);
+            RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world, false);
             multiSampleRayTracer.render();
             try {
                 ImageOutputter imageOutputter = new PPMOutputter();
