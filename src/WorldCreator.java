@@ -727,30 +727,54 @@ public class WorldCreator {
         world.setCamera(camera);
 
         Light redPointLight = new PointLight(
-                new Vector3(-1, 0, 0),
-                1,
+                new Vector3(-1, 0.5, 0),
+                2,
                 new Color(1, 0, 0)
         );
 
         world.addLight(redPointLight);
 
         Light greenPointLight = new PointLight(
-                new Vector3(0, 0, 0),
-                1,
+                new Vector3(0, 0.5, 0),
+                2,
                 new Color(0, 1, 0)
         );
         world.addLight(greenPointLight);
 
         Light bluePointLight = new PointLight(
-                new Vector3(1, 0, 0),
-                1,
+                new Vector3(1, 0.5, 0),
+                2,
                 new Color(0, 0, 1)
         );
         world.addLight(bluePointLight);
 
-        Background background = new ConstantBackground(new Color(0.1, 0.1, 0.1), 0.1);
-
+        Background background = new ConstantBackground(new Color(0.1, 0.1, 0.1), .9);
         world.setBackground(background);
+
+        // Add some spheres for testing shadows
+        Material whiteMaterial = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.1,
+                new Color(0.9, 0.9, 0.9),
+                new Color(1, 1, 1)
+        );
+
+        Sphere sphere1 = new Sphere(
+                new Vector3(-0.5, 0, 0),
+                whiteMaterial,
+                0.2
+        );
+        world.addRenderableObject(sphere1);
+
+        Sphere sphere2 = new Sphere(
+                new Vector3(0.5, 0, 0),
+                whiteMaterial,
+                0.2
+        );
+        world.addRenderableObject(sphere2);
 
         Material diffuseMaterial1 = new Material(
                 0.1,
@@ -772,7 +796,7 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 10, 10, diffuseMaterial1, reflectiveMaterial2);
+        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1.5, -5, 5, 10, 10, diffuseMaterial1, reflectiveMaterial2);
 
         for (Triangle triangle : checkerboard) {
             world.addRenderableObject(triangle);
