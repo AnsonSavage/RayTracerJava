@@ -50,32 +50,17 @@ public class RayTreeNode {
         this.intersectionPoint = this.incomingRay.getRayEnd(this.incomingRayLength);
         this.normalAtIntersection = this.hitObject.getNormal(this.intersectionPoint);
 
-        Ray shadowRay = RayOperations.getShadowRays(this.intersectionPoint, world).get(0);
-//        List<Ray> shadowRays = RayOperations.getShadowRays(this.intersectionPoint, world);
-//
-        List<Ray> shadowRays = new ArrayList<>();
-        shadowRays.add(shadowRay);
-
-//        List<Light> lightsNotCastingShadows = RayOperations.getNonShadowCastingLights(shadowRays, world, this.hitObject);
-//        if (lightsNotCastingShadows.size()==0) {
-//            return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
-//        }
-
+        List<Ray> shadowRays = RayOperations.getShadowRays(this.intersectionPoint, world, this.normalAtIntersection);
 
         // So here's the thing... We have a number of things going on.
         // Shadow rays (The lack of light... Depends on # of lights, etc.)
         // Reflection Rays (mirror reflections)
         // The Phong illumination model, which needs all the lights that aren't casting shadows
         // Refraction rays
-        boolean rayInShadow = RayOperations.isShadowRayInShadowForLight(shadowRay, world, world.getLights().get(0), this.hitObject);
-        if (rayInShadow) {
-            return new Color(0, 0, 0); // In this implementation, we simply return pure black if we're in shadow
-        }
 
-        List<Light> lightsNotCastingShadows = new ArrayList<>();
-        lightsNotCastingShadows.add(world.getLights().get(0));
+        List<Light> reachableLights = RayOperations.getReachableLights(shadowRays, world);
 
-        Color resultantColor = computeIlluminationModel(lightsNotCastingShadows);
+        Color resultantColor = computeIlluminationModel(reachableLights);
 
         if (this.nodeDepth >= this.myTree.getMaxTreeDepth()) {
             return resultantColor;

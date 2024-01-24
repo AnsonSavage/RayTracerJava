@@ -6,6 +6,7 @@ import world.background.Background;
 import world.background.ConstantBackground;
 import world.scene_objects.Camera;
 import world.scene_objects.light.Light;
+import world.scene_objects.light.PointLight;
 import world.scene_objects.light.SunLight;
 import world.scene_objects.renderable_objects.RenderableObject;
 import world.scene_objects.renderable_objects.Sphere;
@@ -602,7 +603,7 @@ public class WorldCreator {
         Light sunLight = new SunLight(
                 null, // sunlight position is ignored?
                 (new Vector3(1, 1, 1)).multiply(-1),
-                5,
+                1,
                 new Color(1, 1, 1)
         );
 
@@ -709,6 +710,73 @@ public class WorldCreator {
         world.addRenderableObject(greenSphere);
 
 
+        return world;
+    }
+    
+    public static World createPointLightTestWorld() {
+        World world = new World();
+        Camera camera = new Camera(
+                new Vector3(0, 0, 2),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                90,
+                1,
+                1
+        );
+
+        world.setCamera(camera);
+
+        Light redPointLight = new PointLight(
+                new Vector3(-1, 0, 0),
+                1,
+                new Color(1, 0, 0)
+        );
+
+        world.addLight(redPointLight);
+
+        Light greenPointLight = new PointLight(
+                new Vector3(0, 0, 0),
+                1,
+                new Color(0, 1, 0)
+        );
+        world.addLight(greenPointLight);
+
+        Light bluePointLight = new PointLight(
+                new Vector3(1, 0, 0),
+                1,
+                new Color(0, 0, 1)
+        );
+        world.addLight(bluePointLight);
+
+        Background background = new ConstantBackground(new Color(0.1, 0.1, 0.1), 0.1);
+
+        world.setBackground(background);
+
+        Material diffuseMaterial1 = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.01,
+                new Color(0.1, 0.05, 0.05),
+                new Color(1, 1, 1)
+        );
+
+        Material reflectiveMaterial2 = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.01,
+                new Color(0.8, 0.95, 0.9),
+                new Color(1, 1, 1)
+        );
+
+        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 10, 10, diffuseMaterial1, reflectiveMaterial2);
+
+        for (Triangle triangle : checkerboard) {
+            world.addRenderableObject(triangle);
+        }
         return world;
     }
 }

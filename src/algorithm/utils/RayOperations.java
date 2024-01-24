@@ -31,39 +31,36 @@ public class RayOperations {
         return new ObjectDistancePair(minT, closestObject);
     }
 
-    public static List<Ray> getShadowRays(Vector3 pointOfIntersection, World world) {
+    public static List<Ray> getShadowRays(Vector3 pointOfIntersection, World world, Vector3 normalAtIntersection) {
         List<Ray> shadowRays = new ArrayList<>();
         for (Light light : world.getLights()) {
             Vector3 lightDirection = light.getDirectionToLight(pointOfIntersection);
             Ray shadowRay = new Ray(pointOfIntersection, lightDirection);
-            shadowRay.offsetFromOrigin(); // This is done to avoid intersecting with the object that we're shading
+            shadowRay.offsetFromOrigin(normalAtIntersection); // Move the origin of the shadow ray slightly along the normal of the object
             shadowRays.add(shadowRay);
         }
         assert shadowRays.size() == world.getLights().size();
         return shadowRays;
     }
 
-    public static List<Light> getNonShadowCastingLights(List<Ray> shadowRays, World world, RenderableObject objectToAvoid) {
+    public static List<Light> getReachableLights(List<Ray> shadowRays, World world) {
         // Note, this code assumes that the shadowRays list is the same order as the world's light list
         assert shadowRays.size() == world.getLights().size();
 
-        List<Light> lightsNotCastingShadows = new ArrayList<>();
+        List<Light> reachableLights = new ArrayList<>();
         for (int i = 0; i < shadowRays.size(); i++) {
             Ray shadowRay = shadowRays.get(i);
             Light light = world.getLights().get(i);
-            if (!isShadowRayInShadowForLight(shadowRay, world, light, objectToAvoid)) {
-                lightsNotCastingShadows.add(light);
+            if (!canRayReachLight(shadowRay, world, light)) {
+                reachableLights.add(light);
             }
         }
-        return lightsNotCastingShadows;
+        return reachableLights;
     }
 
-    public static boolean isShadowRayInShadowForLight(Ray shadowRay, World world, Light light, RenderableObject objectToAvoid) {
+    public static boolean canRayReachLight(Ray shadowRay, World world, Light light) {
         double distanceToLight = light.getDistanceToLight(shadowRay.getOrigin());
         for (RenderableObject object : world.getRenderableObjects()) {
-            if (object == objectToAvoid) {
-                continue;
-            }
             if (object.getMaterial().isRefractive()) { // TODO: For now, we're just ignoring refractive objects in shadow calculations
                 continue;
             }
@@ -88,27 +85,6 @@ public class RayOperations {
         assert incomingRay.getDirection().isNormalized();
         assert effectiveSurfaceNormal.isNormalized();
         Vector3 incomingDirection = incomingRay.getDirection();
-
-//        if (outgoingRayIOR == 1) {
-//            // Keep the ray direction the same
-//            return incomingRay;
-//        }
-
-//        if (incomingRayIOR == outgoingRayIOR) { // Then the ray is not refracted
-//            if ()
-//        }
-
-//        double IORRatio = incomingRayIOR / outgoingRayIOR;
-//        Vector3 effectiveSurfaceNormal;
-//        if (incomingDirection.dot(normal) > 0) { // This means that the ray is exiting the object
-//            // So we need to compute the normal pointing towards the ray
-//            effectiveSurfaceNormal = normal.multiplyNew(-1);
-//
-//            // We also need to invert the IOR ratio
-//            IORRatio = 1 / IORRatio;
-//        } else {
-//            effectiveSurfaceNormal = normal;
-//        }
 
         double cosine = -1 * incomingDirection.dot(effectiveSurfaceNormal);
 

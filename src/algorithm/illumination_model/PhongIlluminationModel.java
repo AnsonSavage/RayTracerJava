@@ -50,7 +50,7 @@ public class PhongIlluminationModel {
         Vector3 reflectedLightDirection = currentLight.getDirectionToLight(positionOnSurface).reflect(normal);
         double viewingAngleDependentIntensityFactor = Math.pow(Math.max(0.0, viewingDirection.dot(reflectedLightDirection)), material.getSpecularExponent());
 
-        Color lightColor = currentLight.getColor();
+        Color lightColor = currentLight.getColorFromPoint(positionOnSurface);
         Color specularColor = material.getSpecularColor();
 
         return lightColor.componentWiseMultiply(specularColor.multiplyNew(specularCoefficient * viewingAngleDependentIntensityFactor));
@@ -59,7 +59,7 @@ public class PhongIlluminationModel {
     private Color computeDiffuseComponent() {
         double diffuseCoefficient = material.getDiffuseCoefficient();
         double angleDependentIntensityFactor = Math.max(0.0, normal.dot(currentLight.getDirectionToLight(positionOnSurface))); // if it's less than 0, then we don't need any diffuse contribution
-        Color lightColor = currentLight.getColor();
+        Color lightColor = currentLight.getColorFromPoint(positionOnSurface);
         return lightColor.componentWiseMultiply(material.getDiffuseColor().multiplyNew(diffuseCoefficient * angleDependentIntensityFactor));
     }
 

@@ -15,11 +15,11 @@ public class Main {
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
-        for (double ior = 2.5; ior <= 6.0; ior += 0.05) {
-            World world = WorldCreator.createRefractivityTest(ior);
+//        for (double ior = 3.5; ior <= 6.0; ior += 0.05) {
+            World world = WorldCreator.createPointLightTestWorld();
             RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 8, 2);
 
-            RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world, false);
+            RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world, true);
             multiSampleRayTracer.render();
             try {
                 ImageOutputter imageOutputter = new PPMOutputter();
@@ -28,7 +28,7 @@ public class Main {
             } catch (IOException e) {
                 System.out.println("Could not write to file");
             }
-        }
+//        }
 
     }
 }
