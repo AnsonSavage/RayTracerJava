@@ -33,7 +33,7 @@ class RayOperationsTest {
                 new Vector3(-1, 0, -1)
         ));
         for (int i = 0; i < 3000000; i++) {
-            Assertions.assertTrue(RayOperations.canRayReachLight(shadowRay, world, new SunLight(
+            Assertions.assertTrue(world.canRayReachLight(shadowRay, new SunLight(
                     null,
                     null,
                     0,

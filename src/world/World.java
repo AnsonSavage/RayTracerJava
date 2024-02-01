@@ -1,6 +1,9 @@
 package world;
 
+import algorithm.utils.ObjectDistancePair;
 import utilities.Color;
+import utilities.Ray;
+import utilities.Vector3;
 import world.background.Background;
 import world.background.ConstantBackground;
 import world.scene_objects.Camera;
@@ -70,5 +73,61 @@ public class World {
 
     public void setBackground(Background background) {
         this.background = background;
+    }
+
+    public ObjectDistancePair getClosestObject(Ray ray) {
+        // Set the ray parameter t to be infinity
+        double minT = Double.MAX_VALUE;
+        RenderableObject closestObject = null;
+
+        for (RenderableObject object : this.getRenderableObjects()) {
+            double t = object.getRayIntersectionParameter(ray);
+            if (t > 0 && t < minT) {
+                minT = t;
+                closestObject = object;
+            }
+        }
+        return new ObjectDistancePair(minT, closestObject);
+    }
+
+    public List<Ray> getShadowRays(Vector3 pointOfIntersection, Vector3 normalAtIntersection) {
+        List<Ray> shadowRays = new ArrayList<>();
+        for (Light light : this.getLights()) {
+            Vector3 lightDirection = light.getDirectionToLight(pointOfIntersection);
+            Ray shadowRay = new Ray(pointOfIntersection, lightDirection);
+            shadowRay.offsetFromOrigin(normalAtIntersection); // Move the origin of the shadow ray slightly along the normal of the object
+            shadowRays.add(shadowRay);
+        }
+        assert shadowRays.size() == this.getLights().size();
+        return shadowRays;
+    }
+
+    public List<Light> getReachableLights(List<Ray> shadowRays) {
+        // Note, this code assumes that the shadowRays list is the same order as the world's light list
+        assert shadowRays.size() == this.getLights().size();
+
+        List<Light> reachableLights = new ArrayList<>();
+        for (int i = 0; i < shadowRays.size(); i++) {
+            Ray shadowRay = shadowRays.get(i);
+            Light light = this.getLights().get(i);
+            if (!this.canRayReachLight(shadowRay, light)) {
+                reachableLights.add(light);
+            }
+        }
+        return reachableLights;
+    }
+
+    public boolean canRayReachLight(Ray shadowRay, Light light) {
+        double distanceToLight = light.getDistanceToLight(shadowRay.getOrigin());
+        for (RenderableObject object : this.getRenderableObjects()) {
+            if (object.getMaterial().isRefractive()) { // TODO: For now, we're just ignoring refractive objects in shadow calculations
+                continue;
+            }
+            double t = object.getRayIntersectionParameter(shadowRay);
+            if (t > 0 && t < distanceToLight) {
+                return true;
+            }
+        }
+        return false;
     }
 }

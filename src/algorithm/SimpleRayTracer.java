@@ -27,7 +27,7 @@ public class SimpleRayTracer extends RayTracer {
     @Override
     Color traceRay(Ray ray) {
 
-        ObjectDistancePair closestObjectDistancePair = RayOperations.getClosestObject(ray, world);
+        ObjectDistancePair closestObjectDistancePair = world.getClosestObject(ray);
         double minT = closestObjectDistancePair.getDistance();
         RenderableObject closestObject = closestObjectDistancePair.getObject();
 

@@ -37,7 +37,7 @@ public class RayTreeNode {
         this.world = world;
 
         // Compute the closest object and the distance to it
-        ObjectDistancePair objectDistancePair = RayOperations.getClosestObject(incomingRay, world);
+        ObjectDistancePair objectDistancePair = world.getClosestObject(incomingRay);
         this.incomingRayLength = objectDistancePair.getDistance();
         this.hitObject = objectDistancePair.getObject();
     }
@@ -50,7 +50,7 @@ public class RayTreeNode {
         this.intersectionPoint = this.incomingRay.getRayEnd(this.incomingRayLength);
         this.normalAtIntersection = this.hitObject.getNormal(this.intersectionPoint);
 
-        List<Ray> shadowRays = RayOperations.getShadowRays(this.intersectionPoint, world, this.normalAtIntersection);
+        List<Ray> shadowRays = world.getShadowRays(this.intersectionPoint, this.normalAtIntersection);
 
         // So here's the thing... We have a number of things going on.
         // Shadow rays (The lack of light... Depends on # of lights, etc.)
@@ -58,7 +58,7 @@ public class RayTreeNode {
         // The Phong illumination model, which needs all the lights that aren't casting shadows
         // Refraction rays
 
-        List<Light> reachableLights = RayOperations.getReachableLights(shadowRays, world);
+        List<Light> reachableLights = world.getReachableLights(shadowRays);
 
         Color resultantColor = computeIlluminationModel(reachableLights);
 
