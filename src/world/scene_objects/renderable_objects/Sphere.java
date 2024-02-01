@@ -1,5 +1,6 @@
 package world.scene_objects.renderable_objects;
 
+import algorithm.utils.Extent;
 import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
@@ -75,6 +76,18 @@ public class Sphere extends RenderableObject {
     public void scale(double scaleFactor) {
         assert scaleFactor > 0;
         radius *= scaleFactor;
+    }
+
+    @Override
+    public Extent getExtent() {
+        return new Extent(
+                position.getX() - radius,
+                position.getY() - radius,
+                position.getZ() - radius,
+                position.getX() + radius,
+                position.getY() + radius,
+                position.getZ() + radius
+        );
     }
 
     private double computeB(Vector3 rayOrigin, Vector3 rayDirection, Vector3 sphereOrigin) {

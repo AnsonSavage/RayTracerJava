@@ -1,5 +1,7 @@
 package world;
 
+import algorithm.intersection_optimizations.IntersectionTester;
+import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import algorithm.utils.ObjectDistancePair;
 import utilities.Color;
 import utilities.Ray;
@@ -20,28 +22,30 @@ public class World {
     private List<Light> lights;
     private Camera camera;
     Background background;
+    private IntersectionTester intersectionTester;
 
 
-    public World() { // Default constructor
-        this(null); // Note that if the default constructor is invoked, the camera is set to null
+    public World(List<RenderableObject> renderableObjects, List<Light> lights, Camera camera, Background background, IntersectionTester intersectionTester) {
+        this.renderableObjects = renderableObjects;
+        this.lights = lights;
+        this.camera = camera;
+        this.background = background;
+        this.intersectionTester = intersectionTester;
     }
+
     public World(Camera camera) {
         this(
                 new ArrayList<RenderableObject>(),
                 new ArrayList<Light>(),
                 camera,
-                new ConstantBackground(new Color(0,0,0), 0.1)
+                new ConstantBackground(new Color(0,0,0), 0.1),
+                new NaiveIntersectionTester()
         );
     }
 
-    public World(List<RenderableObject> renderableObjects, List<Light> lights, Camera camera, Background background) {
-        this.renderableObjects = renderableObjects;
-        this.lights = lights;
-        this.camera = camera;
-        this.background = background;
+    public World() { // Default constructor
+        this(null); // Note that if the default constructor is invoked, the camera is set to null
     }
-
-
 
     public List<Light> getLights() {
         return lights;
@@ -65,6 +69,7 @@ public class World {
 
     public void addRenderableObject(RenderableObject object) {
         renderableObjects.add(object);
+        this.intersectionTester.addRenderableObject(object);
     }
 
     public void addLight(Light light) {
@@ -76,18 +81,7 @@ public class World {
     }
 
     public ObjectDistancePair getClosestObject(Ray ray) {
-        // Set the ray parameter t to be infinity
-        double minT = Double.MAX_VALUE;
-        RenderableObject closestObject = null;
-
-        for (RenderableObject object : this.getRenderableObjects()) {
-            double t = object.getRayIntersectionParameter(ray);
-            if (t > 0 && t < minT) {
-                minT = t;
-                closestObject = object;
-            }
-        }
-        return new ObjectDistancePair(minT, closestObject);
+        return this.intersectionTester.getClosestObject(ray);
     }
 
     public List<Ray> getShadowRays(Vector3 pointOfIntersection, Vector3 normalAtIntersection) {
@@ -123,7 +117,7 @@ public class World {
             if (object.getMaterial().isRefractive()) { // TODO: For now, we're just ignoring refractive objects in shadow calculations
                 continue;
             }
-            double t = object.getRayIntersectionParameter(shadowRay);
+            double t = this.intersectionTester.getRayParameterAtObjectIntersection(shadowRay, object); // object.getRayIntersectionParameter(shadowRay);
             if (t > 0 && t < distanceToLight) {
                 return true;
             }

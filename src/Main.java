@@ -11,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
         // Create multple refractive images with different iors
         // Iors to test: 1.0, 1.01, 1.1, 1.3, 1.5, 2.0
-        int imageWidth = 1200;
+        int imageWidth = 300;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
         double refractionIndex = 3.5;

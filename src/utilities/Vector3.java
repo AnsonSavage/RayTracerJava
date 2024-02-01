@@ -170,4 +170,16 @@ public class Vector3 {
     public Vector3 copy() {
         return new Vector3(this.x, this.y, this.z);
     }
+
+    public double getValueByIndex(int index) {
+        if (index == 0) {
+            return this.x;
+        } else if (index == 1) {
+            return this.y;
+        } else if (index == 2) {
+            return this.z;
+        } else {
+            throw new IllegalArgumentException("Index must be 0, 1, or 2");
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package world.scene_objects.renderable_objects;
 
+import algorithm.utils.Extent;
 import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
@@ -69,9 +70,6 @@ public class Triangle extends RenderableObject {
                     return -1;
                 }
             }
-//            if (edge.cross(pointToVertex).dot(normalForIntersectionTests) < 0) {
-//                return -1; // The point of intersection is outside the triangle
-//            }
         }
 
         return t;
@@ -84,6 +82,40 @@ public class Triangle extends RenderableObject {
         }
     }
 
+    @Override
+    public Extent getExtent() {
+        double minX = Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        double minZ = Double.MAX_VALUE;
+
+        double maxX = Double.MIN_VALUE;
+        double maxY = Double.MIN_VALUE;
+        double maxZ = Double.MIN_VALUE;
+
+        for (Vector3 vertex : vertices) {
+            if (vertex.getX() < minX) {
+                minX = vertex.getX();
+            }
+            if (vertex.getY() < minY) {
+                minY = vertex.getY();
+            }
+            if (vertex.getZ() < minZ) {
+                minZ = vertex.getZ();
+            }
+            if (vertex.getX() > maxX) {
+                maxX = vertex.getX();
+            }
+            if (vertex.getY() > maxY) {
+                maxY = vertex.getY();
+            }
+            if (vertex.getZ() > maxZ) {
+                maxZ = vertex.getZ();
+            }
+        }
+
+        return new Extent(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
     private double getPlaneIntersectionParameter(Ray ray) {
         Vector3 rayOrigin = ray.getOrigin();
         Vector3 rayDirection = ray.getDirection();
@@ -93,13 +125,6 @@ public class Triangle extends RenderableObject {
 
         if (normalDotRayDirection == 0) {
             return -1; // The ray is parallel to the plane, and does not intersect
-        }
-
-        if (normalDotRayDirection > 0) {
-//            flipNormal();
-//            normalDotRayDirection = normalForIntersectionTests.dot(rayDirection);
-//            return -1;
-            int bob = 0;
         }
 
         double t = -(normalForIntersectionTests.dot(rayOrigin) + d) / normalDotRayDirection;
