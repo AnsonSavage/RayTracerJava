@@ -1,6 +1,7 @@
 package world;
 
 import algorithm.intersection_optimizations.IntersectionTester;
+import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
 import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import algorithm.utils.ObjectDistancePair;
 import utilities.Color;
@@ -22,6 +23,8 @@ public class World {
     private List<Light> lights;
     private Camera camera;
     Background background;
+
+
     private IntersectionTester intersectionTester;
 
 
@@ -39,7 +42,7 @@ public class World {
                 new ArrayList<Light>(),
                 camera,
                 new ConstantBackground(new Color(0,0,0), 0.1),
-                new NaiveIntersectionTester()
+                new MedianSplitIntersectionTester()
         );
     }
 
@@ -112,16 +115,21 @@ public class World {
     }
 
     public boolean canRayReachLight(Ray shadowRay, Light light) {
+        // TODO: This should be optimized so that we are only intersection testing with the BVH to get the objects that might be hit.
         double distanceToLight = light.getDistanceToLight(shadowRay.getOrigin());
         for (RenderableObject object : this.getRenderableObjects()) {
             if (object.getMaterial().isRefractive()) { // TODO: For now, we're just ignoring refractive objects in shadow calculations
                 continue;
             }
-            double t = this.intersectionTester.getRayParameterAtObjectIntersection(shadowRay, object); // object.getRayIntersectionParameter(shadowRay);
+            double t = object.getRayIntersectionParameter(shadowRay);
             if (t > 0 && t < distanceToLight) {
                 return true;
             }
         }
         return false;
+    }
+
+    public IntersectionTester getIntersectionTester() {
+        return intersectionTester;
     }
 }

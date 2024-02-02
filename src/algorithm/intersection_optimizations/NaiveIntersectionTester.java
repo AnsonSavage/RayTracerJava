@@ -4,7 +4,17 @@ import algorithm.utils.ObjectDistancePair;
 import utilities.Ray;
 import world.scene_objects.renderable_objects.RenderableObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NaiveIntersectionTester extends IntersectionTester{
+
+    private List<RenderableObject> renderableObjects = new ArrayList<>();
+
+    @Override
+    public void addRenderableObject(RenderableObject renderableObject) {
+        this.renderableObjects.add(renderableObject);
+    }
 
     @Override
     public ObjectDistancePair getClosestObject(Ray ray) {
@@ -23,7 +33,7 @@ public class NaiveIntersectionTester extends IntersectionTester{
     }
 
     @Override
-    public double getRayParameterAtObjectIntersection(Ray ray, RenderableObject renderableObject) {
-        return renderableObject.getRayIntersectionParameter(ray);
+    public void initialize() {
+        // Do nothing in the naive approach
     }
 }

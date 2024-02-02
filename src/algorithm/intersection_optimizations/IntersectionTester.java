@@ -9,21 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class IntersectionTester {
-    protected List<RenderableObject> renderableObjects;
 
-    public IntersectionTester() {
-        this.renderableObjects = new ArrayList<>();
-    }
-
-    public IntersectionTester(List<RenderableObject> renderableObjects) {
-        this.renderableObjects = renderableObjects;
-    }
-
-    public void addRenderableObject(RenderableObject renderableObject) {
-        renderableObjects.add(renderableObject);
-    }
+    public abstract void addRenderableObject(RenderableObject renderableObject);
 
     public abstract ObjectDistancePair getClosestObject(Ray ray);
 
-    public abstract double getRayParameterAtObjectIntersection(Ray ray, RenderableObject renderableObject);
+    public abstract void initialize();
+
+    // TODO:
+    // We might do something like a function that takes two points and determines if there are any object intersections between them. This would be useful for shadow ray computations, etc.
 }

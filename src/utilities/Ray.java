@@ -7,7 +7,8 @@ public class Ray {
 
     public Ray(Vector3 origin, Vector3 direction) {
         this.origin = origin;
-        this.direction = direction;
+        this.direction = direction.copy();
+        this.direction.normalize();
     }
 
     public Vector3 getRayEnd(double t) {

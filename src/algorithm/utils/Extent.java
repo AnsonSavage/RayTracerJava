@@ -35,7 +35,7 @@ public class Extent implements Hittable {
         return max;
     }
 
-    public double getRayIntersectionParameter(Ray ray) {
+    protected double getRayIntersectionParameter(Ray ray) {
         double tMin = Double.NEGATIVE_INFINITY;
         double tMax = Double.POSITIVE_INFINITY;
 
@@ -67,7 +67,13 @@ public class Extent implements Hittable {
         return tMin;
     }
 
-    public boolean isHit(Ray ray) {
-        return getRayIntersectionParameter(ray) >= 0;
+    private boolean isPointInExtent(Vector3 point) {
+        return point.getX() >= min.getX() && point.getX() <= max.getX() &&
+                point.getY() >= min.getY() && point.getY() <= max.getY() &&
+                point.getZ() >= min.getZ() && point.getZ() <= max.getZ();
+    }
+
+    public boolean isHit(Ray ray) { // Also returns true if the ray starts inside the extent
+        return isPointInExtent(ray.getOrigin()) || getRayIntersectionParameter(ray) >= 0;
     }
 }
