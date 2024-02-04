@@ -9,10 +9,10 @@ import world.scene_objects.renderable_objects.RenderableObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BVHNode {
-    private RenderableObject renderableObject;
-    private Extent extent;
-    private List<BVHNode> children; // TODO: the extent of a BVH node should be the convex composition of its children
+public abstract class BVHNode {
+    protected RenderableObject renderableObject = null;
+    protected Extent extent = null;
+    protected List<BVHNode> children = new ArrayList<>();
 
     public BVHNode() {
         this.renderableObject = null;
@@ -20,10 +20,6 @@ public class BVHNode {
         this.children = new ArrayList<>();
     }
 
-    public BVHNode(RenderableObject renderableObject) {
-        this();
-        this.renderableObject = renderableObject;
-    }
 
     public ObjectDistancePair getClosestObject(Ray ray) {
         if (!this.getExtent().isHit(ray)) {
@@ -52,8 +48,7 @@ public class BVHNode {
 
         return closestObject;
     }
-
-    private boolean isLeafNode() {
+    public boolean isLeafNode() {
         return this.renderableObject != null;
     }
 
@@ -63,7 +58,6 @@ public class BVHNode {
     }
 
     public void addChild(BVHNode child) {
-        this.extent = null; // Invalidate extent cache
         this.children.add(child);
     }
 
@@ -71,48 +65,16 @@ public class BVHNode {
         this.children.remove(child);
     }
 
-    public Extent getExtent() {
-        if (this.extent == null) {
-            computeExtent();
-        }
-        return this.extent;
-    }
+    public abstract Extent getExtent();
 
-    private void computeExtent() {
-        if (isLeafNode()) {
-            this.extent = this.renderableObject.getExtent();
-        }
-        else {
-            double minX = Double.MAX_VALUE;
-            double minY = Double.MAX_VALUE;
-            double minZ = Double.MAX_VALUE;
 
-            double maxX = Double.MIN_VALUE;
-            double maxY = Double.MIN_VALUE;
-            double maxZ = Double.MIN_VALUE;
-
-            for (BVHNode child: this.children) {
-                Extent childExtent = child.getExtent();
-                minX = Math.min(minX, childExtent.getMin().getX());
-                minY = Math.min(minY, childExtent.getMin().getY());
-                minZ = Math.min(minZ, childExtent.getMin().getZ());
-
-                maxX = Math.max(maxX, childExtent.getMax().getX());
-                maxY = Math.max(maxY, childExtent.getMax().getY());
-                maxZ = Math.max(maxZ, childExtent.getMax().getZ());
-            }
-            this.extent = new Extent(minX, minY, minZ, maxX, maxY, maxZ);
-        }
-    }
-
-    protected List<BVHNode> getChildren() {
+    public List<BVHNode> getChildren() {
         return this.children;
     }
 
-    public void initializeExtent() {
-        for (BVHNode child: this.children) {
-            child.initializeExtent();
-        }
-        computeExtent();
+    public void clearChildren() {
+        this.children = new ArrayList<>();
     }
+
+    public abstract void initializeExtent();
 }

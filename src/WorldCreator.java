@@ -380,7 +380,7 @@ public class WorldCreator {
         world.setCamera(camera);
 
         Light sunLight = new SunLight(
-                null, // sunlight position is ignored?
+                null,
                 (new Vector3(0, 1, 0)).multiply(-1),
                 1,
                 new Color(1, 1, 1)
@@ -797,6 +797,99 @@ public class WorldCreator {
         );
 
         List<Triangle> checkerboard = createCheckerboard(-5, 5, -1.5, -5, 5, 10, 10, diffuseMaterial1, reflectiveMaterial2);
+
+        for (Triangle triangle : checkerboard) {
+            world.addRenderableObject(triangle);
+        }
+        return world;
+    }
+
+    public static World simpleWorldWithThreeSpheres() {
+        World world = new World();
+        Camera camera = new Camera(
+                new Vector3(0, 0, 2),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                90,
+                1,
+                1
+        );
+
+        world.setCamera(camera);
+
+        // make a pink background
+        Background background = new ConstantBackground(new Color(0.4, 0.2, 0.4), .9);
+        world.setBackground(background);
+
+        Material whiteMaterial = new Material(
+                0.4,
+                1.0,
+                0.0,
+                10,
+                0.1,
+                new Color(0.9, 0.9, 0.9),
+                new Color(1, 1, 1)
+        );
+
+        Sphere sphere1 = new Sphere(
+                new Vector3(-0.5, 0, 0),
+                whiteMaterial,
+                0.2
+        );
+        world.addRenderableObject(sphere1);
+
+        Sphere sphere2 = new Sphere(
+                new Vector3(0, 0, 0),
+                whiteMaterial,
+                0.2
+        );
+        world.addRenderableObject(sphere2);
+
+        Sphere sphere3 = new Sphere(
+                new Vector3(0.5, 0, 0),
+                whiteMaterial,
+                0.2
+        );
+        world.addRenderableObject(sphere3);
+
+        // Add a few point lights
+        Light redPointLight = new PointLight(
+                new Vector3(-1, 0.5, 0),
+                2,
+                new Color(1, .9, .9)
+        );
+//        world.addLight(redPointLight);
+
+        // Add sun light
+        Light sunLight = new SunLight(
+                null,
+                new Vector3(1, 1, 1).multiplyNew(-1), // direction
+                2.0,
+                new Color(1, 1, 1)
+        );
+        world.addLight(sunLight);
+
+        Material reflectiveMaterial1 = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.1,
+                new Color(0.1, 0.05, 0.05),
+                new Color(1, 1, 1)
+        );
+
+        Material reflectiveMaterial2 = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.9,
+                new Color(0.8, 0.95, 0.9),
+                new Color(1, 1, 1)
+        );
+
+        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 5, 5, reflectiveMaterial1, reflectiveMaterial2);
 
         for (Triangle triangle : checkerboard) {
             world.addRenderableObject(triangle);

@@ -182,4 +182,16 @@ public class Vector3 {
             throw new IllegalArgumentException("Index must be 0, 1, or 2");
         }
     }
+
+    public void setValueByIndex(int index, double value) {
+        if (index == 0) {
+            this.x = value;
+        } else if (index == 1) {
+            this.y = value;
+        } else if (index == 2) {
+            this.z = value;
+        } else {
+            throw new IllegalArgumentException("Index must be 0, 1, or 2");
+        }
+    }
 }

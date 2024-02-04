@@ -1,6 +1,7 @@
 package algorithm.intersection_optimizations;
 
 import algorithm.intersection_optimizations.bvh.BoundingVolumeHierarchy;
+import algorithm.utils.Extent;
 import algorithm.utils.MathUtils;
 import algorithm.utils.ObjectDistancePair;
 import utilities.Ray;
@@ -163,5 +164,155 @@ class MedianSplitIntersectionTesterTest {
                         )
                 ).getObject()
         );
+    }
+
+    @org.junit.jupiter.api.Test
+    void testBuildBVHTwoLevels() {
+        MedianSplitIntersectionTester medianSplitIntersectionTester = new MedianSplitIntersectionTester();
+        // Let's add four spheres to the medianSplitIntersectionTester at x = -10, -5, 5, and 10
+
+        Sphere sphere1 = new Sphere(
+                new Vector3(-10, 0, 0),
+                null,
+                1
+        );
+        Sphere sphere2 = new Sphere(
+                new Vector3(-5, 0, 0),
+                null,
+                1
+        );
+        Sphere sphere3 = new Sphere(
+                new Vector3(5, 0, 0),
+                null,
+                1
+        );
+        Sphere sphere4 = new Sphere(
+                new Vector3(10, 0, 0),
+                null,
+                1
+        );
+
+        medianSplitIntersectionTester.addRenderableObject(sphere1);
+        medianSplitIntersectionTester.addRenderableObject(sphere2);
+        medianSplitIntersectionTester.addRenderableObject(sphere3);
+        medianSplitIntersectionTester.addRenderableObject(sphere4);
+
+        medianSplitIntersectionTester.initialize(); // Initialize the medianSplitIntersectionTester
+
+        // Ensure that the root's two children have the correct extents
+        Extent extent1OfRoot = medianSplitIntersectionTester.getBVH().getRoot().getChildren().get(0).getExtent();
+        Vector3 expectedMin1 = new Vector3(-11, -1, -1);
+        Vector3 expectedMax1 = new Vector3(0, 1, 1);
+        assertEquals(expectedMin1, extent1OfRoot.getMin());
+        assertEquals(expectedMax1, extent1OfRoot.getMax());
+
+        Extent extent2OfRoot = medianSplitIntersectionTester.getBVH().getRoot().getChildren().get(1).getExtent();
+        Vector3 expectedMin2 = new Vector3(0, -1, -1);
+        Vector3 expectedMax2 = new Vector3(11, 1, 1);
+        assertEquals(expectedMin2, extent2OfRoot.getMin());
+        assertEquals(expectedMax2, extent2OfRoot.getMax());
+
+        // Make sure the root has two children
+        assertEquals(2, medianSplitIntersectionTester.getBVH().getRoot().getChildren().size());
+
+        // Make sure that the children both have two children
+        assertEquals(2, medianSplitIntersectionTester.getBVH().getRoot().getChildren().get(0).getChildren().size());
+        assertEquals(2, medianSplitIntersectionTester.getBVH().getRoot().getChildren().get(1).getChildren().size());
+    }
+
+    @org.junit.jupiter.api.Test
+    void ensureRaysStillHitObjects() {
+        // Setup
+        MedianSplitIntersectionTester medianSplitIntersectionTester = new MedianSplitIntersectionTester();
+
+        // Array to store sphere positions
+        int[] positions = {-10, -5, 5, 10};
+        Sphere[] spheres = new Sphere[positions.length];
+
+        // Create and add spheres at specified positions
+        for (int i = 0; i < positions.length; i++) {
+            spheres[i] = new Sphere(
+                    new Vector3(positions[i], 0, 0),
+                    null,
+                    1
+            );
+            medianSplitIntersectionTester.addRenderableObject(spheres[i]);
+        }
+
+        medianSplitIntersectionTester.initialize(); // Initialize the tester
+
+        // Test rays hitting each sphere
+        for (int i = 0; i < positions.length; i++) {
+            ObjectDistancePair objectDistancePairIntersection = medianSplitIntersectionTester.getClosestObject(
+                    new Ray(
+                            new Vector3(positions[i], -2, 0),
+                            new Vector3(0, 1, 0)
+                    )
+            );
+
+            // Assert that the closest object is the expected sphere
+            assertEquals(
+                    spheres[i],
+                    objectDistancePairIntersection.getObject()
+            );
+
+            // Assert that the distance is close to 1
+            assertTrue(
+                    MathUtils.isClose(1, objectDistancePairIntersection.getDistance())
+            );
+        }
+    }
+
+    @org.junit.jupiter.api.Test
+    void ensureRaysStillHitObjectsFromMultipleDirections() {
+        // Setup
+        MedianSplitIntersectionTester medianSplitIntersectionTester = new MedianSplitIntersectionTester();
+
+        // Sphere positions
+        int[] positions = {-10, -5, 5, 10};
+        Sphere[] spheres = new Sphere[positions.length];
+
+        // Directions from which rays will be shot: positive and negative of x, y, and z axes
+        Vector3[] directions = {
+                new Vector3(1, 0, 0),  // Positive X
+                new Vector3(-1, 0, 0), // Negative X
+                new Vector3(0, 1, 0),  // Positive Y
+                new Vector3(0, -1, 0), // Negative Y
+                new Vector3(0, 0, 1),  // Positive Z
+                new Vector3(0, 0, -1)  // Negative Z
+        };
+
+        // Create and add spheres
+        for (int i = 0; i < positions.length; i++) {
+            spheres[i] = new Sphere(
+                    new Vector3(positions[i], 0, 0),
+                    null,
+                    1
+            );
+            medianSplitIntersectionTester.addRenderableObject(spheres[i]);
+        }
+
+        medianSplitIntersectionTester.initialize(); // Initialize the tester
+
+        // Test rays hitting each sphere from multiple directions
+        for (int i = 0; i < positions.length; i++) {
+            for (Vector3 direction : directions) {
+                // Adjust ray origin based on direction to ensure it starts off the object
+                Vector3 origin = direction.multiplyNew(-3).addNew(new Vector3(positions[i], 0, 0));
+
+                ObjectDistancePair objectDistancePairIntersection = medianSplitIntersectionTester.getClosestObject(
+                        new Ray(origin, direction)
+                );
+
+                // Assert that the closest object is the expected sphere
+                assertEquals(
+                        spheres[i],
+                        objectDistancePairIntersection.getObject(),
+                        "Failed for sphere at " + positions[i] + " with direction " + direction
+                );
+
+                // No need to check distance here since it will vary with direction and starting point
+            }
+        }
     }
 }

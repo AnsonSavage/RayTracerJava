@@ -3,8 +3,6 @@ package algorithm.utils;
 import utilities.Ray;
 import utilities.Vector3;
 
-import java.util.Vector;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ExtentTest {
@@ -69,5 +67,47 @@ class ExtentTest {
         );
 
         assertFalse(boxExtent.isHit(intersectionRay));
+    }
+
+    @org.junit.jupiter.api.Test
+    void testExtentIntersections() {
+        Extent extent1 = new Extent(
+                new Vector3(-6, -1, -1),
+                new Vector3(-4, 1, 1)
+        );
+
+        Extent extent2 = new Extent(
+                new Vector3(-11, -1, -1),
+                new Vector3(0, 1, 1)
+        );
+
+        assertTrue(extent1.isIntersectingOtherExtent(extent2));
+        assertTrue(extent2.isIntersectingOtherExtent(extent1));
+    }
+
+    @org.junit.jupiter.api.Test
+    void testScaleFromCenter() {
+        Extent extent = new Extent(
+                new Vector3(-1, -1, -1),
+                new Vector3(1, 1, 1)
+        );
+
+        extent.scaleFromCenter(2);
+
+        assertEquals(new Vector3(-2, -2, -2), extent.getMin());
+        assertEquals(new Vector3(2, 2, 2), extent.getMax());
+    }
+
+    @org.junit.jupiter.api.Test
+    void testScaleFromCenterNotAtOrigin() {
+        Extent extent = new Extent(
+                new Vector3(1, 1, 1),
+                new Vector3(3, 3, 3)
+        );
+
+        extent.scaleFromCenter(2);
+
+        assertEquals(new Vector3(0, 0, 0), extent.getMin());
+        assertEquals(new Vector3(4, 4, 4), extent.getMax());
     }
 }

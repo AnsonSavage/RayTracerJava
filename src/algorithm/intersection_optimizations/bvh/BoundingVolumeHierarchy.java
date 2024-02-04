@@ -13,7 +13,7 @@ public class BoundingVolumeHierarchy {
     private boolean isInitialized;
 
     public BoundingVolumeHierarchy() {
-        this.root = new BVHNode();
+        this.root = new AutoExtentBVHNode();
         this.isInitialized = false;
     }
 

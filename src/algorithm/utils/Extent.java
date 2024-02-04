@@ -67,13 +67,44 @@ public class Extent implements Hittable {
         return tMin;
     }
 
-    private boolean isPointInExtent(Vector3 point) {
+    public boolean isPointInExtent(Vector3 point) {
         return point.getX() >= min.getX() && point.getX() <= max.getX() &&
                 point.getY() >= min.getY() && point.getY() <= max.getY() &&
                 point.getZ() >= min.getZ() && point.getZ() <= max.getZ();
     }
 
+    public boolean isIntersectingOtherExtent(Extent otherExtent) {
+        return otherExtent.isPointInExtent(min) || otherExtent.isPointInExtent(max) || isPointInExtent(otherExtent.min) || isPointInExtent(otherExtent.max);
+    }
+
     public boolean isHit(Ray ray) { // Also returns true if the ray starts inside the extent
         return isPointInExtent(ray.getOrigin()) || getRayIntersectionParameter(ray) >= 0;
     }
+
+    public int getLongestAxisIndex() {
+        Vector3 extent = max.subtractNew(min);
+        if (extent.getX() > extent.getY() && extent.getX() > extent.getZ()) {
+            return 0;
+        }
+        else if (extent.getY() > extent.getZ()) {
+            return 1;
+        }
+        else {
+            return 2;
+        }
+    }
+
+    public void scaleUpByEpsilon() {
+        double epsilon = 0.001;
+        this.scaleFromCenter(1 + epsilon);
+    }
+    public void scaleFromCenter(double scalar) {
+        Vector3 center = min.addNew(max).multiplyNew(0.5); // Calculate center
+        Vector3 minDiff = center.subtractNew(min).multiplyNew(scalar); // Calculate and scale difference for min
+        Vector3 maxDiff = max.subtractNew(center).multiplyNew(scalar); // Calculate and scale difference for max
+
+        this.min = center.subtractNew(minDiff); // Apply scaled difference to get new min
+        this.max = center.addNew(maxDiff); // Apply scaled difference to get new max
+    }
+
 }

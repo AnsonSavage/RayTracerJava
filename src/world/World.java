@@ -42,6 +42,7 @@ public class World {
                 new ArrayList<Light>(),
                 camera,
                 new ConstantBackground(new Color(0,0,0), 0.1),
+//new NaiveIntersectionTester()
                 new MedianSplitIntersectionTester()
         );
     }
