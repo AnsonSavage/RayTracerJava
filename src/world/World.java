@@ -102,8 +102,7 @@ public class World {
     public List<Ray> getShadowRays(Vector3 pointOfIntersection, Vector3 normalAtIntersection) {
         List<Ray> shadowRays = new ArrayList<>();
         for (Light light : this.getLights()) {
-            Vector3 lightDirection = light.getDirectionToLight(pointOfIntersection);
-            Ray shadowRay = new Ray(pointOfIntersection, lightDirection);
+            Ray shadowRay = light.getRayToLight(pointOfIntersection);
             shadowRay.offsetFromOrigin(normalAtIntersection); // Move the origin of the shadow ray slightly along the normal of the object
             shadowRays.add(shadowRay);
         }
@@ -128,7 +127,7 @@ public class World {
 
     public boolean canRayReachLight(Ray shadowRay, Light light) {
         // TODO: This should be optimized so that we are only intersection testing with the BVH to get the objects that might be hit.
-        double distanceToLight = light.getDistanceToLight(shadowRay.getOrigin());
+        double distanceToLight = shadowRay.getOriginalLength();
         for (RenderableObject object : this.getRenderableObjects()) {
             if (object.getMaterial().isRefractive()) { // TODO: For now, we're just ignoring refractive objects in shadow calculations
                 continue;

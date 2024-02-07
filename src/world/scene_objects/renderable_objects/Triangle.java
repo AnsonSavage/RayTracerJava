@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Triangle extends RenderableObject {
+public class Triangle extends RenderableObject implements Surface {
     private List<Vector3> vertices;
     private final Vector3 normal;
     private Vector3 normalForIntersectionTests;
@@ -153,5 +153,28 @@ public class Triangle extends RenderableObject {
         // Reverse the vertices
         Collections.reverse(vertices);
         vertexOrderReversed = !vertexOrderReversed;
+    }
+
+    @Override
+    public Vector3 sampleSurface() {
+        // We are going to compute this using barycentric coordinates, as per the suggestion of ChatGPT.
+        double r1 = Math.random();
+        double r2 = Math.random();
+
+        if (r1+ r2 > 1) { // Ensure that they will produce valid barycentric coordinates
+            r1 = 1 - r1;
+            r2 = 1 - r2;
+        }
+
+        // Compute the weights
+        double w1 = 1 - r1 - r2;
+        double w2 = r1;
+        double w3 = r2;
+
+        double x = w1 * vertices.get(0).getX() + w2 * vertices.get(1).getX() + w3 * vertices.get(2).getX();
+        double y = w1 * vertices.get(0).getY() + w2 * vertices.get(1).getY() + w3 * vertices.get(2).getY();
+        double z = w1 * vertices.get(0).getZ() + w2 * vertices.get(1).getZ() + w3 * vertices.get(2).getZ();
+
+        return new Vector3(x, y, z);
     }
 }

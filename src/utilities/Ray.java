@@ -5,9 +5,13 @@ public class Ray {
     private Vector3 direction;
     private double originOffset = 0.00000001;
 
+
+    private double originalLength;
+
     public Ray(Vector3 origin, Vector3 direction) {
         this.origin = origin;
         this.direction = direction.copy();
+        this.originalLength = this.direction.magnitude();
         this.direction.normalize();
     }
 
@@ -24,7 +28,7 @@ public class Ray {
     }
 
     public String toString() {
-        return "Ray: " + origin + " -> " + direction;
+        return "Ray: " + origin + " -> " + direction + " (original length: " + originalLength + ")";
     }
 
     public boolean isNormalized() {
@@ -37,5 +41,8 @@ public class Ray {
 
     public void offsetFromOrigin(Vector3 direction) {
         origin = origin.addNew(direction.multiplyNew(originOffset));
+    }
+    public double getOriginalLength() {
+        return originalLength;
     }
 }

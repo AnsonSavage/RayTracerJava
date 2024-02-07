@@ -2,6 +2,7 @@ package algorithm.illumination_model;
 
 import utilities.Color;
 import utilities.Material;
+import utilities.Ray;
 import utilities.Vector3;
 import world.background.Background;
 import world.scene_objects.light.Light;
@@ -47,10 +48,11 @@ public class PhongIlluminationModel {
     private Color computeSpecularComponent() {
         // k_s * I_p * O_s * max(0, (R dot V)^kgls)
         double specularCoefficient = material.getSpecularCoefficient();
-        Vector3 reflectedLightDirection = currentLight.getDirectionToLight(positionOnSurface).reflect(normal);
+        Ray rayToLight = currentLight.getRayToLight(positionOnSurface);
+        Vector3 reflectedLightDirection = rayToLight.getDirection().reflect(normal);
         double viewingAngleDependentIntensityFactor = Math.pow(Math.max(0.0, viewingDirection.dot(reflectedLightDirection)), material.getSpecularExponent());
 
-        Color lightColor = currentLight.getColorFromPoint(positionOnSurface);
+        Color lightColor = currentLight.getColorFromPoint(rayToLight);
         Color specularColor = material.getSpecularColor();
 
         return lightColor.componentWiseMultiply(specularColor.multiplyNew(specularCoefficient * viewingAngleDependentIntensityFactor));
@@ -58,8 +60,9 @@ public class PhongIlluminationModel {
 
     private Color computeDiffuseComponent() {
         double diffuseCoefficient = material.getDiffuseCoefficient();
-        double angleDependentIntensityFactor = Math.max(0.0, normal.dot(currentLight.getDirectionToLight(positionOnSurface))); // if it's less than 0, then we don't need any diffuse contribution
-        Color lightColor = currentLight.getColorFromPoint(positionOnSurface);
+        Ray rayToLight = currentLight.getRayToLight(positionOnSurface);
+        double angleDependentIntensityFactor = Math.max(0.0, normal.dot(rayToLight.getDirection())); // if it's less than 0, then we don't need any diffuse contribution
+        Color lightColor = currentLight.getColorFromPoint(rayToLight);
         return lightColor.componentWiseMultiply(material.getDiffuseColor().multiplyNew(diffuseCoefficient * angleDependentIntensityFactor));
     }
 

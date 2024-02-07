@@ -5,7 +5,7 @@ import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
 
-public class Sphere extends RenderableObject {
+public class Sphere extends RenderableObject implements Surface {
     private double radius;
 
     public Sphere(Vector3 position, Material material, double radius) {
@@ -108,5 +108,16 @@ public class Sphere extends RenderableObject {
 
     private double computeDiscriminant(double B, double C) {
         return B * B - 4 * C;
+    }
+
+    @Override
+    public Vector3 sampleSurface() {
+        double theta = Math.random() * 2 * Math.PI;
+        double u = Math.random();
+        double phi = Math.acos(1 - 2 * u); // According to ChatGPT, this is needed to unbias the phi term
+        double x = position.getX() + radius * Math.sin(phi) * Math.cos(theta);
+        double y = position.getY() + radius * Math.sin(phi) * Math.sin(theta);
+        double z = position.getZ() + radius * Math.cos(phi);
+        return new Vector3(x, y, z);
     }
 }
