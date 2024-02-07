@@ -51,6 +51,7 @@ public class MedianSplitIntersectionTester extends IntersectionTester{
         double startTime = System.currentTimeMillis();
         this.bvh.initializeExtents();
         this.splitBVHNode(this.bvh.getRoot(), new HashSet<BVHNode>(), 0);
+        this.bvh.initializeExtents();
         System.out.println("BVH built in " + (System.currentTimeMillis() - startTime) + " milliseconds.");
 
     }
