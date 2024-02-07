@@ -4,10 +4,15 @@ import algorithm.intersection_optimizations.bvh.BoundingVolumeHierarchy;
 import algorithm.utils.Extent;
 import algorithm.utils.MathUtils;
 import algorithm.utils.ObjectDistancePair;
+import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
+import world.World;
 import world.scene_objects.renderable_objects.Sphere;
 import world.scene_objects.renderable_objects.Triangle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -315,4 +320,59 @@ class MedianSplitIntersectionTesterTest {
             }
         }
     }
+
+    @org.junit.jupiter.api.Test
+    void testTriangleIntersection() {
+        Ray ray = new Ray(
+                new Vector3(0, 0, 2.0),
+                new Vector3(0.2603653908077773, -0.5713953642574079, -0.7782783570000246)
+        );
+
+        World worldWithNaiveIntersectionTester = new World(null, new NaiveIntersectionTester());
+
+        World worldWithMedianSplitIntersectionTester = new World(null, new MedianSplitIntersectionTester());
+
+        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 2, 1, null, null);
+        for (Triangle triangle : checkerboard) {
+            worldWithNaiveIntersectionTester.addRenderableObject(triangle);
+            worldWithMedianSplitIntersectionTester.addRenderableObject(triangle);
+        }
+
+        worldWithNaiveIntersectionTester.getIntersectionTester().initialize();
+        worldWithMedianSplitIntersectionTester.getIntersectionTester().initialize();
+
+        Triangle hitTriangle = (Triangle) worldWithNaiveIntersectionTester.getClosestObject(ray).getObject();
+        assertNotNull(hitTriangle);
+
+        Triangle hitTriangle2 = (Triangle) worldWithMedianSplitIntersectionTester.getClosestObject(ray).getObject();
+
+        assertEquals(
+                hitTriangle,
+                hitTriangle2
+        );
+
+    }
+
+    public static List<Triangle> createCheckerboard(double startX, double endX, double yLevel, double startZ, double endZ, int numDivisionsX, int numDivisionsZ, Material material1, Material material2) {
+        List<Triangle> triangles = new ArrayList<>();
+        double xStep = (endX - startX) / numDivisionsX;
+        double zStep = (endZ - startZ) / numDivisionsZ;
+        for (int i = 0; i < numDivisionsX; i++) {
+            for (int j = 0; j < numDivisionsZ; j++) {
+                double x1 = startX + i * xStep;
+                double x2 = startX + (i + 1) * xStep;
+                double z1 = startZ + j * zStep;
+                double z2 = startZ + (j + 1) * zStep;
+                if ((i + j) % 2 == 0) {
+                    triangles.add(new Triangle(new Vector3(0,0,0), material1, new Vector3(x1, yLevel, z1), new Vector3(x1, yLevel, z2), new Vector3(x2, yLevel, z2)));
+                    triangles.add(new Triangle(new Vector3(0,0,0), material1, new Vector3(x1, yLevel, z1), new Vector3(x2, yLevel, z2), new Vector3(x2, yLevel, z1)));
+                } else {
+                    triangles.add(new Triangle(new Vector3(0,0,0), material2, new Vector3(x1, yLevel, z1), new Vector3(x1, yLevel, z2), new Vector3(x2, yLevel, z2)));
+                    triangles.add(new Triangle(new Vector3(0,0,0), material2, new Vector3(x1, yLevel, z1), new Vector3(x2, yLevel, z2), new Vector3(x2, yLevel, z1)));
+                }
+            }
+        }
+        return triangles;
+    }
+
 }

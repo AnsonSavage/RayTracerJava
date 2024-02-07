@@ -23,7 +23,7 @@ public abstract class BVHNode {
 
     public ObjectDistancePair getClosestObject(Ray ray) {
         if (!this.getExtent().isHit(ray)) {
-            return new ObjectDistancePair(Double.MAX_VALUE, null);
+            return new ObjectDistancePair(Double.POSITIVE_INFINITY, null);
         }
 
         if (this.isLeafNode()) {
@@ -38,7 +38,7 @@ public abstract class BVHNode {
             return new ObjectDistancePair(t, null);
         }
 
-        ObjectDistancePair closestObject = new ObjectDistancePair(Double.MAX_VALUE, null); // Currently, the convention is that if ObjectDistancePair has a null as the object, then there was no hit.
+        ObjectDistancePair closestObject = new ObjectDistancePair(Double.POSITIVE_INFINITY, null); // Currently, the convention is that if ObjectDistancePair has a null as the object, then there was no hit.
         for (BVHNode child : this.children) {
             ObjectDistancePair childClosestObject = child.getClosestObject(ray);
             if (childClosestObject.getObject() != null && childClosestObject.getDistance() < closestObject.getDistance()) {

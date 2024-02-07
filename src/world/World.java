@@ -42,10 +42,19 @@ public class World {
                 new ArrayList<Light>(),
                 camera,
                 new ConstantBackground(new Color(0,0,0), 0.1),
-//new NaiveIntersectionTester()
-                new MedianSplitIntersectionTester()
+                new NaiveIntersectionTester()
         );
     }
+
+    public World(Camera camera, IntersectionTester intersectionTester) {
+        this(
+                new ArrayList<RenderableObject>(),
+                new ArrayList<Light>(),
+                camera,
+                new ConstantBackground(new Color(0,0,0), 0.1),
+                intersectionTester
+       );
+        }
 
     public World() { // Default constructor
         this(null); // Note that if the default constructor is invoked, the camera is set to null

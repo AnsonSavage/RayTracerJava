@@ -1,3 +1,5 @@
+import algorithm.intersection_optimizations.IntersectionTester;
+import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
 import utilities.Color;
 import utilities.Material;
 import utilities.Vector3;
@@ -804,8 +806,7 @@ public class WorldCreator {
         return world;
     }
 
-    public static World simpleWorldWithThreeSpheres() {
-        World world = new World();
+    public static World simpleWorldWithThreeSpheres(IntersectionTester intersectionTester) {
         Camera camera = new Camera(
                 new Vector3(0, 0, 2),
                 new Vector3(0, 0, 0),
@@ -814,11 +815,9 @@ public class WorldCreator {
                 1,
                 1
         );
+        World world = new World(camera, intersectionTester);
 
-        world.setCamera(camera);
-
-        // make a pink background
-        Background background = new ConstantBackground(new Color(0.4, 0.2, 0.4), .9);
+        Background background = new ConstantBackground(new Color(0.1, 0.1, 0.1), .9);
         world.setBackground(background);
 
         Material whiteMaterial = new Material(
@@ -831,33 +830,33 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-        Sphere sphere1 = new Sphere(
-                new Vector3(-0.5, 0, 0),
-                whiteMaterial,
-                0.2
-        );
-        world.addRenderableObject(sphere1);
-
-        Sphere sphere2 = new Sphere(
-                new Vector3(0, 0, 0),
-                whiteMaterial,
-                0.2
-        );
-        world.addRenderableObject(sphere2);
-
-        Sphere sphere3 = new Sphere(
-                new Vector3(0.5, 0, 0),
-                whiteMaterial,
-                0.2
-        );
-        world.addRenderableObject(sphere3);
-
-        // Add a few point lights
-        Light redPointLight = new PointLight(
-                new Vector3(-1, 0.5, 0),
-                2,
-                new Color(1, .9, .9)
-        );
+//        Sphere sphere1 = new Sphere(
+//                new Vector3(-0.5, 0, 0),
+//                whiteMaterial,
+//                0.2
+//        );
+//        world.addRenderableObject(sphere1);
+//
+//        Sphere sphere2 = new Sphere(
+//                new Vector3(0, 0, 0),
+//                whiteMaterial,
+//                0.2
+//        );
+//        world.addRenderableObject(sphere2);
+//
+//        Sphere sphere3 = new Sphere(
+//                new Vector3(0.5, 0, 0),
+//                whiteMaterial,
+//                0.2
+//        );
+//        world.addRenderableObject(sphere3);
+//
+//        // Add a few point lights
+//        Light redPointLight = new PointLight(
+//                new Vector3(-1, 0.5, 0),
+//                2,
+//                new Color(1, .9, .9)
+//        );
 //        world.addLight(redPointLight);
 
         // Add sun light
@@ -889,7 +888,7 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 5, 5, reflectiveMaterial1, reflectiveMaterial2);
+        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
 
         for (Triangle triangle : checkerboard) {
             world.addRenderableObject(triangle);

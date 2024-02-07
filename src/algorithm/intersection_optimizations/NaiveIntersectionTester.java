@@ -19,7 +19,7 @@ public class NaiveIntersectionTester extends IntersectionTester{
     @Override
     public ObjectDistancePair getClosestObject(Ray ray) {
         // Set the ray parameter t to be infinity
-        double minT = Double.MAX_VALUE;
+        double minT = Double.POSITIVE_INFINITY;
         RenderableObject closestObject = null;
 
         for (RenderableObject object : this.renderableObjects) {

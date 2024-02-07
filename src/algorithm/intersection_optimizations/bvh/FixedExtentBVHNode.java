@@ -8,7 +8,7 @@ public class FixedExtentBVHNode extends BVHNode {
     public FixedExtentBVHNode(Extent extent) {
         super();
         this.extent = extent;
-        this.extent.scaleUpByEpsilon(); // TODO: well this seemed like it broke everything...
+//        this.extent.scaleUpByEpsilon(); // TODO: well this seemed like it broke everything...
     }
 
     public FixedExtentBVHNode(RenderableObject renderableObject) {

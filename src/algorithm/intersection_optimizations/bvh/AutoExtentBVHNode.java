@@ -39,13 +39,13 @@ public class AutoExtentBVHNode extends BVHNode{
             this.extent = this.renderableObject.getExtent();
         }
         else {
-            double minX = Double.MAX_VALUE;
-            double minY = Double.MAX_VALUE;
-            double minZ = Double.MAX_VALUE;
+            double minX = Double.POSITIVE_INFINITY;
+            double minY = Double.POSITIVE_INFINITY;
+            double minZ = Double.POSITIVE_INFINITY;
 
-            double maxX = Double.MIN_VALUE;
-            double maxY = Double.MIN_VALUE;
-            double maxZ = Double.MIN_VALUE;
+            double maxX = Double.NEGATIVE_INFINITY;
+            double maxY = Double.NEGATIVE_INFINITY;
+            double maxZ = Double.NEGATIVE_INFINITY;
 
             for (BVHNode child: this.children) {
                 Extent childExtent = child.getExtent();
