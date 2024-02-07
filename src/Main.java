@@ -19,7 +19,8 @@ public class Main {
         double refractionIndex = 3.5;
 
 //        for (double ior = 3.5; ior <= 6.0; ior += 0.05) {
-        World world = WorldCreator.createMyOwnWorld(new MedianSplitIntersectionTester());
+//        World world = WorldCreator.createMyOwnWorld(new MedianSplitIntersectionTester());
+        World world = WorldCreator.simpleWorldWithThreeSpheres(new MedianSplitIntersectionTester());
 //        World boundingBoxWorld = world.generateBoundingBoxWorld(new MedianSplitIntersectionTester());
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 6, 3);
 

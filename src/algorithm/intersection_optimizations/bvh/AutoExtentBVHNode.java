@@ -4,7 +4,6 @@ import algorithm.utils.Extent;
 import world.scene_objects.renderable_objects.RenderableObject;
 
 public class AutoExtentBVHNode extends BVHNode{
-
     public AutoExtentBVHNode() {
         super();
     }
@@ -13,6 +12,7 @@ public class AutoExtentBVHNode extends BVHNode{
         super();
         this.renderableObject = renderableObject;
     }
+
     @Override
     public void addChild(BVHNode child) {
         this.extent = null;

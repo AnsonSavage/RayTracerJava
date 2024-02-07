@@ -339,11 +339,11 @@ class MedianSplitIntersectionTesterTest {
         }
 
         worldWithNaiveIntersectionTester.getIntersectionTester().initialize();
-        worldWithMedianSplitIntersectionTester.getIntersectionTester().initialize();
-
         Triangle hitTriangle = (Triangle) worldWithNaiveIntersectionTester.getClosestObject(ray).getObject();
         assertNotNull(hitTriangle);
 
+
+        worldWithMedianSplitIntersectionTester.getIntersectionTester().initialize();
         Triangle hitTriangle2 = (Triangle) worldWithMedianSplitIntersectionTester.getClosestObject(ray).getObject();
 
         assertEquals(
