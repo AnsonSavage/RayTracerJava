@@ -13,14 +13,15 @@ public class Main {
     public static void main(String[] args) {
         // Create multple refractive images with different iors
         // Iors to test: 1.0, 1.01, 1.1, 1.3, 1.5, 2.0
-        int imageWidth = 750; // TODO: The main thing we're figuring out right now is determining why some of the checkerboard squares aren't being hit (the first bounding box is returning a hit, but the two children after it are not)
+        int imageWidth = 750;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
         double refractionIndex = 3.5;
 
 //        for (double ior = 3.5; ior <= 6.0; ior += 0.05) {
-//        World world = WorldCreator.createMyOwnWorld(new MedianSplitIntersectionTester());
-        World world = WorldCreator.simpleWorldWithThreeSpheres(new MedianSplitIntersectionTester());
+        World world = WorldCreator.createMyOwnWorld(new MedianSplitIntersectionTester());
+//        World world = WorldCreator.simpleWorldWithThreeSpheres(new MedianSplitIntersectionTester());
+//        World world = WorldCreator.createRefractivityTest(3.0, new NaiveIntersectionTester());
 //        World boundingBoxWorld = world.generateBoundingBoxWorld(new MedianSplitIntersectionTester());
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 6, 3);
 

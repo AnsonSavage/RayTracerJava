@@ -618,8 +618,7 @@ public class WorldCreator {
         return world;
     }
 
-    public static World createRefractivityTest(double refractiveIndex) {
-        World world = new World();
+    public static World createRefractivityTest(double refractiveIndex, IntersectionTester intersectionTester) {
         Camera camera = new Camera(
                 new Vector3(0, 0, 2),
                 new Vector3(0, 0, 0),
@@ -629,7 +628,7 @@ public class WorldCreator {
                 1
         );
 
-        world.setCamera(camera);
+        World world = new World(camera, intersectionTester);
 
         Light sunLight = new SunLight(
                 null, // sunlight position is ignored?
@@ -664,10 +663,10 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-        List<Triangle> checkerboard = createCheckerboardFromTriangles(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
+        List<AxisAlignedRectangularPrism> checkerboard = createCheckerboardFromAxisAlignedRectangularPrisms(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
 
-        for (Triangle triangle : checkerboard) {
-            world.addRenderableObject(triangle);
+        for (AxisAlignedRectangularPrism axisAlignedRectangularPrism : checkerboard) {
+            world.addRenderableObject(axisAlignedRectangularPrism);
         }
 
         Material refractiveMaterial = new Material(
