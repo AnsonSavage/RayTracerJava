@@ -1,5 +1,5 @@
 import algorithm.intersection_optimizations.IntersectionTester;
-import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
+import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import utilities.Color;
 import utilities.Material;
 import utilities.Vector3;
@@ -10,6 +10,7 @@ import world.scene_objects.Camera;
 import world.scene_objects.light.Light;
 import world.scene_objects.light.PointLight;
 import world.scene_objects.light.SunLight;
+import world.scene_objects.renderable_objects.AxisAlignedRectangularPrism;
 import world.scene_objects.renderable_objects.RenderableObject;
 import world.scene_objects.renderable_objects.Sphere;
 import world.scene_objects.renderable_objects.Triangle;
@@ -470,7 +471,7 @@ public class WorldCreator {
         return world;
     }
 
-    public static List<Triangle> createCheckerboard(double startX, double endX, double yLevel, double startZ, double endZ, int numDivisionsX, int numDivisionsZ, Material material1, Material material2) {
+    public static List<Triangle> createCheckerboardFromTriangles(double startX, double endX, double yLevel, double startZ, double endZ, int numDivisionsX, int numDivisionsZ, Material material1, Material material2) {
         List<Triangle> triangles = new ArrayList<>();
         double xStep = (endX - startX) / numDivisionsX;
         double zStep = (endZ - startZ) / numDivisionsZ;
@@ -491,8 +492,36 @@ public class WorldCreator {
         }
         return triangles;
     }
-    public static World createMyOwnWorld() {
-        World world = new World();
+
+    public static List<AxisAlignedRectangularPrism> createCheckerboardFromAxisAlignedRectangularPrisms(double startX, double endX, double yLevel, double startZ, double endZ, int numDivisionsX, int numDivisionsZ, Material material1, Material material2) {
+        List<AxisAlignedRectangularPrism> prisms = new ArrayList<>();
+
+        double tileSizeX = (endX - startX) / numDivisionsX;
+        double tileSizeZ = (endZ - startZ) / numDivisionsZ;
+        double thickness = 0.0; // Define the thickness of each tile; adjust as necessary
+
+        for (int x = 0; x < numDivisionsX; x++) {
+            for (int z = 0; z < numDivisionsZ; z++) {
+                // Alternate materials based on the current tile's position
+                Material currentMaterial = ((x + z) % 2 == 0) ? material1 : material2;
+
+                // Calculate the center position of the current tile
+                double centerX = startX + x * tileSizeX + tileSizeX / 2.0;
+                double centerZ = startZ + z * tileSizeZ + tileSizeZ / 2.0;
+
+                // Create a rectangular prism for the tile
+                Vector3 position = new Vector3(centerX, yLevel + thickness / 2.0, centerZ);
+                Vector3 dimensions = new Vector3(tileSizeX, thickness, tileSizeZ);
+                AxisAlignedRectangularPrism tile = new AxisAlignedRectangularPrism(position, currentMaterial, dimensions);
+
+                prisms.add(tile);
+            }
+        }
+
+        return prisms;
+    }
+
+    public static World createMyOwnWorld(IntersectionTester intersectionTester) {
         Camera camera = new Camera(
                 new Vector3(0, 0, 2),
                 new Vector3(0, 0, 0),
@@ -501,8 +530,7 @@ public class WorldCreator {
                 1,
                 1
         );
-
-        world.setCamera(camera);
+        World world = new World(camera, intersectionTester);
 
         Light sunLight = new SunLight(
                 null, // sunlight position is ignored?
@@ -537,10 +565,11 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
+//        List<Triangle> checkerboard = createCheckerboardFromTriangles(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
+        List<AxisAlignedRectangularPrism> checkerboard = createCheckerboardFromAxisAlignedRectangularPrisms(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
 
-        for (Triangle triangle : checkerboard) {
-            world.addRenderableObject(triangle);
+        for (RenderableObject checkerboardPiece : checkerboard) {
+            world.addRenderableObject(checkerboardPiece);
         }
 
         Material metal = new Material(
@@ -635,7 +664,7 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
+        List<Triangle> checkerboard = createCheckerboardFromTriangles(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
 
         for (Triangle triangle : checkerboard) {
             world.addRenderableObject(triangle);
@@ -798,7 +827,7 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1.5, -5, 5, 10, 10, diffuseMaterial1, reflectiveMaterial2);
+        List<Triangle> checkerboard = createCheckerboardFromTriangles(-5, 5, -1.5, -5, 5, 10, 10, diffuseMaterial1, reflectiveMaterial2);
 
         for (Triangle triangle : checkerboard) {
             world.addRenderableObject(triangle);
@@ -888,11 +917,61 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-        List<Triangle> checkerboard = createCheckerboard(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
+        List<Triangle> checkerboard = createCheckerboardFromTriangles(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
 
         for (Triangle triangle : checkerboard) {
             world.addRenderableObject(triangle);
         }
+        return world;
+    }
+
+    public static World createAxisAlignedRectangularPrismWorld(IntersectionTester intersectionTester) {
+        Camera camera = new Camera(
+                new Vector3(0, 0, 2),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                90,
+                1,
+                1
+        );
+        World world = new World(camera, intersectionTester);
+
+        Background background = new ConstantBackground(new Color(0.1, 0.1, 0.1), .9);
+        world.setBackground(background);
+
+        Material whiteMaterial = new Material(
+                0.4,
+                1.0,
+                0.0,
+                10,
+                0.1,
+                new Color(0.9, 0.9, 0.9),
+                new Color(1, 1, 1)
+        );
+
+        AxisAlignedRectangularPrism prism = new AxisAlignedRectangularPrism(
+                new Vector3(-0.5, -0.5, -0.5),
+                whiteMaterial,
+                new Vector3(0.5, 0.5, 0.5)
+        );
+        world.addRenderableObject(prism);
+
+        // Add a few point lights
+        Light redPointLight = new PointLight(
+                new Vector3(-1, 0.5, 0),
+                2,
+                new Color(1, .9, .9)
+        );
+        world.addLight(redPointLight);
+
+        // Add sun light
+        Light sunLight = new SunLight(
+                null,
+                new Vector3(1, 1, 1).multiplyNew(-1), // direction
+                2.0,
+                new Color(1, 1, 1)
+        );
+        world.addLight(sunLight);
         return world;
     }
 }

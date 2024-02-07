@@ -5,11 +5,13 @@ import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
 import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import algorithm.utils.ObjectDistancePair;
 import utilities.Color;
+import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
 import world.background.Background;
 import world.background.ConstantBackground;
 import world.scene_objects.Camera;
+import world.scene_objects.renderable_objects.AxisAlignedRectangularPrism;
 import world.scene_objects.renderable_objects.RenderableObject;
 import world.scene_objects.light.Light;
 
@@ -141,5 +143,35 @@ public class World {
 
     public IntersectionTester getIntersectionTester() {
         return intersectionTester;
+    }
+
+    public World generateBoundingBoxWorld(IntersectionTester intersectionTester) {
+        List<AxisAlignedRectangularPrism> boundingBoxes = new ArrayList<>();
+        for (RenderableObject object : this.getRenderableObjects()) {
+            Material randomDiffuseMaterial = new Material(
+                    0.1,
+                    0.9,
+                    0.0,
+                    0.0,
+                    0.0,
+                    new Color (Math.random(), Math.random(), Math.random()),
+                    new Color (0,0,0)
+            );
+            AxisAlignedRectangularPrism boundingBox = new AxisAlignedRectangularPrism(object.getExtent(), randomDiffuseMaterial);
+            boundingBoxes.add(boundingBox);
+        }
+
+        World world = new World(this.camera, intersectionTester);
+        for (AxisAlignedRectangularPrism boundingBox : boundingBoxes) {
+            world.addRenderableObject(boundingBox);
+        }
+
+        // Copy lights and background
+        for (Light light : this.getLights()) {
+            world.addLight(light);
+        }
+
+        world.setBackground(this.getBackground());
+        return world;
     }
 }

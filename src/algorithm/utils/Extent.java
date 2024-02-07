@@ -36,7 +36,7 @@ public class Extent implements Hittable {
         return max;
     }
 
-    protected double getRayIntersectionParameter(Ray ray) {
+    public double getRayIntersectionParameter(Ray ray) {
         double tMin = Double.NEGATIVE_INFINITY;
         double tMax = Double.POSITIVE_INFINITY;
 
@@ -108,4 +108,7 @@ public class Extent implements Hittable {
         this.max = center.addNew(maxDiff); // Apply scaled difference to get new max
     }
 
+    public Vector3 getCenter() {
+        return min.addNew(max).multiplyNew(0.5);
+    }
 }

@@ -58,7 +58,7 @@ public class MedianSplitIntersectionTester extends IntersectionTester{
         }
         visitedNodes.add(node);
 
-        if (node.isLeafNode() || node.getChildren().size()<=2 || depth > 3) { // If the node has less than or equal to 2 children, then there are no speed-ups for splitting it further (with this algorithm)
+        if (node.isLeafNode() || node.getChildren().size()<=2 || depth >= 3) { // If the node has less than or equal to 2 children, then there are no speed-ups for splitting it further (with this algorithm)
             return;
         }
 
