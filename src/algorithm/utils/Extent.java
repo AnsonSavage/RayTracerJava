@@ -7,6 +7,7 @@ import utilities.Vector3;
 public class Extent implements Hittable {
     Vector3 min;
     Vector3 max;
+    public static final double EPSILON = 0.000001;
 
     /**
      * Constructor for Extent. This essentially is an axis aligned bounding box.
@@ -95,7 +96,7 @@ public class Extent implements Hittable {
     }
 
     public void scaleUpByEpsilon() {
-        double epsilon = 0.001;
+        double epsilon = 0.0001;
         this.scaleFromCenter(1 + epsilon);
     }
     public void scaleFromCenter(double scalar) {

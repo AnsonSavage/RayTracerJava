@@ -9,6 +9,19 @@ public class FixedExtentBVHNode extends BVHNode {
         super();
         this.extent = extent;
 //        this.extent.scaleUpByEpsilon(); // TODO: well this seemed like it broke everything...
+        // If one of the dimensions of the extent has a length of zero, move both of those points by epsilon.
+        if (this.extent.getMin().getX() == this.extent.getMax().getX()) {
+            this.extent.getMin().setX(this.extent.getMin().getX() - Extent.EPSILON);
+            this.extent.getMax().setX(this.extent.getMax().getX() + Extent.EPSILON);
+        }
+        if (this.extent.getMin().getY() == this.extent.getMax().getY()) {
+            this.extent.getMin().setY(this.extent.getMin().getY() - Extent.EPSILON);
+            this.extent.getMax().setY(this.extent.getMax().getY() + Extent.EPSILON);
+        }
+        if (this.extent.getMin().getZ() == this.extent.getMax().getZ()) {
+            this.extent.getMin().setZ(this.extent.getMin().getZ() - Extent.EPSILON);
+            this.extent.getMax().setZ(this.extent.getMax().getZ() + Extent.EPSILON);
+        }
     }
 
     public FixedExtentBVHNode(RenderableObject renderableObject) {

@@ -830,34 +830,34 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
 
-//        Sphere sphere1 = new Sphere(
-//                new Vector3(-0.5, 0, 0),
-//                whiteMaterial,
-//                0.2
-//        );
-//        world.addRenderableObject(sphere1);
-//
-//        Sphere sphere2 = new Sphere(
-//                new Vector3(0, 0, 0),
-//                whiteMaterial,
-//                0.2
-//        );
-//        world.addRenderableObject(sphere2);
-//
-//        Sphere sphere3 = new Sphere(
-//                new Vector3(0.5, 0, 0),
-//                whiteMaterial,
-//                0.2
-//        );
-//        world.addRenderableObject(sphere3);
-//
-//        // Add a few point lights
-//        Light redPointLight = new PointLight(
-//                new Vector3(-1, 0.5, 0),
-//                2,
-//                new Color(1, .9, .9)
-//        );
-//        world.addLight(redPointLight);
+        Sphere sphere1 = new Sphere(
+                new Vector3(-0.5, 0, 0),
+                whiteMaterial,
+                0.2
+        );
+        world.addRenderableObject(sphere1);
+
+        Sphere sphere2 = new Sphere(
+                new Vector3(0, 0, 0),
+                whiteMaterial,
+                0.2
+        );
+        world.addRenderableObject(sphere2);
+
+        Sphere sphere3 = new Sphere(
+                new Vector3(0.5, 0, 0),
+                whiteMaterial,
+                0.2
+        );
+        world.addRenderableObject(sphere3);
+
+        // Add a few point lights
+        Light redPointLight = new PointLight(
+                new Vector3(-1, 0.5, 0),
+                2,
+                new Color(1, .9, .9)
+        );
+        world.addLight(redPointLight);
 
         // Add sun light
         Light sunLight = new SunLight(
