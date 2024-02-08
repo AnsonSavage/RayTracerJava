@@ -7,14 +7,12 @@ import algorithm.intersection_optimizations.bvh.FixedExtentBVHNode;
 import algorithm.utils.Extent;
 import algorithm.utils.MathUtils;
 import algorithm.utils.ObjectDistancePair;
+import algorithm.utils.ObjectDistancePriorityQueue;
 import utilities.Ray;
 import utilities.Vector3;
 import world.scene_objects.renderable_objects.RenderableObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class MedianSplitIntersectionTester extends IntersectionTester{
     private BoundingVolumeHierarchy bvh;
@@ -39,6 +37,13 @@ public class MedianSplitIntersectionTester extends IntersectionTester{
             this.bvh.initializeExtents();
         }
         return this.bvh.getClosestObject(ray);
+    }
+
+    public ObjectDistancePriorityQueue getObjectsInRay(Ray ray) {
+        if (!this.bvh.isInitialized()) {
+            this.bvh.initializeExtents();
+        }
+        return this.bvh.getObjectsInRay(ray);
     }
 
     @Override

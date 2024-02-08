@@ -675,9 +675,11 @@ public class WorldCreator {
                 0.0,
                 1,
                 0.1,
+                0,
                 new Color(0.1, 0.05, 0.05),
                 new Color(1, 1, 1),
                 1,
+                0,
                 refractiveIndex
         );
 
@@ -1033,6 +1035,133 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
         world.addLight(areaLight);
+
+        return world;
+    }
+
+    public static World createRefractivityTestWithRoughness(double refractiveIndex, IntersectionTester intersectionTester, double roughness) {
+        Camera camera = new Camera(
+                new Vector3(0, 0, 2),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                90,
+                1,
+                1
+        );
+
+        World world = new World(camera, intersectionTester);
+
+        Light sunLight = new SunLight(
+                null, // sunlight position is ignored?
+                (new Vector3(1, 1, 1)).multiply(-1),
+                1,
+                new Color(1, 1, 1)
+        );
+
+        world.addLight(sunLight);
+
+        Background background = new ConstantBackground(new Color(0.1, 0.2, 0.3), 0);
+
+        world.setBackground(background);
+
+        Material reflectiveMaterial1 = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.1,
+                new Color(0.1, 0.05, 0.05),
+                new Color(1, 1, 1)
+        );
+
+        Material reflectiveMaterial2 = new Material(
+                0.1,
+                1.0,
+                0.0,
+                10,
+                0.9,
+                new Color(0.8, 0.95, 0.9),
+                new Color(1, 1, 1)
+        );
+
+        List<AxisAlignedRectangularPrism> checkerboard = createCheckerboardFromAxisAlignedRectangularPrisms(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
+
+        for (AxisAlignedRectangularPrism axisAlignedRectangularPrism : checkerboard) {
+            world.addRenderableObject(axisAlignedRectangularPrism);
+        }
+
+        Material refractiveMaterial = new Material(
+                0.0,
+                0.0,
+                0.0,
+                1,
+                0.1,
+                0,
+                new Color(0.1, 0.05, 0.05),
+                new Color(1, 1, 1),
+                1,
+                roughness,
+                refractiveIndex
+        );
+
+        RenderableObject sphere = new Sphere(
+                new Vector3(0, 0, 0),
+                refractiveMaterial,
+                0.8
+        );
+        world.addRenderableObject(sphere);
+
+        // Add a smaller blue sphere directly behind this big sphere
+        Material blueMaterial = new Material(
+                0.4,
+                1.0,
+                0.0,
+                1,
+                0.1,
+                new Color(0.1, 0.05, 1),
+                new Color(0.1, 0.1, 0.9)
+        );
+        RenderableObject blueSphere = new Sphere(
+                new Vector3(0, 0, -1),
+                blueMaterial,
+                0.2
+        );
+        world.addRenderableObject(blueSphere);
+
+        // Add a smaller red sphere to the right of the blue sphere
+        Material redMaterial = new Material(
+                0.4,
+                1.0,
+                0.0,
+                1,
+                0.1,
+                new Color(0.9, 0.05, 0.05),
+                new Color(0.9, 0.1, 0.1)
+        );
+        RenderableObject redSphere = new Sphere(
+                new Vector3(0.5, 0, -1),
+                redMaterial,
+                0.2
+        );
+        world.addRenderableObject(redSphere);
+
+        // Add a smaller green sphere to the left of the blue sphere
+        Material greenMaterial = new Material(
+                0.4,
+                1.0,
+                0.0,
+                1,
+                0.1,
+                new Color(0.1, 0.9, 0.05),
+                new Color(0.1, 0.9, 0.1)
+        );
+        RenderableObject greenSphere = new Sphere(
+                new Vector3(-0.5, 0, -1),
+                greenMaterial,
+                0.2
+        );
+        world.addRenderableObject(greenSphere);
+
 
         return world;
     }

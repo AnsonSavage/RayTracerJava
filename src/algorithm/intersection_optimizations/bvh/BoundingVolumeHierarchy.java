@@ -1,7 +1,11 @@
 package algorithm.intersection_optimizations.bvh;
 
 import algorithm.utils.ObjectDistancePair;
+import algorithm.utils.ObjectDistancePriorityQueue;
 import utilities.Ray;
+
+import java.util.Collection;
+import java.util.List;
 
 public class BoundingVolumeHierarchy {
     private BVHNode root;
@@ -28,5 +32,9 @@ public class BoundingVolumeHierarchy {
     public void initializeExtents() {
         this.root.initializeExtent();
         this.isInitialized = true;
+    }
+
+    public ObjectDistancePriorityQueue getObjectsInRay(Ray ray) {
+        return this.root.getObjectsInRay(ray);
     }
 }

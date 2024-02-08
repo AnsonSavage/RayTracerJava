@@ -3,6 +3,7 @@ package world;
 import algorithm.intersection_optimizations.IntersectionTester;
 import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import algorithm.utils.ObjectDistancePair;
+import algorithm.utils.ObjectDistancePriorityQueue;
 import utilities.Color;
 import utilities.Material;
 import utilities.Ray;
@@ -114,9 +115,42 @@ public class World {
         return this.intersectionTester.getClosestObject(ray);
     }
 
+    public boolean isRayBlocked(Ray ray, boolean considerTransmissiveObjects) {
+        if (!considerTransmissiveObjects) {
+            return this.intersectionTester.isRayBlocked(ray);
+        }
+
+        ObjectDistancePriorityQueue objects = this.intersectionTester.getObjectsInRay(ray);
+
+        if (objects == null) {
+            return false;
+        }
+
+        if (objects.getCollection().isEmpty()) {
+            return false;
+        }
+
+        ObjectDistancePair closestObject = objects.poll();
+//        if (closestObject == null) {
+//            System.out.println("Closest Object pair is null");
+//            return false;
+//        }
+//        if (closestObject.getObject() == null) {
+//            System.out.println("Object is null");
+//        }
+//        System.out.println("Distance: " + closestObject.getDistance());
+        double maxDistance = ray.getOriginalLength();
+        while (closestObject != null && closestObject.getDistance() < maxDistance) {
+            if (closestObject.getObject().getMaterial().getTransmission() < 1) { // If the object is not fully transmissive
+                return true;
+            }
+            closestObject = objects.poll();
+        }
+        return false;
+    }
+
     public boolean isRayBlocked(Ray ray) {
-//        return this.isObjectBetweenTwoPoints(ray.getOrigin(), ray.getRayEnd(ray.getOriginalLength()));
-        return this.intersectionTester.isRayBlocked(ray);
+        return this.isRayBlocked(ray, false);
     }
 
 //    public boolean isObjectBetweenTwoPoints(Vector3 startPoint, Vector3 endPoint) {

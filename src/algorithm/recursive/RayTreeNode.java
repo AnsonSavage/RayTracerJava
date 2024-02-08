@@ -72,7 +72,11 @@ public class RayTreeNode {
     }
 
     private Color computeTransmissionContribution(Material material) {
-        double transmission = material.getTransmission();
+        Color transmissionRayColor = new Color(0, 0, 0);
+        int refractiveSamples = this.myTree.getRenderSettings().getRefractiveSamples();
+
+        double roughness = material.getSquaredTransmissiveRoughness();
+
         // Set the IOR RATIO
         double currentIOR;
         double nextIOR;
@@ -98,15 +102,28 @@ public class RayTreeNode {
                 IORRatio
         );
 
-        this.refractionRayTree = new RayTreeNode(
-                refractionRay,
-                this.world,
-                this.nodeDepth + 1,
-                myTree
-        );
+        if (roughness == 0) { // Shortcut for no roughness, then no stochastic sampling
+            this.refractionRayTree = new RayTreeNode(
+                    refractionRay,
+                    this.world,
+                    this.nodeDepth + 1,
+                    myTree
+            );
+            return this.refractionRayTree.getColorContribution();
+        }
 
-        Color transmissionRayColor = this.refractionRayTree.getColorContribution();
-        return transmissionRayColor;
+        for (int i = 0; i < refractiveSamples; i++) {
+            Ray jitteredRefractionRay = refractionRay.sampleJitteredRay(roughness * 180); // If sqauaredReflectiveRoughness is 0, this will return the same ray
+            this.refractionRayTree = new RayTreeNode(
+                    jitteredRefractionRay,
+                    this.world,
+                    this.nodeDepth + 1,
+                    myTree
+            );
+
+            transmissionRayColor.add(this.refractionRayTree.getColorContribution());
+        }
+        return transmissionRayColor.multiplyNew(1.0 / refractiveSamples);
     }
 
     private Color computeReflectionContribution(Material material) {

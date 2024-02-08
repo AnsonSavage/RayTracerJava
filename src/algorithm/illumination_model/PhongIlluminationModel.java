@@ -72,7 +72,7 @@ public class PhongIlluminationModel {
         for (Light light : this.world.getNonAreaLights()) {
             Ray rayToLight = light.getRayToLight(positionOnSurface);
             rayToLight.offsetFromOrigin(normal);
-            if (!world.isRayBlocked(rayToLight)) {
+            if (!world.isRayBlocked(rayToLight, true)) {
                 addLightContribution(resultantColor, light, rayToLight);
             }
         }
@@ -93,7 +93,7 @@ public class PhongIlluminationModel {
             int sampleCount = this.areaLightSamples;
             for (int i = 0; i < sampleCount; i++) {
                 Ray rayToLight = light.getRayToLight(positionOnSurface); // This is stochastically sampling the light source because it's an area light
-                if (!world.isRayBlocked(rayToLight)) {
+                if (!world.isRayBlocked(rayToLight, true)) {
                     addLightContribution(lightContribution, light, rayToLight);
                 }
             }

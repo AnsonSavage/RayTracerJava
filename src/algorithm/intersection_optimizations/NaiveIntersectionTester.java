@@ -1,6 +1,7 @@
 package algorithm.intersection_optimizations;
 
 import algorithm.utils.ObjectDistancePair;
+import algorithm.utils.ObjectDistancePriorityQueue;
 import utilities.Ray;
 import world.scene_objects.renderable_objects.RenderableObject;
 
@@ -35,5 +36,10 @@ public class NaiveIntersectionTester extends IntersectionTester{
     @Override
     public void initialize() {
         // Do nothing in the naive approach
+    }
+
+    @Override
+    public ObjectDistancePriorityQueue getObjectsInRay(Ray ray) {
+        throw new UnsupportedOperationException("This method is not supported in the naive approach");
     }
 }
