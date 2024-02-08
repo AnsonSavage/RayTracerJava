@@ -19,11 +19,11 @@ public class Main {
         double refractionIndex = 3.5;
 
 //        for (double ior = 3.5; ior <= 6.0; ior += 0.05) {
-        World world = WorldCreator.createMyOwnWorld(new MedianSplitIntersectionTester());
+        World world = WorldCreator.createAreaLightWorld(new MedianSplitIntersectionTester());
 //        World world = WorldCreator.simpleWorldWithThreeSpheres(new MedianSplitIntersectionTester());
 //        World world = WorldCreator.createRefractivityTest(3.0, new NaiveIntersectionTester());
 //        World boundingBoxWorld = world.generateBoundingBoxWorld(new MedianSplitIntersectionTester());
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 6, 3);
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 6, 5);
 
         RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world, true);
         multiSampleRayTracer.render();

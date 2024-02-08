@@ -71,21 +71,31 @@ public class PhongIlluminationModel {
             }
         }
 
-//        System.out.println("This is how many area lights there are: " + this.world.getAreaLights().size());
 
-//        for (AreaLight light : this.world.getAreaLights()) {
-//            for (int i = 0; i < light.getNumberOfSamples(); i++) {
-//                Ray rayToLight = light.getRayToLight(positionOnSurface); // This is stochastically sampling the light source because it's an area light
-//                if (!world.isRayBlocked(rayToLight)) {
-//                    addLightContribution(resultantColor, light, rayToLight);
-//                }
-//            }
-//        }
-
+        resultantColor.add(computeAreaLightContributions());
 
         // Add ambient light component
         resultantColor.add(computeAmbientComponent());
         assert resultantColor.colorIsValid();
+        return resultantColor;
+    }
+
+    private Color computeAreaLightContributions() {
+        Color resultantColor = new Color(0.0, 0.0, 0.0);
+        for (AreaLight light : this.world.getAreaLights()) {
+            Color lightContribution = new Color(0.0, 0.0, 0.0);
+            int sampleCount = light.getNumberOfSamples();
+            for (int i = 0; i < sampleCount; i++) {
+                Ray rayToLight = light.getRayToLight(positionOnSurface); // This is stochastically sampling the light source because it's an area light
+                if (!world.isRayBlocked(rayToLight)) {
+                    addLightContribution(lightContribution, light, rayToLight);
+                }
+            }
+            if (sampleCount > 0) {
+                lightContribution = lightContribution.multiplyNew(1.0 / sampleCount);
+            }
+            resultantColor.add(lightContribution);
+        }
         return resultantColor;
     }
 

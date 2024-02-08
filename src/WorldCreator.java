@@ -1,5 +1,4 @@
 import algorithm.intersection_optimizations.IntersectionTester;
-import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import utilities.Color;
 import utilities.Material;
 import utilities.Vector3;
@@ -7,6 +6,7 @@ import world.World;
 import world.background.Background;
 import world.background.ConstantBackground;
 import world.scene_objects.Camera;
+import world.scene_objects.light.AreaLight;
 import world.scene_objects.light.Light;
 import world.scene_objects.light.PointLight;
 import world.scene_objects.light.SunLight;
@@ -971,6 +971,69 @@ public class WorldCreator {
                 new Color(1, 1, 1)
         );
         world.addLight(sunLight);
+        return world;
+    }
+
+    public static World createAreaLightWorld(IntersectionTester intersectionTester) {
+        Camera camera = new Camera(
+                new Vector3(0, 0, 2),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                90,
+                1,
+                1
+        );
+        World world = new World(camera, intersectionTester);
+
+        Background background = new ConstantBackground(new Color(0.1, 0.1, 0.1), .9);
+        world.setBackground(background);
+
+        Material material1 = new Material(
+                0.4,
+                1.0,
+                0.0,
+                10,
+                0.1,
+                new Color(0.9, 0.9, 0.9),
+                new Color(1, 1, 1)
+        );
+
+        Material material2 = new Material(
+                0.4,
+                1.0,
+                0.0,
+                10,
+                0.1,
+                new Color(0.1, 0.1, 0.1),
+                new Color(1, 1, 1)
+        );
+
+        List<AxisAlignedRectangularPrism> prims = createCheckerboardFromAxisAlignedRectangularPrisms(-5, 5, -1, -5, 5, 10, 10, material1, material2);
+
+        for (AxisAlignedRectangularPrism prim : prims) {
+            world.addRenderableObject(prim);
+        }
+
+        // Add a sphere and an area light
+        Sphere sphere = new Sphere(
+                new Vector3(0, 0, 0),
+                material1,
+                0.2
+        );
+
+        world.addRenderableObject(sphere);
+
+        AreaLight areaLight = new AreaLight(
+                new Sphere(
+                        new Vector3(2, 2, 2),
+                        null,
+                        0.8
+                ),
+                10,
+                new Color(1, 1, 1)
+        );
+        world.addLight(areaLight);
+
         return world;
     }
 }

@@ -21,6 +21,6 @@ public class AreaLight extends InverseSquareFalloffLight {
     }
 
     public int getNumberOfSamples() {
-        return 10;
+        return 5;
     }
 }
