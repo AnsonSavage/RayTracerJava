@@ -8,11 +8,7 @@ import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
 import world.World;
-import world.scene_objects.light.Light;
 import world.scene_objects.renderable_objects.RenderableObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RayTreeNode {
     // A ray tree node holds some data about the ray on its path to the object it hits, hit object.
@@ -23,7 +19,7 @@ public class RayTreeNode {
     private double incomingRayLength;
     private World world;
 
-    private RayTreeNode reflectionRayTree; // It has two leaves which point to more nodes
+    private RayTreeNode reflectionRayTree;
     private RayTreeNode refractionRayTree;
     private Vector3 intersectionPoint;
     private Vector3 normalAtIntersection;
@@ -44,87 +40,98 @@ public class RayTreeNode {
 
     public Color getColorContribution() {
         if (this.hitObject == null) {
-            return world.getBackground().getColor(null); // NOTE: if you actually cared about this, you would do this after computing reflection ray
+            return world.getBackground().getColor(this.incomingRay.getDirection()); // Get the background in the direction of the incoming ray
         }
 
         this.intersectionPoint = this.incomingRay.getRayEnd(this.incomingRayLength);
         this.normalAtIntersection = this.hitObject.getNormal(this.intersectionPoint);
 
-        Color resultantColor = computeIlluminationModel();
+        Material material = this.hitObject.getMaterial();
+
+        Color resultantColor = computeIlluminationModel(material);
 
         if (this.nodeDepth >= this.myTree.getMaxTreeDepth()) {
             return resultantColor;
         }
 
-        // Compute reflection ray
-        Material material = this.hitObject.getMaterial();
 
-        double reflectivity = material.getReflectivity();
-        if (reflectivity > 0) {
-            Ray reflectionRay = RayOperations.createReflectionRay(
-                    this.incomingRay,
-                    this.intersectionPoint,
-                    this.normalAtIntersection
-            );
-            this.reflectionRayTree = new RayTreeNode(reflectionRay, this.world, this.nodeDepth+1, myTree);
-            resultantColor.add(this.reflectionRayTree.getColorContribution().multiplyNew(reflectivity));
+        // Compute reflective contributions
+        if (material.getReflectivity() > 0) {
+            resultantColor.add(computeReflectionContribution(material));
         }
 
 
-        // Compute refraction ray
-        // First test to see if the material is refractive
-        double transmission = material.getTransmission();
-        if (transmission > 0) {
-
-            // Set the IOR RATIO
-            double currentIOR;
-            double nextIOR;
-            Vector3 effectiveSurfaceNormal;
-
-            // Determine whether we are entering or exiting the object
-            if (this.normalAtIntersection.dot(this.incomingRay.getDirection()) > 0) { // Exiting
-                currentIOR = material.getIndexOfRefraction();
-                nextIOR = 1; // TODO: could never quite figure out the trick to figure out the IOR of the medium we're entering after exiting the current medium
-                effectiveSurfaceNormal = this.normalAtIntersection.multiplyNew(-1);
-            } else { // Entering
-                currentIOR = 1;
-                nextIOR = material.getIndexOfRefraction();
-                effectiveSurfaceNormal = this.normalAtIntersection;
-            }
-
-            double IORRatio = currentIOR / nextIOR;
-
-            Ray refractionRay = RayOperations.createRefractionRay(
-                    this.incomingRay,
-                    this.intersectionPoint,
-                    effectiveSurfaceNormal,
-                    IORRatio
-            );
-            this.refractionRayTree = new RayTreeNode(
-                    refractionRay,
-                    this.world,
-                    this.nodeDepth + 1,
-                    myTree
-            );
-
-            // Now, we need to set the resultant color to be a lerp between what it was before and the results of the transmission color
-            Color transmissionRayColor = this.refractionRayTree.getColorContribution();
-            resultantColor = resultantColor.multiplyNew(1 - transmission).addNew(transmissionRayColor.multiplyNew(transmission)); // Convex composition
+        // Compute refractive contributions
+        if (material.getTransmission() > 0) {
+            Color transmissionRayColor = computeTransmissionContribution(material);
+            resultantColor = resultantColor.multiplyNew(1 - material.getTransmission()).addNew(transmissionRayColor.multiplyNew(material.getTransmission())); // Convex composition
         }
 
         return resultantColor;
 
     }
 
-    private Color computeIlluminationModel() {
+    private Color computeTransmissionContribution(Material material) {
+        double transmission = material.getTransmission();
+        // Set the IOR RATIO
+        double currentIOR;
+        double nextIOR;
+        Vector3 effectiveSurfaceNormal;
+
+        // Determine whether we are entering or exiting the object
+        if (this.normalAtIntersection.dot(this.incomingRay.getDirection()) > 0) { // Exiting
+            currentIOR = material.getIndexOfRefraction();
+            nextIOR = 1; // TODO: could never quite figure out the trick to figure out the IOR of the medium we're entering after exiting the current medium
+            effectiveSurfaceNormal = this.normalAtIntersection.multiplyNew(-1);
+        } else { // Entering
+            currentIOR = 1;
+            nextIOR = material.getIndexOfRefraction();
+            effectiveSurfaceNormal = this.normalAtIntersection;
+        }
+
+        double IORRatio = currentIOR / nextIOR;
+
+        Ray refractionRay = RayOperations.createRefractionRay(
+                this.incomingRay,
+                this.intersectionPoint,
+                effectiveSurfaceNormal,
+                IORRatio
+        );
+
+        this.refractionRayTree = new RayTreeNode(
+                refractionRay,
+                this.world,
+                this.nodeDepth + 1,
+                myTree
+        );
+
+        Color transmissionRayColor = this.refractionRayTree.getColorContribution();
+        return transmissionRayColor;
+    }
+
+    private Color computeReflectionContribution(Material material) {
+        Color resultantColor = new Color(0, 0, 0);
+        double reflectivity = material.getReflectivity();
+        Ray reflectionRay = RayOperations.createReflectionRay(
+                this.incomingRay,
+                this.intersectionPoint,
+                this.normalAtIntersection
+        );
+        this.reflectionRayTree = new RayTreeNode(reflectionRay, this.world, this.nodeDepth+1, myTree);
+        resultantColor.add(this.reflectionRayTree.getColorContribution().multiplyNew(reflectivity));
+        return resultantColor;
+    }
+
+    private Color computeIlluminationModel(Material material) {
         Vector3 viewingDirection = this.incomingRay.getDirection().multiplyNew(-1);
 
         PhongIlluminationModel phongIlluminationModel = new PhongIlluminationModel(
-                this.hitObject.getMaterial(),
+                material,
                 viewingDirection,
                 this.normalAtIntersection,
                 this.intersectionPoint,
-                world
+                world,
+                this.myTree.getRenderSettings().getAreaLightSamples()
         );
 
         return phongIlluminationModel.computeColor();

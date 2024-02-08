@@ -19,8 +19,4 @@ public class AreaLight extends InverseSquareFalloffLight {
         Vector3 rayDirection = rayEnd.subtractNew(point);
         return new Ray(point, rayDirection); // Currently the ray direction is normalized in the Ray constructor
     }
-
-    public int getNumberOfSamples() {
-        return 5;
-    }
 }

@@ -2,7 +2,6 @@ import algorithm.RayTracer;
 import algorithm.RenderSettings;
 import algorithm.MultiSampleRayTracer;
 import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
-import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import output.ImageOutputter;
 import output.PPMOutputter;
 import world.World;
@@ -23,7 +22,7 @@ public class Main {
 //        World world = WorldCreator.simpleWorldWithThreeSpheres(new MedianSplitIntersectionTester());
 //        World world = WorldCreator.createRefractivityTest(3.0, new NaiveIntersectionTester());
 //        World boundingBoxWorld = world.generateBoundingBoxWorld(new MedianSplitIntersectionTester());
-        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 6, 5);
+        RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 6, 5, 5, 5, 5);
 
         RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world, true);
         multiSampleRayTracer.render();

@@ -17,7 +17,7 @@ public class SimpleRecursiveRayTracer extends RayTracer {
 
     @Override
     protected Color traceRay(Ray ray) {
-        RayTree rayTree = new RayTree(ray, world, settings.getMaxBounces());
+        RayTree rayTree = new RayTree(ray, world, settings);
         return rayTree.getPixelColor();
     }
 }

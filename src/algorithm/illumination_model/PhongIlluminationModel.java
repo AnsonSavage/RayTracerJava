@@ -15,6 +15,7 @@ public class PhongIlluminationModel {
     private Vector3 positionOnSurface;
 
     private World world;
+    private int areaLightSamples;
     /**
      *
      * @param material
@@ -23,12 +24,17 @@ public class PhongIlluminationModel {
      * @param positionOnSurface
      * @param world
      */
-    public PhongIlluminationModel(Material material, Vector3 viewingDirection, Vector3 normal, Vector3 positionOnSurface, World world) {
+    public PhongIlluminationModel(Material material, Vector3 viewingDirection, Vector3 normal, Vector3 positionOnSurface, World world, int areaLightSamples) {
         this.material = material;
         this.viewingDirection = viewingDirection;
         this.normal = normal;
         this.positionOnSurface = positionOnSurface;
         this.world = world;
+        this.areaLightSamples = areaLightSamples;
+    }
+
+    public PhongIlluminationModel(Material material, Vector3 viewingDirection, Vector3 normal, Vector3 positionOnSurface, World world) {
+        this(material, viewingDirection, normal, positionOnSurface, world, 1);
     }
 
     private Color computeAmbientComponent() {
@@ -84,7 +90,7 @@ public class PhongIlluminationModel {
         Color resultantColor = new Color(0.0, 0.0, 0.0);
         for (AreaLight light : this.world.getAreaLights()) {
             Color lightContribution = new Color(0.0, 0.0, 0.0);
-            int sampleCount = light.getNumberOfSamples();
+            int sampleCount = this.areaLightSamples;
             for (int i = 0; i < sampleCount; i++) {
                 Ray rayToLight = light.getRayToLight(positionOnSurface); // This is stochastically sampling the light source because it's an area light
                 if (!world.isRayBlocked(rayToLight)) {
