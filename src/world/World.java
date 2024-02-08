@@ -1,7 +1,6 @@
 package world;
 
 import algorithm.intersection_optimizations.IntersectionTester;
-import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
 import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import algorithm.utils.ObjectDistancePair;
 import utilities.Color;
@@ -11,6 +10,7 @@ import utilities.Vector3;
 import world.background.Background;
 import world.background.ConstantBackground;
 import world.scene_objects.Camera;
+import world.scene_objects.light.AreaLight;
 import world.scene_objects.renderable_objects.AxisAlignedRectangularPrism;
 import world.scene_objects.renderable_objects.RenderableObject;
 import world.scene_objects.light.Light;
@@ -22,7 +22,8 @@ public class World {
 
 
     private List<RenderableObject> renderableObjects;
-    private List<Light> lights;
+    private List<Light> nonAreaLights;
+    private List<AreaLight> areaLights;
     private Camera camera;
     Background background;
 
@@ -30,9 +31,10 @@ public class World {
     private IntersectionTester intersectionTester;
 
 
-    public World(List<RenderableObject> renderableObjects, List<Light> lights, Camera camera, Background background, IntersectionTester intersectionTester) {
+    public World(List<RenderableObject> renderableObjects, List<Light> nonAreaLights, List<AreaLight> areaLights, Camera camera, Background background, IntersectionTester intersectionTester) {
         this.renderableObjects = renderableObjects;
-        this.lights = lights;
+        this.nonAreaLights = nonAreaLights;
+        this.areaLights = areaLights;
         this.camera = camera;
         this.background = background;
         this.intersectionTester = intersectionTester;
@@ -42,6 +44,7 @@ public class World {
         this(
                 new ArrayList<RenderableObject>(),
                 new ArrayList<Light>(),
+                new ArrayList<>(),
                 camera,
                 new ConstantBackground(new Color(0,0,0), 0.1),
                 new NaiveIntersectionTester()
@@ -52,6 +55,7 @@ public class World {
         this(
                 new ArrayList<RenderableObject>(),
                 new ArrayList<Light>(),
+                new ArrayList<>(),
                 camera,
                 new ConstantBackground(new Color(0,0,0), 0.1),
                 intersectionTester
@@ -62,8 +66,15 @@ public class World {
         this(null); // Note that if the default constructor is invoked, the camera is set to null
     }
 
-    public List<Light> getLights() {
-        return lights;
+    public List<Light> getNonAreaLights() {
+        return nonAreaLights;
+    }
+
+    public List<Light> getAllLights() {
+        List<Light> allLights = new ArrayList<>();
+        allLights.addAll(nonAreaLights);
+        allLights.addAll(areaLights);
+        return allLights;
     }
 
     public Camera getCamera() {
@@ -88,7 +99,11 @@ public class World {
     }
 
     public void addLight(Light light) {
-        lights.add(light);
+        if (light instanceof AreaLight) {
+            this.areaLights.add((AreaLight) light);
+        } else {
+            this.nonAreaLights.add(light);
+        }
     }
 
     public void setBackground(Background background) {
@@ -99,46 +114,14 @@ public class World {
         return this.intersectionTester.getClosestObject(ray);
     }
 
-    public List<Ray> getShadowRays(Vector3 pointOfIntersection, Vector3 normalAtIntersection) {
-        List<Ray> shadowRays = new ArrayList<>();
-        for (Light light : this.getLights()) {
-            Ray shadowRay = light.getRayToLight(pointOfIntersection);
-            shadowRay.offsetFromOrigin(normalAtIntersection); // Move the origin of the shadow ray slightly along the normal of the object
-            shadowRays.add(shadowRay);
-        }
-        assert shadowRays.size() == this.getLights().size();
-        return shadowRays;
+    public boolean isRayBlocked(Ray ray) {
+//        return this.isObjectBetweenTwoPoints(ray.getOrigin(), ray.getRayEnd(ray.getOriginalLength()));
+        return this.intersectionTester.isRayBlocked(ray);
     }
 
-    public List<Light> getReachableLights(List<Ray> shadowRays) {
-        // Note, this code assumes that the shadowRays list is the same order as the world's light list
-        assert shadowRays.size() == this.getLights().size();
-
-        List<Light> reachableLights = new ArrayList<>();
-        for (int i = 0; i < shadowRays.size(); i++) {
-            Ray shadowRay = shadowRays.get(i);
-            Light light = this.getLights().get(i);
-            if (!this.canRayReachLight(shadowRay, light)) {
-                reachableLights.add(light);
-            }
-        }
-        return reachableLights;
-    }
-
-    public boolean canRayReachLight(Ray shadowRay, Light light) {
-        // TODO: This should be optimized so that we are only intersection testing with the BVH to get the objects that might be hit.
-        double distanceToLight = shadowRay.getOriginalLength();
-        for (RenderableObject object : this.getRenderableObjects()) {
-            if (object.getMaterial().isRefractive()) { // TODO: For now, we're just ignoring refractive objects in shadow calculations
-                continue;
-            }
-            double t = object.getRayIntersectionParameter(shadowRay);
-            if (t > 0 && t < distanceToLight) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean isObjectBetweenTwoPoints(Vector3 startPoint, Vector3 endPoint) {
+//        // TODO
+//    }
 
     public IntersectionTester getIntersectionTester() {
         return intersectionTester;
@@ -166,11 +149,15 @@ public class World {
         }
 
         // Copy lights and background
-        for (Light light : this.getLights()) {
+        for (Light light : this.getNonAreaLights()) {
             world.addLight(light);
         }
 
         world.setBackground(this.getBackground());
         return world;
+    }
+
+    public List<AreaLight> getAreaLights() {
+        return areaLights;
     }
 }

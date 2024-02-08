@@ -50,17 +50,7 @@ public class RayTreeNode {
         this.intersectionPoint = this.incomingRay.getRayEnd(this.incomingRayLength);
         this.normalAtIntersection = this.hitObject.getNormal(this.intersectionPoint);
 
-        List<Ray> shadowRays = world.getShadowRays(this.intersectionPoint, this.normalAtIntersection);
-
-        // So here's the thing... We have a number of things going on.
-        // Shadow rays (The lack of light... Depends on # of lights, etc.)
-        // Reflection Rays (mirror reflections)
-        // The Phong illumination model, which needs all the lights that aren't casting shadows
-        // Refraction rays
-
-        List<Light> reachableLights = world.getReachableLights(shadowRays);
-
-        Color resultantColor = computeIlluminationModel(reachableLights);
+        Color resultantColor = computeIlluminationModel();
 
         if (this.nodeDepth >= this.myTree.getMaxTreeDepth()) {
             return resultantColor;
@@ -93,17 +83,11 @@ public class RayTreeNode {
 
             // Determine whether we are entering or exiting the object
             if (this.normalAtIntersection.dot(this.incomingRay.getDirection()) > 0) { // Exiting
-//                assert this.myTree.getCurrentMediumIOR() == material.getIndexOfRefraction();
                 currentIOR = material.getIndexOfRefraction();
-//                this.myTree.popMedium();
-//                nextIOR = this.myTree.getCurrentMediumIOR();
-                nextIOR = 1;
+                nextIOR = 1; // TODO: could never quite figure out the trick to figure out the IOR of the medium we're entering after exiting the current medium
                 effectiveSurfaceNormal = this.normalAtIntersection.multiplyNew(-1);
             } else { // Entering
-//                assert this.myTree.getCurrentMediumIOR() == 1;
-//                currentIOR = this.myTree.getCurrentMediumIOR();
                 currentIOR = 1;
-//                this.myTree.pushMedium(this.hitObject);
                 nextIOR = material.getIndexOfRefraction();
                 effectiveSurfaceNormal = this.normalAtIntersection;
             }
@@ -132,15 +116,15 @@ public class RayTreeNode {
 
     }
 
-    private Color computeIlluminationModel(List<Light> lightsNotCastingShadows) {
+    private Color computeIlluminationModel() {
         Vector3 viewingDirection = this.incomingRay.getDirection().multiplyNew(-1);
+
         PhongIlluminationModel phongIlluminationModel = new PhongIlluminationModel(
                 this.hitObject.getMaterial(),
                 viewingDirection,
                 this.normalAtIntersection,
                 this.intersectionPoint,
-                lightsNotCastingShadows,
-                world.getBackground()
+                world
         );
 
         return phongIlluminationModel.computeColor();

@@ -16,6 +16,8 @@ public abstract class IntersectionTester {
 
     public abstract void initialize();
 
-    // TODO:
-    // We might do something like a function that takes two points and determines if there are any object intersections between them. This would be useful for shadow ray computations, etc.
+    public boolean isRayBlocked(Ray ray) {
+        double distance = ray.getOriginalLength();
+        return getClosestObject(ray).getDistance() < distance; // TODO: at some point it would be nice to test multiple objects and see if any of them are transparent
+    }
 }

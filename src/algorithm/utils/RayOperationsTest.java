@@ -23,7 +23,7 @@ class RayOperationsTest {
 
     @org.junit.jupiter.api.Test
     void isShadowRayInShadowForLight() {
-        Ray shadowRay = new Ray(new Vector3(0, -1, 0), new Vector3(0, 1, 0));
+        Vector3 intersectionPoint = new Vector3(0, -1, 0);
         World world = new World();
         world.addRenderableObject(new Triangle(
                 new Vector3(0, 0, 0),
@@ -33,12 +33,12 @@ class RayOperationsTest {
                 new Vector3(-1, 0, -1)
         ));
         for (int i = 0; i < 3000000; i++) {
-            Assertions.assertTrue(world.canRayReachLight(shadowRay, new SunLight(
+            Assertions.assertTrue(!world.isRayBlocked((new SunLight(
                     null,
                     null,
                     0,
                     null
-            )));
+            )).getRayToLight(intersectionPoint)));
         }
     }
 

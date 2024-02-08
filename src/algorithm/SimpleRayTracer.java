@@ -2,7 +2,6 @@ package algorithm;
 
 import algorithm.illumination_model.PhongIlluminationModel;
 import algorithm.utils.ObjectDistancePair;
-import algorithm.utils.RayOperations;
 import utilities.Color;
 import utilities.Ray;
 import utilities.Vector3;
@@ -35,19 +34,17 @@ public class SimpleRayTracer extends RayTracer {
             return world.getBackground().getColor(ray.getDirection());
         }
 
-        return computeColor(ray, minT, closestObject);
+        return computeColor(ray.getRayEnd(minT), ray.getDirection().multiplyNew(-1), closestObject);
     }
 
-    private Color computeColor(Ray ray, double t, RenderableObject object) {
-        Vector3 pointOfIntersection = ray.getRayEnd(t);
+    private Color computeColor(Vector3 pointOfIntersection, Vector3 viewingDirection, RenderableObject object) {
         Vector3 normal = object.getNormal(pointOfIntersection);
         PhongIlluminationModel phongIlluminationModel = new PhongIlluminationModel(
                 object.getMaterial(),
-                ray.getDirection().multiplyNew(-1), // The direction from the point to the viewer
+                viewingDirection,
                 normal,
                 pointOfIntersection,
-                world.getLights(),
-                world.getBackground()
+                world
         );
 
         return phongIlluminationModel.computeColor();
