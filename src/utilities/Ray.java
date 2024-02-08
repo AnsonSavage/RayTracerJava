@@ -45,4 +45,21 @@ public class Ray {
     public double getOriginalLength() {
         return originalLength;
     }
+
+    public Ray sampleRayFromCone(double maxAngleDegrees) {
+        double maxAngleRadians = Math.toRadians(maxAngleDegrees);
+
+        double theta = Math.random() * maxAngleRadians;
+
+        double phi = Math.random() * 2 * Math.PI;
+
+        // Assume we're jittering off the Z axis for now:
+        Vector3 jitteredDirection = new Vector3(
+                Math.sin(theta) * Math.cos(phi),
+                Math.sin(theta) * Math.sin(phi),
+                Math.cos(theta)
+        );
+
+        return new Ray(origin, jitteredDirection);
+    }
 }
