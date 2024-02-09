@@ -1,5 +1,8 @@
 package utilities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Ray {
     private Vector3 origin;
     private Vector3 direction;
@@ -47,27 +50,32 @@ public class Ray {
     }
 
     public Ray sampleJitteredRay(double maxOffsetAngleDegrees) {
+        return getNJitteredRays(maxOffsetAngleDegrees, 1).get(0);
+    }
+
+    public List<Ray> getNJitteredRays(double maxOffsetAngleDegrees, int n) {
         double maxAngleRadians = Math.toRadians(maxOffsetAngleDegrees);
-
-        double theta = Math.random() * maxAngleRadians;
-
-        double phi = Math.random() * 2 * Math.PI;
-
-        // Convert from polar to cartesian coordinates
-        Vector3 jitteredDirection = new Vector3(
-                Math.sin(theta) * Math.cos(phi),
-                Math.sin(theta) * Math.sin(phi),
-                Math.cos(theta)
-        );
-
-        // (Note that as of right now, the jittered ray is jittered off of the z axis. So now we need to rotate it to the direction of the original ray.)
-
         double angleOffsetFromZAxisRadians = Math.acos(this.direction.getZ()); // This is shorthand for Math.acos(this.direction.dot(new Vector3(0, 0, 1))). Note that this works because direction is normalized.
         Vector3 vectorOfRotation = (new Vector3(0, 0, 1)).cross(this.direction);
         vectorOfRotation.normalize();
 
-        Vector3 finalJitteredDirection = jitteredDirection.rotateVectorAroundAxis(vectorOfRotation, angleOffsetFromZAxisRadians);
+        List<Ray> jitteredRays = new ArrayList<>();
 
-        return new Ray(origin, finalJitteredDirection);
+        for (int i = 0; i < n; i++) {
+            double theta = Math.random() * maxAngleRadians;
+            double phi = Math.random() * 2 * Math.PI;
+
+            // Convert from polar to cartesian coordinates
+            Vector3 jitteredDirection = new Vector3(
+                    Math.sin(theta) * Math.cos(phi),
+                    Math.sin(theta) * Math.sin(phi),
+                    Math.cos(theta)
+            );
+
+            // (Note that as of right now, the jittered ray is jittered off of the z axis. So now we need to rotate it to the direction of the original ray.)
+            Vector3 finalJitteredDirection = jitteredDirection.rotateVectorAroundAxis(vectorOfRotation, angleOffsetFromZAxisRadians);
+            jitteredRays.add(new Ray(origin, finalJitteredDirection));
+        }
+        return jitteredRays;
     }
 }

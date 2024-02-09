@@ -17,7 +17,7 @@ public class Main {
         double aspectRatio = (double) imageWidth / imageHeight;
         double refractionIndex = 3.5;
 
-        for (double roughness = 0.0; roughness < 1.0; roughness += 0.05) {
+        for (double roughness = 0.0; roughness < 0.3; roughness += 0.05) {
             World world = WorldCreator.createRefractivityTestWithRoughness(1.4, new MedianSplitIntersectionTester(), roughness);
             RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 6, 2, 5, 3, 5);
 

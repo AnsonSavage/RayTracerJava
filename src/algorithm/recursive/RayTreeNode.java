@@ -10,6 +10,9 @@ import utilities.Vector3;
 import world.World;
 import world.scene_objects.renderable_objects.RenderableObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RayTreeNode {
     // A ray tree node holds some data about the ray on its path to the object it hits, hit object.
     // For example, an initial RayTreeNode object will be a ray coming from the camera to the first object it hits. It will have an IOR Of 1 because it's traveling through air.
@@ -112,8 +115,8 @@ public class RayTreeNode {
             return this.refractionRayTree.getColorContribution();
         }
 
-        for (int i = 0; i < refractiveSamples; i++) {
-            Ray jitteredRefractionRay = refractionRay.sampleJitteredRay(roughness * 180); // If sqauaredReflectiveRoughness is 0, this will return the same ray
+        List<Ray> jitteredRefractionRays = refractionRay.getNJitteredRays(roughness * 180, refractiveSamples);
+        for (Ray jitteredRefractionRay : jitteredRefractionRays) {
             this.refractionRayTree = new RayTreeNode(
                     jitteredRefractionRay,
                     this.world,
