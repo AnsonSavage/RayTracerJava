@@ -1,7 +1,9 @@
 package world;
 
 import algorithm.intersection_optimizations.IntersectionTester;
+import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
 import algorithm.intersection_optimizations.NaiveIntersectionTester;
+import algorithm.utils.Extent;
 import algorithm.utils.ObjectDistancePair;
 import algorithm.utils.ObjectDistancePriorityQueue;
 import utilities.Color;
@@ -17,6 +19,7 @@ import world.scene_objects.renderable_objects.RenderableObject;
 import world.scene_objects.light.Light;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class World {
@@ -131,14 +134,6 @@ public class World {
         }
 
         ObjectDistancePair closestObject = objects.poll();
-//        if (closestObject == null) {
-//            System.out.println("Closest Object pair is null");
-//            return false;
-//        }
-//        if (closestObject.getObject() == null) {
-//            System.out.println("Object is null");
-//        }
-//        System.out.println("Distance: " + closestObject.getDistance());
         double maxDistance = ray.getOriginalLength();
         while (closestObject != null && closestObject.getDistance() < maxDistance) {
             if (closestObject.getObject().getMaterial().getTransmission() < 1) { // If the object is not fully transmissive
@@ -161,19 +156,26 @@ public class World {
         return intersectionTester;
     }
 
-    public World generateBoundingBoxWorld(IntersectionTester intersectionTester) {
+    public World generateBoundingBoxWorld(IntersectionTester intersectionTester, int depth, boolean includeHighestIfDeeper) {
         List<AxisAlignedRectangularPrism> boundingBoxes = new ArrayList<>();
-        for (RenderableObject object : this.getRenderableObjects()) {
+        // Make sure our intersectionTester is a medianSplitIntersectionTester
+        assert this.intersectionTester instanceof MedianSplitIntersectionTester;
+        // Cast it to it
+        MedianSplitIntersectionTester medianSplitIntersectionTester = (MedianSplitIntersectionTester) this.intersectionTester;
+        Collection<Extent> extents = medianSplitIntersectionTester.getBvh().getExtentsAtDepth(depth, includeHighestIfDeeper);
+        for (Extent extent : extents) {
+            System.out.println(extent);
             Material randomDiffuseMaterial = new Material(
                     0.1,
                     0.9,
                     0.0,
-                    0.0,
+                    1,
                     0.0,
                     new Color (Math.random(), Math.random(), Math.random()),
+//                    new Color (1,0,0),
                     new Color (0,0,0)
             );
-            AxisAlignedRectangularPrism boundingBox = new AxisAlignedRectangularPrism(object.getExtent(), randomDiffuseMaterial);
+            AxisAlignedRectangularPrism boundingBox = new AxisAlignedRectangularPrism(extent, randomDiffuseMaterial);
             boundingBoxes.add(boundingBox);
         }
 
@@ -183,7 +185,7 @@ public class World {
         }
 
         // Copy lights and background
-        for (Light light : this.getNonAreaLights()) {
+        for (Light light : this.getAllLights()) {
             world.addLight(light);
         }
 

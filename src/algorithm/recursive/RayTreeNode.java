@@ -75,7 +75,7 @@ public class RayTreeNode {
     }
 
     private Color computeTransmissionContribution(Material material) {
-        Color transmissionRayColor = new Color(0, 0, 0);
+        Color transmissionColor = new Color(0, 0, 0);
         int refractiveSamples = this.myTree.getRenderSettings().getRefractiveSamples();
 
         double roughness = material.getSquaredTransmissiveRoughness();
@@ -124,22 +124,33 @@ public class RayTreeNode {
                     myTree
             );
 
-            transmissionRayColor.add(this.refractionRayTree.getColorContribution());
+            transmissionColor.add(this.refractionRayTree.getColorContribution());
         }
-        return transmissionRayColor.multiplyNew(1.0 / refractiveSamples);
+        return transmissionColor.multiplyNew(1.0 / refractiveSamples);
     }
 
     private Color computeReflectionContribution(Material material) {
-        Color resultantColor = new Color(0, 0, 0);
         double reflectivity = material.getReflectivity();
+        double roughness = material.getSquaredReflectiveRoughness();
         Ray reflectionRay = RayOperations.createReflectionRay(
                 this.incomingRay,
                 this.intersectionPoint,
                 this.normalAtIntersection
         );
-        this.reflectionRayTree = new RayTreeNode(reflectionRay, this.world, this.nodeDepth+1, myTree);
-        resultantColor.add(this.reflectionRayTree.getColorContribution().multiplyNew(reflectivity));
-        return resultantColor;
+
+        if (roughness == 0) { // Shortcut for no roughness, then no stochastic sampling
+            this.reflectionRayTree = new RayTreeNode(reflectionRay, this.world, this.nodeDepth+1, myTree);
+            return this.reflectionRayTree.getColorContribution();
+        }
+
+        int reflectiveSamples = this.myTree.getRenderSettings().getReflectiveSamples();
+        List<Ray> jitteredReflectionRays = reflectionRay.getNJitteredRays(roughness * 180, reflectiveSamples);
+        Color reflectionColor = new Color(0, 0, 0);
+        for (Ray jitteredReflectionRay : jitteredReflectionRays) {
+            this.reflectionRayTree = new RayTreeNode(jitteredReflectionRay, this.world, this.nodeDepth+1, myTree);
+            reflectionColor.add(this.reflectionRayTree.getColorContribution());
+        }
+        return reflectionColor.multiplyNew(reflectivity * (1.0 / reflectiveSamples));
     }
 
     private Color computeIlluminationModel(Material material) {

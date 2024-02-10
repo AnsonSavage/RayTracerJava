@@ -111,4 +111,8 @@ public class Extent implements Hittable {
     public Vector3 getCenter() {
         return min.addNew(max).multiplyNew(0.5);
     }
+
+    public String toString() {
+        return "Extent: " + min + " to " + max;
+    }
 }

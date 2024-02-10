@@ -40,6 +40,13 @@ public class NaiveIntersectionTester extends IntersectionTester{
 
     @Override
     public ObjectDistancePriorityQueue getObjectsInRay(Ray ray) {
-        throw new UnsupportedOperationException("This method is not supported in the naive approach");
+        ObjectDistancePriorityQueue objectDistancePriorityQueue = new ObjectDistancePriorityQueue();
+        for (RenderableObject object : this.renderableObjects) {
+            double t = object.getRayIntersectionParameter(ray);
+            if (t > 0 && t < ray.getOriginalLength()) {
+                objectDistancePriorityQueue.add(new ObjectDistancePair(t, object));
+            }
+        }
+        return objectDistancePriorityQueue;
     }
 }

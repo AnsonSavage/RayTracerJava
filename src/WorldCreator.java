@@ -566,7 +566,7 @@ public class WorldCreator {
         );
 
 //        List<Triangle> checkerboard = createCheckerboardFromTriangles(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
-        List<AxisAlignedRectangularPrism> checkerboard = createCheckerboardFromAxisAlignedRectangularPrisms(-5, 5, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
+        List<AxisAlignedRectangularPrism> checkerboard = createCheckerboardFromAxisAlignedRectangularPrisms(-6, 6, -1, -5, 5, 10, 10, reflectiveMaterial1, reflectiveMaterial2);
 
         for (RenderableObject checkerboardPiece : checkerboard) {
             world.addRenderableObject(checkerboardPiece);
@@ -1163,6 +1163,149 @@ public class WorldCreator {
         world.addRenderableObject(greenSphere);
 
 
+        return world;
+    }
+
+    public static World createCoolGlossyReflectionScene(IntersectionTester intersectionTester) {
+        Camera camera = new Camera(
+                new Vector3(0, 0, 2),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                90,
+                1,
+                1
+        );
+
+        World world = new World(camera, intersectionTester);
+
+        Background background = new ConstantBackground(new Color(0.1, 0.2, 0.3), 1);
+        world.setBackground(background);
+
+        Material darkRoughMaterial = new Material(
+                0.1,
+                0.4,
+                0.6,
+                3,
+                0.5,
+                0.23,
+                (new Color(0.1, 0.1, 0.1)).multiplyNew(2),
+                new Color(0.1, 0.1, 0.1),
+                0,
+                0,
+                0
+        );
+
+        Material darkSmoothMaterial = new Material(
+                0.1,
+                0.4,
+                0.6,
+                3,
+                0.5,
+                0.04,
+                new Color(0.02, 0.02, 0.02),
+                new Color(0.1, 0.1, 0.1),
+                0,
+                0,
+                0
+        );
+
+        List<AxisAlignedRectangularPrism> checkerboard = createCheckerboardFromAxisAlignedRectangularPrisms(-5, 5, -1, -5, 5, 10, 10, darkRoughMaterial, darkSmoothMaterial);
+        for (AxisAlignedRectangularPrism axisAlignedRectangularPrism : checkerboard) {
+            world.addRenderableObject(axisAlignedRectangularPrism);
+        }
+
+        // Add three spheres of red, green, and blue colors, and then a glass sphere in the middle
+        Material redMaterial = new Material(
+                0.2,
+                0.9,
+                0.0,
+                1,
+                0.3,
+                0.15,
+                new Color(0.9, 0.05, 0.05),
+                new Color(0.9, 0.1, 0.1),
+                0,
+                0,
+                0
+        );
+        Sphere redSphere = new Sphere(
+                new Vector3(1, 0, 0),
+                redMaterial,
+                0.25
+        );
+        world.addRenderableObject(redSphere);
+
+        Material greenMaterial = new Material(
+                0.2,
+                .8,
+                0.0,
+                1,
+                0.3,
+                0.2,
+                new Color(0.05, 0.9, 0.05),
+                new Color(0.1, 0.9, 0.1),
+                0,
+                0,
+                0
+        );
+        Sphere greenSphere = new Sphere(
+                new Vector3(-1, 0, 0),
+                greenMaterial,
+                0.25
+        );
+        world.addRenderableObject(greenSphere);
+
+        Material blueMaterial = new Material(
+                0.2,
+                1.0,
+                0.0,
+                1,
+                0.4,
+                0.3,
+                new Color(0.05, 0.05, 0.9),
+                new Color(0.1, 0.1, 0.9),
+                0,
+                0,
+                0
+        );
+        Sphere blueSphere = new Sphere(
+                new Vector3(0, 0, -1),
+                blueMaterial,
+                0.25
+        );
+        world.addRenderableObject(blueSphere);
+
+        Material glassMaterial = new Material(
+                0.0,
+                0.0,
+                0.0,
+                1,
+                0.1,
+                0,
+                new Color(0.1, 0.05, 0.05),
+                new Color(1, 1, 1),
+                1,
+                0.05,
+                2.5
+        );
+        Sphere glassSphere = new Sphere(
+                new Vector3(0, 0, -.4),
+                glassMaterial,
+                0.8
+        );
+        world.addRenderableObject(glassSphere);
+
+        // Add a slightly yellow spherical area light
+        AreaLight areaLight = new AreaLight(
+                new Sphere(
+                        new Vector3(2, 5, 2),
+                        null,
+                        0.8
+                ),
+                100,
+                new Color(1, 1, 0.9)
+        );
+        world.addLight(areaLight);
         return world;
     }
 }
