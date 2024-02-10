@@ -1166,7 +1166,7 @@ public class WorldCreator {
         return world;
     }
 
-    public static World createCoolGlossyReflectionScene(IntersectionTester intersectionTester) {
+    public static World createCoolGlossyReflectionScene(IntersectionTester intersectionTester, double ior) {
         Camera camera = new Camera(
                 new Vector3(0, 0, 2),
                 new Vector3(0, 0, 0),
@@ -1187,7 +1187,7 @@ public class WorldCreator {
                 0.6,
                 3,
                 0.5,
-                0.23,
+                0.19,
                 (new Color(0.1, 0.1, 0.1)).multiplyNew(2),
                 new Color(0.1, 0.1, 0.1),
                 0,
@@ -1285,13 +1285,13 @@ public class WorldCreator {
                 new Color(0.1, 0.05, 0.05),
                 new Color(1, 1, 1),
                 1,
-                0.05,
-                2.5
+                0.09,
+                ior
         );
         Sphere glassSphere = new Sphere(
                 new Vector3(0, 0, -.4),
                 glassMaterial,
-                0.8
+                1.1
         );
         world.addRenderableObject(glassSphere);
 

@@ -13,16 +13,16 @@ public class Main {
     public static void main(String[] args) {
         // Create multple refractive images with different iors
         // Iors to test: 1.0, 1.01, 1.1, 1.3, 1.5, 2.0
-        int imageWidth = 1000;
+        int imageWidth = 700;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
-        World world = WorldCreator.createCoolGlossyReflectionScene(new MedianSplitIntersectionTester());
+        World world = WorldCreator.createCoolGlossyReflectionScene(new MedianSplitIntersectionTester(), 1.48);
 //        World world = WorldCreator.createMyOwnWorld(new MedianSplitIntersectionTester());
 //        world.getIntersectionTester().initialize();
 //        for (int i = 1; i < 11; i++) {
 //            World boundingBoxes = world.generateBoundingBoxWorld(new NaiveIntersectionTester(), i, true);
-            RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 5, 3, 5, 1, 2);
+            RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 5, 4, 5, 2, 2);
 
             RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world, true);
             multiSampleRayTracer.render();
