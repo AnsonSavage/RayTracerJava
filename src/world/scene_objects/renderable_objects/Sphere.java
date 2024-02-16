@@ -3,6 +3,7 @@ package world.scene_objects.renderable_objects;
 import algorithm.utils.Extent;
 import utilities.Material;
 import utilities.Ray;
+import utilities.UVCoordinates;
 import utilities.Vector3;
 
 public class Sphere extends RenderableObject implements Surface {
@@ -119,5 +120,25 @@ public class Sphere extends RenderableObject implements Surface {
         double y = position.getY() + radius * Math.sin(phi) * Math.sin(theta);
         double z = position.getZ() + radius * Math.cos(phi);
         return new Vector3(x, y, z);
+    }
+
+    @Override
+    public UVCoordinates getTextureCoordinates(Vector3 positionOnSurface) {
+        if (!this.getMaterial().isTextured()) { // If the material is not textured, then there are no texture coordinates
+            return null;
+        }
+
+        // Compute vector from sphere's center to the surface position
+        Vector3 normal = this.getNormal(positionOnSurface);
+
+        // Calculate azimuthal angle (theta) and elevation angle (phi)
+        double theta = Math.atan2(normal.getY(), normal.getX());
+        double phi = Math.acos(normal.getZ());
+
+        // Normalize theta and phi to the [0, 1] range
+        double u = phi / Math.PI;
+        double v = (theta + Math.PI) / (2 * Math.PI);
+
+        return new UVCoordinates(u, v);
     }
 }

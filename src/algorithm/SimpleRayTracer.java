@@ -4,9 +4,11 @@ import algorithm.illumination_model.PhongIlluminationModel;
 import algorithm.utils.ObjectDistancePair;
 import utilities.Color;
 import utilities.Ray;
+import utilities.UVCoordinates;
 import utilities.Vector3;
 import world.World;
 import world.scene_objects.renderable_objects.RenderableObject;
+import world.scene_objects.renderable_objects.Surface;
 
 /**
  * This is a simple ray tracer that uses the Phong Illumination Model and only computes one ray per pixel.
@@ -39,12 +41,19 @@ public class SimpleRayTracer extends RayTracer {
 
     private Color computeColor(Vector3 pointOfIntersection, Vector3 viewingDirection, RenderableObject object) {
         Vector3 normal = object.getNormal(pointOfIntersection);
+        UVCoordinates uvCoordinates = null;
+
+        if (object instanceof Surface) {
+            uvCoordinates = ((Surface) object).getTextureCoordinates(pointOfIntersection);
+        }
+
         PhongIlluminationModel phongIlluminationModel = new PhongIlluminationModel(
                 object.getMaterial(),
                 viewingDirection,
                 normal,
                 pointOfIntersection,
-                world
+                world,
+                uvCoordinates
         );
 
         return phongIlluminationModel.computeColor();

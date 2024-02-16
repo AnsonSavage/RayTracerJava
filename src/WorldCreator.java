@@ -1,7 +1,5 @@
 import algorithm.intersection_optimizations.IntersectionTester;
-import utilities.Color;
-import utilities.Material;
-import utilities.Vector3;
+import utilities.*;
 import world.World;
 import world.background.Background;
 import world.background.ConstantBackground;
@@ -1291,6 +1289,155 @@ public class WorldCreator {
         Sphere glassSphere = new Sphere(
                 new Vector3(0, 0, -.4),
                 glassMaterial,
+                1.1
+        );
+        world.addRenderableObject(glassSphere);
+
+        // Add a slightly yellow spherical area light
+        AreaLight areaLight = new AreaLight(
+                new Sphere(
+                        new Vector3(2, 5, 2),
+                        null,
+                        0.8
+                ),
+                100,
+                new Color(1, 1, 0.9)
+        );
+        world.addLight(areaLight);
+        return world;
+    }
+
+    public static World createTextureWorld(IntersectionTester intersectionTester) {
+        Camera camera = new Camera(
+                new Vector3(0, 0, 2),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                90,
+                1,
+                1
+        );
+
+        World world = new World(camera, intersectionTester);
+
+        Background background = new ConstantBackground(new Color(0.1, 0.2, 0.3), 1);
+        world.setBackground(background);
+
+        AxisAlignedRectangularPrism floor = new AxisAlignedRectangularPrism(
+                new Vector3(0, -1, 0),
+                new Material(
+                        0.1,
+                        0.4,
+                        0.6,
+                        3,
+                        0.5,
+                        0.19,
+                        new TextureSurfaceColor(new Image("/home/anson/Documents/CS_455/Ray_Tracer_Java/RayTracerJava/wood_floor_1k/textures/wood_floor_diff_1k.jpg")),
+                        new SolidSurfaceColor(new Color(0.1, 0.1, 0.1)),
+                        0,
+                        0,
+                        0
+                ),
+                new Vector3(10, 0.01, 10)
+        );
+        world.addRenderableObject(floor);
+
+        // Add three spheres of red, green, and blue colors, and then a glass sphere in the middle
+        Material glassMaterial = new Material(
+                0.0,
+                0.0,
+                0.0,
+                1,
+                0.1,
+                0,
+                new Color(0.1, 0.05, 0.05),
+                new Color(1, 1, 1),
+                1,
+                0.09,
+                1.3
+        );
+//        Material redMaterial = new Material(
+//                0.2,
+//                0.9,
+//                0.0,
+//                1,
+//                0.3,
+//                0.15,
+//                new Color(0.9, 0.05, 0.05),
+//                new Color(0.9, 0.1, 0.1),
+//                0,
+//                0,
+//                0
+//        );
+        Sphere redSphere = new Sphere(
+                new Vector3(1, 0, 0),
+                glassMaterial,
+                0.25
+        );
+        world.addRenderableObject(redSphere);
+
+        Material greenMaterial = new Material(
+                0.2,
+                0.4,
+                0.4,
+                1,
+                0.3,
+                0.05,
+                new Color(0.05, 0.9, 0.05),
+                new Color(0.1, 0.9, 0.1),
+                0,
+                0,
+                0
+        );
+        Sphere greenSphere = new Sphere(
+                new Vector3(-1, 0, 0),
+                greenMaterial,
+                0.25
+        );
+        world.addRenderableObject(greenSphere);
+
+        Material blueMaterial = new Material(
+                0.2,
+                1.0,
+                0.0,
+                1,
+                0.4,
+                0.3,
+                new Color(0.05, 0.05, 0.9),
+                new Color(0.1, 0.1, 0.9),
+                0,
+                0,
+                0
+        );
+        Sphere blueSphere = new Sphere(
+                new Vector3(0, 0, -1),
+                blueMaterial,
+                0.25
+        );
+        world.addRenderableObject(blueSphere);
+
+        Material parrisMaterial = new Material(
+
+                0.1,
+                0.8,
+                0.1,
+                3,
+                0.2,
+                0.04,
+                new TextureSurfaceColor(
+                        new Image("/home/anson/Documents/CS_455/Ray_Tracer_Java/RayTracerJava/textures/Parris.jpg"),
+                        3.0,
+                        0.0,
+                        3.0,
+                        0.0
+                ),
+                new SolidSurfaceColor(new Color(0.1, 0.1, 0.1)),
+                0,
+                0,
+                0
+        );
+        Sphere glassSphere = new Sphere(
+                new Vector3(0, 0, -.4),
+                parrisMaterial,
                 1.1
         );
         world.addRenderableObject(glassSphere);

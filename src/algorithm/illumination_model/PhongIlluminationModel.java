@@ -1,9 +1,6 @@
 package algorithm.illumination_model;
 
-import utilities.Color;
-import utilities.Material;
-import utilities.Ray;
-import utilities.Vector3;
+import utilities.*;
 import world.World;
 import world.scene_objects.light.AreaLight;
 import world.scene_objects.light.Light;
@@ -16,6 +13,7 @@ public class PhongIlluminationModel {
 
     private World world;
     private int areaLightSamples;
+    private UVCoordinates uvCoordinates;
     /**
      *
      * @param material
@@ -24,17 +22,18 @@ public class PhongIlluminationModel {
      * @param positionOnSurface
      * @param world
      */
-    public PhongIlluminationModel(Material material, Vector3 viewingDirection, Vector3 normal, Vector3 positionOnSurface, World world, int areaLightSamples) {
+    public PhongIlluminationModel(Material material, Vector3 viewingDirection, Vector3 normal, Vector3 positionOnSurface, World world, int areaLightSamples, UVCoordinates uvCoordinates) {
         this.material = material;
         this.viewingDirection = viewingDirection;
         this.normal = normal;
         this.positionOnSurface = positionOnSurface;
         this.world = world;
         this.areaLightSamples = areaLightSamples;
+        this.uvCoordinates = uvCoordinates;
     }
 
-    public PhongIlluminationModel(Material material, Vector3 viewingDirection, Vector3 normal, Vector3 positionOnSurface, World world) {
-        this(material, viewingDirection, normal, positionOnSurface, world, 1);
+    public PhongIlluminationModel(Material material, Vector3 viewingDirection, Vector3 normal, Vector3 positionOnSurface, World world, UVCoordinates uvCoordinates) {
+        this(material, viewingDirection, normal, positionOnSurface, world, 1, uvCoordinates);
     }
 
     private Color computeAmbientComponent() {
@@ -42,7 +41,7 @@ public class PhongIlluminationModel {
         double ambientCoefficient = material.getAmbientCoefficient();
         double ambientIntensity = this.world.getBackground().getAmbientIntensity();
         Color ambientColor = this.world.getBackground().getColor(viewingDirection);
-        return ambientColor.componentWiseMultiply(material.getDiffuseColor().multiplyNew(ambientCoefficient * ambientIntensity)); // Apparently the ambient light is only dependent on the material's diffuse color.
+        return ambientColor.componentWiseMultiply(material.getDiffuseColor(this.uvCoordinates).multiplyNew(ambientCoefficient * ambientIntensity)); // Apparently the ambient light is only dependent on the material's diffuse color.
     }
 
     private Color computeSpecularComponent(Light currentLight, Ray rayToLight) {
@@ -52,7 +51,7 @@ public class PhongIlluminationModel {
         double viewingAngleDependentIntensityFactor = Math.pow(Math.max(0.0, viewingDirection.dot(reflectedLightDirection)), material.getSpecularExponent());
 
         Color lightColor = currentLight.getColorFromPoint(rayToLight);
-        Color specularColor = material.getSpecularColor();
+        Color specularColor = material.getSpecularColor(this.uvCoordinates);
 
         return lightColor.componentWiseMultiply(specularColor.multiplyNew(specularCoefficient * viewingAngleDependentIntensityFactor));
     }
@@ -61,7 +60,7 @@ public class PhongIlluminationModel {
         double diffuseCoefficient = material.getDiffuseCoefficient();
         double angleDependentIntensityFactor = Math.max(0.0, normal.dot(rayToLight.getDirection())); // if it's less than 0, then we don't need any diffuse contribution
         Color lightColor = currentLight.getColorFromPoint(rayToLight);
-        return lightColor.componentWiseMultiply(material.getDiffuseColor().multiplyNew(diffuseCoefficient * angleDependentIntensityFactor));
+        return lightColor.componentWiseMultiply(material.getDiffuseColor(this.uvCoordinates).multiplyNew(diffuseCoefficient * angleDependentIntensityFactor));
     }
 
     public Color computeColor() {

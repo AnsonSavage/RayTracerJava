@@ -17,12 +17,13 @@ public class Main {
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
-        World world = WorldCreator.createCoolGlossyReflectionScene(new MedianSplitIntersectionTester(), 1.48);
+//        World world = WorldCreator.createCoolGlossyReflectionScene(new MedianSplitIntersectionTester(), 1.48);
 //        World world = WorldCreator.createMyOwnWorld(new MedianSplitIntersectionTester());
+        World world = WorldCreator.createTextureWorld(new NaiveIntersectionTester());
 //        world.getIntersectionTester().initialize();
 //        for (int i = 1; i < 11; i++) {
 //            World boundingBoxes = world.generateBoundingBoxWorld(new NaiveIntersectionTester(), i, true);
-            RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 5, 4, 5, 2, 2);
+            RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 5, 5, 4, 2, 2);
 
             RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world, true);
             multiSampleRayTracer.render();

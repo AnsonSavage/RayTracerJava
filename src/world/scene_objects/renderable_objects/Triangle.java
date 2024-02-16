@@ -3,6 +3,7 @@ package world.scene_objects.renderable_objects;
 import algorithm.utils.Extent;
 import utilities.Material;
 import utilities.Ray;
+import utilities.UVCoordinates;
 import utilities.Vector3;
 
 import java.util.ArrayList;
@@ -176,5 +177,45 @@ public class Triangle extends RenderableObject implements Surface {
         double z = w1 * vertices.get(0).getZ() + w2 * vertices.get(1).getZ() + w3 * vertices.get(2).getZ();
 
         return new Vector3(x, y, z);
+    }
+
+    private Vector3 getBarycentricCoordinates(Vector3 positionOnSurface) {
+        // v0 and v1 are vectors from the first vertex to the second and third vertices, respectively
+        Vector3 v0 = vertices.get(1).subtractNew(vertices.get(0));
+        Vector3 v1 = vertices.get(2).subtractNew(vertices.get(0));
+        // v2 is the vector from the first vertex to the given surface position
+        Vector3 v2 = positionOnSurface.subtractNew(vertices.get(0));
+
+        // Compute dot products needed for the barycentric calculation
+        double d00 = v0.dot(v0);
+        double d01 = v0.dot(v1);
+        double d11 = v1.dot(v1);
+        double d20 = v2.dot(v0);
+        double d21 = v2.dot(v1);
+
+        // Compute the denominator of the barycentric coordinate formula
+        // This value is equivalent to twice the area of the triangle
+        double denominator = d00 * d11 - d01 * d01;
+
+        // Calculate the barycentric coordinates for the given point on the surface
+        // lambda2 corresponds to the weight of the second vertex
+        double lambda2 = (d11 * d20 - d01 * d21) / denominator;
+        // lambda3 corresponds to the weight of the third vertex
+        double lambda3 = (d00 * d21 - d01 * d20) / denominator;
+        // lambda1 is calculated so that the sum of all three weights is 1
+        // It corresponds to the weight of the first vertex
+        double lambda1 = 1.0 - lambda2 - lambda3;
+
+        // Return the barycentric coordinates as a Vector3
+        // Each component of the Vector3 represents one of the barycentric coordinates
+        return new Vector3(lambda1, lambda2, lambda3);
+    }
+
+    @Override
+    public UVCoordinates getTextureCoordinates(Vector3 positionOnSurface) {
+        if (!this.getMaterial().isTextured()) { // If the material is not textured, then there are no texture coordinates
+            return null;
+        }
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

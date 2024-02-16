@@ -3,14 +3,11 @@ package algorithm.recursive;
 import algorithm.illumination_model.PhongIlluminationModel;
 import algorithm.utils.ObjectDistancePair;
 import algorithm.utils.RayOperations;
-import utilities.Color;
-import utilities.Material;
-import utilities.Ray;
-import utilities.Vector3;
+import utilities.*;
 import world.World;
 import world.scene_objects.renderable_objects.RenderableObject;
+import world.scene_objects.renderable_objects.Surface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RayTreeNode {
@@ -51,7 +48,13 @@ public class RayTreeNode {
 
         Material material = this.hitObject.getMaterial();
 
-        Color resultantColor = computeIlluminationModel(material);
+        UVCoordinates uvCoordinates = null;
+
+        if (this.hitObject instanceof Surface) {
+            uvCoordinates = ((Surface) this.hitObject).getTextureCoordinates(this.intersectionPoint);
+        }
+
+        Color resultantColor = computeIlluminationModel(material, uvCoordinates);
 
         if (this.nodeDepth >= this.myTree.getMaxTreeDepth()) {
             return resultantColor;
@@ -153,7 +156,7 @@ public class RayTreeNode {
         return reflectionColor.multiplyNew(reflectivity * (1.0 / reflectiveSamples));
     }
 
-    private Color computeIlluminationModel(Material material) {
+    private Color computeIlluminationModel(Material material, UVCoordinates uvCoordinates) {
         Vector3 viewingDirection = this.incomingRay.getDirection().multiplyNew(-1);
 
         PhongIlluminationModel phongIlluminationModel = new PhongIlluminationModel(
@@ -162,7 +165,8 @@ public class RayTreeNode {
                 this.normalAtIntersection,
                 this.intersectionPoint,
                 world,
-                this.myTree.getRenderSettings().getAreaLightSamples()
+                this.myTree.getRenderSettings().getAreaLightSamples(),
+                uvCoordinates
         );
 
         return phongIlluminationModel.computeColor();
