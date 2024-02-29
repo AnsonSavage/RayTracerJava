@@ -1,10 +1,12 @@
 package world.scene_objects.renderable_objects;
 
+import algorithm.utils.Extent;
 import utilities.Material;
 import utilities.Ray;
+import utilities.UVCoordinates;
 import utilities.Vector3;
 
-public class Sphere extends RenderableObject {
+public class Sphere extends RenderableObject implements Surface {
     private double radius;
 
     public Sphere(Vector3 position, Material material, double radius) {
@@ -77,6 +79,18 @@ public class Sphere extends RenderableObject {
         radius *= scaleFactor;
     }
 
+    @Override
+    public Extent getExtent() {
+        return new Extent(
+                position.getX() - radius,
+                position.getY() - radius,
+                position.getZ() - radius,
+                position.getX() + radius,
+                position.getY() + radius,
+                position.getZ() + radius
+        );
+    }
+
     private double computeB(Vector3 rayOrigin, Vector3 rayDirection, Vector3 sphereOrigin) {
 //        return 2 * (rayOrigin.getX() * rayDirection.getX() - rayOrigin.getX() * sphereOrigin.getX() + rayOrigin.getY() * rayDirection.getY() - rayOrigin.getY() * sphereOrigin.getY() + rayOrigin.getZ() * rayDirection.getZ() - rayOrigin.getZ() * sphereOrigin.getZ());
         double rayOriginDotDirection = rayOrigin.dot(rayDirection);
@@ -95,5 +109,36 @@ public class Sphere extends RenderableObject {
 
     private double computeDiscriminant(double B, double C) {
         return B * B - 4 * C;
+    }
+
+    @Override
+    public Vector3 sampleSurface() {
+        double theta = Math.random() * 2 * Math.PI;
+        double u = Math.random();
+        double phi = Math.acos(1 - 2 * u); // According to ChatGPT, this is needed to unbias the phi term
+        double x = position.getX() + radius * Math.sin(phi) * Math.cos(theta);
+        double y = position.getY() + radius * Math.sin(phi) * Math.sin(theta);
+        double z = position.getZ() + radius * Math.cos(phi);
+        return new Vector3(x, y, z);
+    }
+
+    @Override
+    public UVCoordinates getTextureCoordinates(Vector3 positionOnSurface) {
+        if (!this.getMaterial().isTextured()) { // If the material is not textured, then there are no texture coordinates
+            return null;
+        }
+
+        // Compute vector from sphere's center to the surface position
+        Vector3 normal = this.getNormal(positionOnSurface);
+
+        // Calculate azimuthal angle (theta) and elevation angle (phi)
+        double theta = Math.atan2(normal.getY(), normal.getX());
+        double phi = Math.acos(normal.getZ());
+
+        // Normalize theta and phi to the [0, 1] range
+        double u = phi / Math.PI;
+        double v = (theta + Math.PI) / (2 * Math.PI);
+
+        return new UVCoordinates(u, v);
     }
 }

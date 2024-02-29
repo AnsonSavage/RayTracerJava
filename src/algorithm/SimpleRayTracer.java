@@ -2,12 +2,13 @@ package algorithm;
 
 import algorithm.illumination_model.PhongIlluminationModel;
 import algorithm.utils.ObjectDistancePair;
-import algorithm.utils.RayOperations;
 import utilities.Color;
 import utilities.Ray;
+import utilities.UVCoordinates;
 import utilities.Vector3;
 import world.World;
 import world.scene_objects.renderable_objects.RenderableObject;
+import world.scene_objects.renderable_objects.Surface;
 
 /**
  * This is a simple ray tracer that uses the Phong Illumination Model and only computes one ray per pixel.
@@ -27,7 +28,7 @@ public class SimpleRayTracer extends RayTracer {
     @Override
     Color traceRay(Ray ray) {
 
-        ObjectDistancePair closestObjectDistancePair = RayOperations.getClosestObject(ray, world);
+        ObjectDistancePair closestObjectDistancePair = world.getClosestObject(ray);
         double minT = closestObjectDistancePair.getDistance();
         RenderableObject closestObject = closestObjectDistancePair.getObject();
 
@@ -35,19 +36,24 @@ public class SimpleRayTracer extends RayTracer {
             return world.getBackground().getColor(ray.getDirection());
         }
 
-        return computeColor(ray, minT, closestObject);
+        return computeColor(ray.getRayEnd(minT), ray.getDirection().multiplyNew(-1), closestObject);
     }
 
-    private Color computeColor(Ray ray, double t, RenderableObject object) {
-        Vector3 pointOfIntersection = ray.getRayEnd(t);
+    private Color computeColor(Vector3 pointOfIntersection, Vector3 viewingDirection, RenderableObject object) {
         Vector3 normal = object.getNormal(pointOfIntersection);
+        UVCoordinates uvCoordinates = null;
+
+        if (object instanceof Surface) {
+            uvCoordinates = ((Surface) object).getTextureCoordinates(pointOfIntersection);
+        }
+
         PhongIlluminationModel phongIlluminationModel = new PhongIlluminationModel(
                 object.getMaterial(),
-                ray.getDirection().multiplyNew(-1), // The direction from the point to the viewer
+                viewingDirection,
                 normal,
                 pointOfIntersection,
-                world.getLights(),
-                world.getBackground()
+                world,
+                uvCoordinates
         );
 
         return phongIlluminationModel.computeColor();

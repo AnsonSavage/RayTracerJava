@@ -18,11 +18,6 @@ public abstract class Light extends WorldObject {
 
     public abstract Ray getRayToLight(Vector3 point);
 
-    public abstract double getDistanceToLight(Vector3 point);
-    public Vector3 getDirectionToLight(Vector3 point) {
-        return this.getRayToLight(point).getDirection();
-    }
-
     public double getIntensity() {
         return intensity;
     }
@@ -39,8 +34,8 @@ public abstract class Light extends WorldObject {
         this.color = color;
     }
 
-    public Color getColorFromPoint(Vector3 point) {
-        return this.getColor().multiplyNew(this.getIntensity() * this.getFallOff(this.getDistanceToLight(point)));
+    public Color getColorFromPoint(Ray ray) {
+        return this.getColor().multiplyNew(this.getIntensity() * this.getFallOff(ray.getOriginalLength()));
     }
 
     protected abstract double getFallOff(double distance);

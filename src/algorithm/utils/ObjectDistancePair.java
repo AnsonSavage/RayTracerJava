@@ -11,18 +11,9 @@ public class ObjectDistancePair {
         return distance;
     }
 
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
-
     public RenderableObject getObject() {
         return object;
     }
-
-    public void setObject(RenderableObject object) {
-        this.object = object;
-    }
-
     private double distance;
 
 

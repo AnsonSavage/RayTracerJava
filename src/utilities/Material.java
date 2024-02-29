@@ -2,94 +2,112 @@ package utilities;
 
 public class Material {
 
+
     private double ambientCoefficient;
     private double diffuseCoefficient;
     private double specularCoefficient;
     private double specularExponent;
     private double reflectivity;
-    private Color diffuseColor;
-    private Color specularColor;
+    private double squaredReflectiveRoughness;
 
-    private double indexOfRefraction;
+    private SurfaceColor diffuseSurfaceColor;
+    private SurfaceColor specularSurfaceColor;
     private double transmission;
+    private double squaredTransmissiveRoughness;
+    private double indexOfRefraction;
+
 
     public Material(double ambientCoefficient, double diffuseCoefficient, double specularCoefficient, double specularExponent, double reflectivity, Color diffuseColor, Color specularColor) {
-        this(ambientCoefficient, diffuseCoefficient, specularCoefficient, specularExponent, reflectivity, diffuseColor, specularColor, 0, 1);
+        this(
+                ambientCoefficient,
+                diffuseCoefficient,
+                specularCoefficient,
+                specularExponent,
+                reflectivity,
+                0,
+                diffuseColor,
+                specularColor,
+                0,
+                0,
+                1
+        );
     }
-    public Material(double ambientCoefficient, double diffuseCoefficient, double specularCoefficient, double specularExponent, double reflectivity, Color diffuseColor, Color specularColor, double transmission, double indexOfRefraction) {
+
+    public Material(double ambientCoefficient, double diffuseCoefficient, double specularCoefficient, double specularExponent, double reflectivity, double reflectiveRoughness, Color diffuseColor, Color specularColor, double transmission, double transmissiveRoughness, double indexOfRefraction) {
+        this(
+                ambientCoefficient,
+                diffuseCoefficient,
+                specularCoefficient,
+                specularExponent,
+                reflectivity,
+                reflectiveRoughness,
+                new SolidSurfaceColor(diffuseColor),
+                new SolidSurfaceColor(specularColor),
+                transmission,
+                transmissiveRoughness,
+                indexOfRefraction
+        );
+    }
+
+    public Material(double ambientCoefficient, double diffuseCoefficient, double specularCoefficient, double specularExponent, double reflectivity, double reflectiveRoughness, SurfaceColor diffuseSurfaceColor, SurfaceColor specularSurfaceColor, double transmission, double transmissiveRoughness, double indexOfRefraction) {
         this.ambientCoefficient = ambientCoefficient;
         this.diffuseCoefficient = diffuseCoefficient;
         this.specularCoefficient = specularCoefficient;
         this.specularExponent = specularExponent;
-        this.diffuseColor = diffuseColor;
-        this.specularColor = specularColor;
+        this.diffuseSurfaceColor = diffuseSurfaceColor;
+        this.specularSurfaceColor = specularSurfaceColor;
         this.reflectivity = reflectivity;
+        this.squaredReflectiveRoughness = reflectiveRoughness * reflectiveRoughness;
         this.transmission = transmission;
+        this.squaredTransmissiveRoughness = transmissiveRoughness * transmissiveRoughness;
         this.indexOfRefraction = indexOfRefraction;
     }
-    public double getDiffuseCoefficient() {
-        return diffuseCoefficient;
+
+    public double getAmbientCoefficient() {
+        return ambientCoefficient;
     }
 
-    public void setDiffuseCoefficient(double diffuseCoefficient) {
-        this.diffuseCoefficient = diffuseCoefficient;
+    public double getDiffuseCoefficient() {
+        return diffuseCoefficient;
     }
 
     public double getSpecularCoefficient() {
         return specularCoefficient;
     }
 
-    public void setSpecularCoefficient(double specularCoefficient) {
-        this.specularCoefficient = specularCoefficient;
-    }
-
     public double getSpecularExponent() {
         return specularExponent;
     }
 
-    public void setSpecularExponent(double specularExponent) {
-        this.specularExponent = specularExponent;
-    }
-
-    public Color getDiffuseColor() {
-        return diffuseColor;
-    }
-
-    public void setDiffuseColor(Color diffuseColor) {
-        this.diffuseColor = diffuseColor;
-    }
-
-    public Color getSpecularColor() {
-        return specularColor;
-    }
-
-    public void setSpecularColor(Color specularColor) {
-        this.specularColor = specularColor;
-    }
-    public double getAmbientCoefficient() {
-        return ambientCoefficient;
-    }
-
-    public void setAmbientCoefficient(double ambientCoefficient) {
-        this.ambientCoefficient = ambientCoefficient;
-    }
     public double getReflectivity() {
         return reflectivity;
     }
 
-    public void setReflectivity(double reflectivity) {
-        this.reflectivity = reflectivity;
+    public double getSquaredReflectiveRoughness() {
+        return squaredReflectiveRoughness;
     }
 
-
-    public double getIndexOfRefraction() {
-        return indexOfRefraction;
+    public Color getDiffuseColor(UVCoordinates uvCoordinates) {
+        return diffuseSurfaceColor.getColor(uvCoordinates);
     }
-    public boolean isRefractive() {
-        return transmission > 0;
+
+    public Color getSpecularColor(UVCoordinates uvCoordinates) {
+        return specularSurfaceColor.getColor(uvCoordinates);
     }
 
     public double getTransmission() {
         return transmission;
+    }
+
+    public double getSquaredTransmissiveRoughness() {
+        return squaredTransmissiveRoughness;
+    }
+
+    public double getIndexOfRefraction() {
+        return indexOfRefraction;
+    }
+
+    public boolean isTextured() {
+        return diffuseSurfaceColor instanceof TextureSurfaceColor || specularSurfaceColor instanceof TextureSurfaceColor;
     }
 }

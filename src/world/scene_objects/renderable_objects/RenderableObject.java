@@ -1,11 +1,13 @@
 package world.scene_objects.renderable_objects;
 
+import algorithm.Hittable;
+import algorithm.utils.Extent;
 import utilities.Material;
 import utilities.Ray;
 import utilities.Vector3;
 import world.scene_objects.WorldObject;
 
-public abstract class RenderableObject extends WorldObject {
+public abstract class RenderableObject extends WorldObject implements Hittable {
     private Material material;
 
     public RenderableObject(Vector3 position, Material material) {
@@ -22,9 +24,15 @@ public abstract class RenderableObject extends WorldObject {
      */
     public abstract double getRayIntersectionParameter(Ray ray);
 
+    public boolean isHit(Ray ray) {
+        return getRayIntersectionParameter(ray) >= 0;
+    }
+
     public Material getMaterial() {
         return material;
     }
 
     public abstract void scale(double scaleFactor);
+
+    public abstract Extent getExtent();
 }

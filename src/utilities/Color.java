@@ -91,6 +91,7 @@ public class Color {
         rgbColor.add(c.rgbColor);
     }
 
+
     public Color addNew(Color c) {
         return new Color(rgbColor.addNew(c.rgbColor));
     }

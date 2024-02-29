@@ -2,6 +2,8 @@ package utilities;
 
 import algorithm.utils.MathUtils;
 
+import java.util.Vector;
+
 public class Vector3 {
     private double x;
     private double y;
@@ -169,5 +171,37 @@ public class Vector3 {
      */
     public Vector3 copy() {
         return new Vector3(this.x, this.y, this.z);
+    }
+
+    public double getValueByIndex(int index) {
+        if (index == 0) {
+            return this.x;
+        } else if (index == 1) {
+            return this.y;
+        } else if (index == 2) {
+            return this.z;
+        } else {
+            throw new IllegalArgumentException("Index must be 0, 1, or 2");
+        }
+    }
+
+    public void setValueByIndex(int index, double value) {
+        if (index == 0) {
+            this.x = value;
+        } else if (index == 1) {
+            this.y = value;
+        } else if (index == 2) {
+            this.z = value;
+        } else {
+            throw new IllegalArgumentException("Index must be 0, 1, or 2");
+        }
+    }
+
+    public Vector3 rotateVectorAroundAxis(Vector3 axis, double angleRadians) {
+        double cosine = Math.cos(angleRadians);
+        double sine = Math.sin(angleRadians);
+        double dot = this.dot(axis);
+
+        return this.multiplyNew(cosine).addNew(axis.cross(this).multiplyNew(sine)).addNew(axis.multiplyNew(dot * (1 - cosine))); // Rodrigues' rotation formula
     }
 }

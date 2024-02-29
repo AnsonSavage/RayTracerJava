@@ -19,6 +19,7 @@ public abstract class RenderAlgorithm {
     }
 
     public void render() {
+        this.world.getIntersectionTester().initialize();
         renderImplementation();
     }
 

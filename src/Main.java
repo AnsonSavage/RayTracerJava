@@ -1,6 +1,8 @@
 import algorithm.RayTracer;
 import algorithm.RenderSettings;
 import algorithm.MultiSampleRayTracer;
+import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
+import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import output.ImageOutputter;
 import output.PPMOutputter;
 import world.World;
@@ -9,21 +11,19 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        double startValue = 1.0;
-        double endValue = 3.5;
-        int numSteps = 40;
-        double[] indexOfRefraction = IndexOfRefractionSteps.calculateIndices(startValue, endValue, numSteps);
-
         // Create multple refractive images with different iors
         // Iors to test: 1.0, 1.01, 1.1, 1.3, 1.5, 2.0
-        int imageWidth = 500;
+        int imageWidth = 700;
         int imageHeight = imageWidth;
         double aspectRatio = (double) imageWidth / imageHeight;
 
-        for (double refractionIndex : indexOfRefraction) {
-//        for (double ior = 3.5; ior <= 6.0; ior += 0.05) {
-            World world = WorldCreator.createRefractivityTest(refractionIndex);
-            RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 8, 2);
+//        World world = WorldCreator.createCoolGlossyReflectionScene(new MedianSplitIntersectionTester(), 1.48);
+//        World world = WorldCreator.createMyOwnWorld(new MedianSplitIntersectionTester());
+        World world = WorldCreator.createTextureWorld(new NaiveIntersectionTester());
+//        world.getIntersectionTester().initialize();
+//        for (int i = 1; i < 11; i++) {
+//            World boundingBoxes = world.generateBoundingBoxWorld(new NaiveIntersectionTester(), i, true);
+            RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 5, 5, 4, 2, 2);
 
             RayTracer multiSampleRayTracer = new MultiSampleRayTracer(settings, world, true);
             multiSampleRayTracer.render();
@@ -35,8 +35,6 @@ public class Main {
                 System.out.println("Could not write to file");
             }
         }
-//        }
-
-    }
+//    }
 
 }
