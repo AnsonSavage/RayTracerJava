@@ -4,28 +4,15 @@ import algorithm.RenderSettings;
 import utilities.Color;
 import utilities.Ray;
 import world.World;
-import world.scene_objects.renderable_objects.RenderableObject;
 
-import java.util.Stack;
-
-public class RayTree {
-    private RayTreeNode root;
-
-
-    private RenderSettings renderSettings;
+public class RayTree extends CameraRayColorComputer {
     public RayTree(Ray cameraRay, World world, RenderSettings renderSettings) {
-        root = new RayTreeNode(cameraRay, world, 1, this);
-        this.renderSettings = renderSettings;
+        super(cameraRay, world, renderSettings);
+        root = new RayTreeNode(cameraRay, world, 1, this.renderSettings);
     }
 
-    public Color getPixelColor() {
+    @Override
+    public Color getCameraRayColor() {
         return root.getColorContribution();
-    }
-
-    public int getMaxTreeDepth() {
-        return this.renderSettings.getMaxBounces();
-    }
-    public RenderSettings getRenderSettings() {
-        return renderSettings;
     }
 }

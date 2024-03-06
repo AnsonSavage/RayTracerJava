@@ -62,7 +62,7 @@ public class Ray {
         List<Ray> jitteredRays = new ArrayList<>();
 
         for (int i = 0; i < n; i++) {
-            double theta = Math.random() * maxAngleRadians;
+            double theta = Math.sqrt(Math.random()) * maxAngleRadians;
             double phi = Math.random() * 2 * Math.PI;
 
             // Convert from polar to cartesian coordinates
@@ -78,4 +78,5 @@ public class Ray {
         }
         return jitteredRays;
     }
+
 }

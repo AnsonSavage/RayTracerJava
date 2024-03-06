@@ -8,7 +8,6 @@ public abstract class Background {
     public double getAmbientIntensity() {
         return ambientIntensity;
     }
-
     public void setAmbientIntensity(double ambientIntensity) {
         this.ambientIntensity = ambientIntensity;
     }
