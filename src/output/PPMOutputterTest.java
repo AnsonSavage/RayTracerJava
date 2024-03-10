@@ -1,6 +1,6 @@
 package output;
 
-import utilities.Image;
+import utilities.image.Image;
 
 import java.io.IOException;
 

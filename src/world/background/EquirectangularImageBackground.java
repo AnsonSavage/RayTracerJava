@@ -1,13 +1,14 @@
 package world.background;
 
 import utilities.Color;
-import utilities.Image;
+import utilities.image.HDRImage;
+import utilities.image.Image;
 import utilities.Vector3;
 
 public class EquirectangularImageBackground extends Background{
     private Image equirectangularImage;
 
-    public EquirectangularImageBackground(Image equirectangularImage, double ambientIntensity) {
+    public EquirectangularImageBackground(HDRImage equirectangularImage, double ambientIntensity) {
         super(ambientIntensity);
         this.equirectangularImage = equirectangularImage;
     }

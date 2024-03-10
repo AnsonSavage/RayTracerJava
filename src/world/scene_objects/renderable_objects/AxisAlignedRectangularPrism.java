@@ -67,35 +67,43 @@ public class AxisAlignedRectangularPrism extends RenderableObject implements Sur
         return extent;
     }
 
+
     @Override
     public Vector3 sampleSurface() {
-        // One heuristic here is to generate a random point in the bounding box of the prism and then project it onto the closest face
+        // Calculate the area of each pair of faces (there are 3 pairs for an AABB)
+        double areaXY = (extent.getMax().getX() - extent.getMin().getX()) * (extent.getMax().getY() - extent.getMin().getY());
+        double areaXZ = (extent.getMax().getX() - extent.getMin().getX()) * (extent.getMax().getZ() - extent.getMin().getZ());
+        double areaYZ = (extent.getMax().getY() - extent.getMin().getY()) * (extent.getMax().getZ() - extent.getMin().getZ());
 
-        double x = Math.random() * (extent.getMax().getX() - extent.getMin().getX()) + extent.getMin().getX();
-        double y = Math.random() * (extent.getMax().getY() - extent.getMin().getY()) + extent.getMin().getY();
-        double z = Math.random() * (extent.getMax().getZ() - extent.getMin().getZ()) + extent.getMin().getZ();
+        // Total surface area is the sum of all face areas (each area is counted twice since each face has a parallel counterpart)
+        double totalSurfaceArea = 2 * (areaXY + areaXZ + areaYZ);
 
-        Vector3 randomPoint = new Vector3(x, y, z);
+        // Generate a random number between 0 and the total surface area to decide which face to sample from
+        double r = Math.random() * totalSurfaceArea;
 
-        if (Math.abs(randomPoint.getX() - extent.getMax().getX()) < Math.abs(randomPoint.getX() - extent.getMin().getX())) {
-            randomPoint.setX(extent.getMax().getX());
+        // Decide which face to sample from based on the random number
+        Vector3 samplePoint = new Vector3();
+        if (r < 2 * areaXY) {
+            // Sample from one of the XY faces
+            double x = Math.random() * (extent.getMax().getX() - extent.getMin().getX()) + extent.getMin().getX();
+            double y = Math.random() * (extent.getMax().getY() - extent.getMin().getY()) + extent.getMin().getY();
+            double z = (r < areaXY) ? extent.getMin().getZ() : extent.getMax().getZ(); // Choose which face based on r
+            samplePoint = new Vector3(x, y, z);
+        } else if (r < 2 * (areaXY + areaXZ)) {
+            // Sample from one of the XZ faces
+            double x = Math.random() * (extent.getMax().getX() - extent.getMin().getX()) + extent.getMin().getX();
+            double z = Math.random() * (extent.getMax().getZ() - extent.getMin().getZ()) + extent.getMin().getZ();
+            double y = (r < (2 * areaXY + areaXZ)) ? extent.getMin().getY() : extent.getMax().getY(); // Choose which face
+            samplePoint = new Vector3(x, y, z);
         } else {
-            randomPoint.setX(extent.getMin().getX());
+            // Sample from one of the YZ faces
+            double y = Math.random() * (extent.getMax().getY() - extent.getMin().getY()) + extent.getMin().getY();
+            double z = Math.random() * (extent.getMax().getZ() - extent.getMin().getZ()) + extent.getMin().getZ();
+            double x = (r < (2 * (areaXY + areaXZ) + areaYZ)) ? extent.getMin().getX() : extent.getMax().getX(); // Choose which face
+            samplePoint = new Vector3(x, y, z);
         }
 
-        if (Math.abs(randomPoint.getY() - extent.getMax().getY()) < Math.abs(randomPoint.getY() - extent.getMin().getY())) {
-            randomPoint.setY(extent.getMax().getY());
-        } else {
-            randomPoint.setY(extent.getMin().getY());
-        }
-
-        if (Math.abs(randomPoint.getZ() - extent.getMax().getZ()) < Math.abs(randomPoint.getZ() - extent.getMin().getZ())) {
-            randomPoint.setZ(extent.getMax().getZ());
-        } else {
-            randomPoint.setZ(extent.getMin().getZ());
-        }
-
-        return randomPoint;
+        return samplePoint;
     }
 
     @Override

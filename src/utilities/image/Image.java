@@ -1,4 +1,6 @@
-package utilities;
+package utilities.image;
+
+import utilities.Color;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -6,11 +8,14 @@ import java.io.File;
 import java.io.IOException;
 
 public class Image {
-    private int resolutionX;
-    private int resolutionY;
-    private Color[][] pixels;
+    protected int resolutionX;
+    protected int resolutionY;
+    protected Color[][] pixels;
 
     // Existing constructor
+    public Image() {
+    }
+
     public Image(int resolutionX, int resolutionY) {
         this.resolutionX = resolutionX;
         this.resolutionY = resolutionY;

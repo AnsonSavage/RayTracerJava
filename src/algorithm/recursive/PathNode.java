@@ -24,6 +24,7 @@ public class PathNode extends Node<PathNode> {
         Color subsequentRayContribution = null;
         if (randomNumber < material.getDiffuseCoefficient()) {
             // Send diffuse ray
+            // TODO: You may need to make this fall off by the cosine of the angle of the viewing direction
             Ray normalRay = new Ray(this.intersectionPoint, this.normalAtIntersection);
             Ray diffuseRay = normalRay.sampleJitteredRay(180); // Sample from the hemisphere
             PathNode nextPath = new PathNode(diffuseRay, world, nodeDepth, renderSettings);

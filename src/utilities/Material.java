@@ -110,4 +110,8 @@ public class Material {
     public boolean isTextured() {
         return diffuseSurfaceColor instanceof TextureSurfaceColor || specularSurfaceColor instanceof TextureSurfaceColor;
     }
+
+    public void setSquaredReflectiveRoughness(double v) {
+        squaredReflectiveRoughness = v;
+    }
 }

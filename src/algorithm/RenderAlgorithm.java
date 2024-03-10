@@ -1,6 +1,6 @@
 package algorithm;
 
-import utilities.Image;
+import utilities.image.Image;
 import world.World;
 
 public abstract class RenderAlgorithm {

@@ -13,6 +13,6 @@ public class Path extends CameraRayColorComputer {
 
     @Override
     public Color getCameraRayColor() {
-        return null;
+        return root.getColorContribution();
     }
 }

@@ -1,5 +1,6 @@
 import algorithm.intersection_optimizations.IntersectionTester;
 import utilities.*;
+import utilities.image.Image;
 import world.World;
 import world.background.Background;
 import world.background.ConstantBackground;
