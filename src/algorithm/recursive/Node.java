@@ -43,6 +43,11 @@ public abstract class Node<T extends Node<T>> {
         this.intersectionPoint = this.incomingRay.getRayEnd(this.incomingRayLength);
         this.normalAtIntersection = this.hitObject.getNormal(this.intersectionPoint);
 
+        // Check to ensure that the normal and the incoming ray are facing opposite directions
+        if (!this.hitObject.getMaterial().isTransmissive() && this.incomingRay.getDirection().dot(normalAtIntersection) > 0) {
+            this.normalAtIntersection = this.normalAtIntersection.multiplyNew(-1);
+        }
+
         Material material = this.hitObject.getMaterial();
 
         UVCoordinates uvCoordinates = null;

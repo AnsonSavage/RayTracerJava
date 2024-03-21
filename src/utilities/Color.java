@@ -116,4 +116,5 @@ public class Color {
         Color blend = color1.multiplyNew(1 - factor).addNew(color2.multiplyNew(factor));
         return blend;
     }
+
 }

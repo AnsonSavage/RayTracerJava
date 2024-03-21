@@ -114,4 +114,8 @@ public class Material {
     public void setSquaredReflectiveRoughness(double v) {
         squaredReflectiveRoughness = v;
     }
+
+    public boolean isTransmissive() {
+        return transmission > 0;
+    }
 }

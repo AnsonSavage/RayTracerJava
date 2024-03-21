@@ -16,6 +16,7 @@ import world.scene_objects.Camera;
 import world.scene_objects.light.AreaLight;
 import world.scene_objects.renderable_objects.AxisAlignedRectangularPrism;
 import world.scene_objects.renderable_objects.RenderableObject;
+import world.scene_objects.renderable_objects.Triangle;
 import world.scene_objects.light.Light;
 
 import java.util.ArrayList;
@@ -100,6 +101,13 @@ public class World {
     public void addRenderableObject(RenderableObject object) {
         renderableObjects.add(object);
         this.intersectionTester.addRenderableObject(object);
+    }
+
+    public void addRenderableObjects(List<Triangle> objects) {
+        renderableObjects.addAll(objects);
+        for (RenderableObject object : objects) {
+            this.intersectionTester.addRenderableObject(object);
+        }
     }
 
     public void addLight(Light light) {
