@@ -26,20 +26,27 @@ public class PathNode extends Node<PathNode> {
             // Send diffuse ray
             Ray normalRay = new Ray(this.intersectionPoint, this.normalAtIntersection);
             Ray diffuseRay = normalRay.sampleJitteredRay(180); // Sample from the hemisphere
-            PathNode nextPath = new PathNode(diffuseRay, world, nodeDepth, renderSettings);
+            PathNode nextPath = new PathNode(diffuseRay, world, nodeDepth + 1, renderSettings);
             // Apparently, because we are sampling from a hemisphere and not a cosine distribution, we must both:
             // 1. fall off by the cosine of the angle and
             // 2. Multiply by the PDF of sampling from a hemisphere (1/(2PI)
             double cosine = Math.abs(this.normalAtIntersection.dot(this.incomingRay.getDirection()));
             double hemispherePDF = 1.0 / (2 * Math.PI);
-            subsequentRayContribution = nextPath.getColorContribution().multiplyNew(cosine * hemispherePDF);
+            subsequentRayContribution = nextPath.getColorContribution().multiplyNew(cosine);
         } else if (randomNumber < material.getDiffuseCoefficient() + material.getReflectivity()) {
             // Send a reflection ray
             subsequentRayContribution = computeReflectionContribution(material);
         } else {
             subsequentRayContribution = computeTransmissionContribution(material);
         }
+
         return currentSurfaceColor.addNew(subsequentRayContribution);
+//        if (nodeDepth > 1) {
+//        }
+//        else {
+//            return subsequentRayContribution;
+//        }
+
     }
 
     @Override
