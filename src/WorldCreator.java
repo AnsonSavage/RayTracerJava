@@ -1436,36 +1436,43 @@ public class WorldCreator {
                 world.addRenderableObjects(makeQuad(new Vector3(1, 1, 1), new Vector3(1, 1, -1),
                                 new Vector3(1, -1, -1), new Vector3(1, -1, 1), greenWall));
 
-                // Add area light
-                AreaLight areaLight = new AreaLight(
-                                new AxisAlignedRectangularPrism(
+//                // Add area light
+//                AreaLight areaLight = new AreaLight(
+//                                new AxisAlignedRectangularPrism(
+//                                                new Vector3(0, 0.95, 0),
+//                                                null,
+//                                                new Vector3(0.3, 0.005, 0.3)),
+//                                10,
+//                                new Color(1, 1, 1));
+//                world.addLight(areaLight);
+
+                RenderableObject areaLight = new AxisAlignedRectangularPrism(
                                                 new Vector3(0, 0.95, 0),
-                                                null,
-                                                new Vector3(0.3, 0.005, 0.3)),
-                                10,
-                                new Color(1, 1, 1));
-                world.addLight(areaLight);
+                                                new EmissiveMaterial(new Color(1, 1, 1), 10),
+                                                new Vector3(0.3, 0.005, 0.3)
+                );
+                world.addRenderableObject(areaLight);
 
-                // Add a glass sphere
-                Material glass = new Material(
-                                0.0,
-                                0.0,
-                                0.0,
-                                1,
-                                0.1,
-                                0,
-                                new Color(0.1, 0.05, 0.05),
-                                new Color(1, 1, 1),
-                                1,
-                                0,
-                                1.6);
-
-                Sphere sphere = new Sphere(
-                                new Vector3(-0.5, -0.6, 0.2),
-                                glass,
-                                0.4);
-
-                world.addRenderableObject(sphere);
+//                // Add a glass sphere
+//                Material glass = new Material(
+//                                0.0,
+//                                0.0,
+//                                0.0,
+//                                1,
+//                                0.1,
+//                                0,
+//                                new Color(0.1, 0.05, 0.05),
+//                                new Color(1, 1, 1),
+//                                1,
+//                                0,
+//                                1.6);
+//
+//                Sphere sphere = new Sphere(
+//                                new Vector3(-0.5, -0.6, 0.2),
+//                                glass,
+//                                0.4);
+//
+//                world.addRenderableObject(sphere);
 
                 Vector3 boxCenter = new Vector3(0.45, -0.8, 0);
                 Vector3 boxDimensions = new Vector3(0.52, 1.6, 0.52); // width, height, and depth of the box

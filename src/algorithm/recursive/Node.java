@@ -73,7 +73,7 @@ public abstract class Node<T extends Node<T>> {
     protected abstract Color combineSubsequentBounces(Color currentSurfaceColor);
 
 
-    private Color computeIlluminationModel(Material material, UVCoordinates uvCoordinates) {
+    protected Color computeIlluminationModel(Material material, UVCoordinates uvCoordinates) {
         Vector3 viewingDirection = this.incomingRay.getDirection().multiplyNew(-1);
 
         PhongIlluminationModel phongIlluminationModel = new PhongIlluminationModel(
