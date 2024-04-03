@@ -1,9 +1,11 @@
 import algorithm.intersection_optimizations.IntersectionTester;
 import utilities.*;
+import utilities.image.HDRImage;
 import utilities.image.Image;
 import world.World;
 import world.background.Background;
 import world.background.ConstantBackground;
+import world.background.EquirectangularImageBackground;
 import world.scene_objects.Camera;
 import world.scene_objects.light.AreaLight;
 import world.scene_objects.light.Light;
@@ -1437,42 +1439,42 @@ public class WorldCreator {
                                 new Vector3(1, -1, -1), new Vector3(1, -1, 1), greenWall));
 
 //                // Add area light
-//                AreaLight areaLight = new AreaLight(
-//                                new AxisAlignedRectangularPrism(
-//                                                new Vector3(0, 0.95, 0),
-//                                                null,
-//                                                new Vector3(0.3, 0.005, 0.3)),
-//                                10,
-//                                new Color(1, 1, 1));
-//                world.addLight(areaLight);
-
-                RenderableObject areaLight = new AxisAlignedRectangularPrism(
+                AreaLight areaLight = new AreaLight(
+                                new AxisAlignedRectangularPrism(
                                                 new Vector3(0, 0.95, 0),
-                                                new EmissiveMaterial(new Color(1, 1, 1), 10),
-                                                new Vector3(0.3, 0.005, 0.3)
-                );
-                world.addRenderableObject(areaLight);
+                                                null,
+                                                new Vector3(0.3, 0.005, 0.3)),
+                                6,
+                                new Color(1, 1, 1));
+                world.addLight(areaLight);
 
-//                // Add a glass sphere
-//                Material glass = new Material(
-//                                0.0,
-//                                0.0,
-//                                0.0,
-//                                1,
-//                                0.1,
-//                                0,
-//                                new Color(0.1, 0.05, 0.05),
-//                                new Color(1, 1, 1),
-//                                1,
-//                                0,
-//                                1.6);
-//
-//                Sphere sphere = new Sphere(
-//                                new Vector3(-0.5, -0.6, 0.2),
-//                                glass,
-//                                0.4);
-//
-//                world.addRenderableObject(sphere);
+//                RenderableObject areaLight = new AxisAlignedRectangularPrism(
+//                                                new Vector3(0, 0.95, 0),
+//                                                new EmissiveMaterial(new Color(1, 1, 1), 10),
+//                                                new Vector3(0.3, 0.005, 0.3)
+//                );
+//                world.addRenderableObject(areaLight);
+
+                // Add a glass sphere
+                Material glass = new Material(
+                                0.0,
+                                0.0,
+                                0.0,
+                                1,
+                                0.1,
+                                0,
+                                new Color(0.1, 0.05, 0.05),
+                                new Color(1, 1, 1),
+                                1,
+                                0,
+                                1.6);
+
+                Sphere sphere = new Sphere(
+                                new Vector3(-0.5, -0.6, 0.2),
+                                glass,
+                                0.4);
+
+                world.addRenderableObject(sphere);
 
                 Vector3 boxCenter = new Vector3(0.45, -0.8, 0);
                 Vector3 boxDimensions = new Vector3(0.52, 1.6, 0.52); // width, height, and depth of the box
@@ -1576,6 +1578,118 @@ public class WorldCreator {
                 // Create the triangles for the box and add them to the world
                 List<Triangle> boxTriangles = makeBoxFromVertices(vertices, material);
                 world.addRenderableObjects(boxTriangles);
+        }
+
+        public static World createHDRIWorld(IntersectionTester intersectionTester) {
+                Camera camera = new Camera(
+                                new Vector3(0, 0, 2),
+                                new Vector3(0, 0, 0),
+                                new Vector3(0, 1, 0),
+                                90,
+                                1,
+                                1);
+
+                World world = new World(camera, intersectionTester);
+
+                Background background = new EquirectangularImageBackground(
+                        new HDRImage("/home/anson/Documents/CS_455/Ray_Tracer_Java/RayTracerJava/textures/metro_noord_1k.exr"), 0
+                );
+
+                world.setBackground(background);
+
+                AxisAlignedRectangularPrism floor = new AxisAlignedRectangularPrism(
+                                new Vector3(0, -1, 0),
+                                new Material(
+                                                0.1,
+                                                0.4,
+                                                0.6,
+                                                3,
+                                                0.5,
+                                                0.19,
+                                                new TextureSurfaceColor(new Image(
+                                                                "/home/anson/Documents/CS_455/Ray_Tracer_Java/RayTracerJava/wood_floor_1k/textures/wood_floor_diff_1k.jpg")),
+                                                new SolidSurfaceColor(new Color(0.1, 0.1, 0.1)),
+                                                0,
+                                                0,
+                                                0),
+                                new Vector3(10, 0.01, 10));
+                world.addRenderableObject(floor);
+
+                // Add three spheres of red, green, and blue colors, and then a glass sphere in
+                // the middle
+                Material redMaterial = new Material(
+                                0.2,
+                                0.9,
+                                0.0,
+                                1,
+                                0.3,
+                                0.15,
+                                new Color(0.9, 0.05, 0.05),
+                                new Color(0.9, 0.1, 0.1),
+                                0,
+                                0,
+                                0);
+                Sphere redSphere = new Sphere(
+                                new Vector3(1, 0, 0),
+                                redMaterial,
+                                0.25);
+                world.addRenderableObject(redSphere);
+
+                Material greenMaterial = new Material(
+                                0.2,
+                                .8,
+                                0.0,
+                                1,
+                                0.3,
+                                0.2,
+                                new Color(0.05, 0.9, 0.05),
+                                new Color(0.1, 0.9, 0.1),
+                                0,
+                                0,
+                                0);
+                Sphere greenSphere = new Sphere(
+                                new Vector3(-1, 0, 0),
+                                greenMaterial,
+                                0.25);
+                world.addRenderableObject(greenSphere);
+
+                Material blueMaterial = new Material(
+                                0.2,
+                                1.0,
+                                0.0,
+                                1,
+                                0.4,
+                                0.3,
+                                new Color(0.05, 0.05, 0.9),
+                                new Color(0.1, 0.1, 0.9),
+                                0,
+                                0,
+                                0);
+                Sphere blueSphere = new Sphere(
+                                new Vector3(0, 0, -1),
+                                blueMaterial,
+                                0.25);
+                world.addRenderableObject(blueSphere);
+
+                Material glassMaterial = new Material(
+                                0.0,
+                                0.0,
+                                0.0,
+                                1,
+                                0.1,
+                                0,
+                                new Color(0.1, 0.05, 0.05),
+                                new Color(1, 1, 1),
+                                1,
+                                0.09,
+                                1.4);
+                Sphere glassSphere = new Sphere(
+                                new Vector3(0, 0, -.4),
+                                glassMaterial,
+                                1.1);
+                world.addRenderableObject(glassSphere);
+
+                return world;
         }
 
 }

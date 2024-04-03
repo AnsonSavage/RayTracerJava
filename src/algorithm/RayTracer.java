@@ -81,7 +81,7 @@ public abstract class RayTracer extends RenderAlgorithm {
             e.printStackTrace();
         }
 
-        System.out.println("Rendering completed in " + (System.currentTimeMillis() - startTime) + " milliseconds, using " + numThreads + " threads");
+        System.out.println("Rendering completed in " + ((System.currentTimeMillis() - startTime)/1000) + " seconds, using " + numThreads + " threads");
 
     }
 

@@ -106,7 +106,7 @@ public abstract class Node<T extends Node<T>> {
         }
 
         int reflectiveSamples = this.renderSettings.getReflectiveSamples();
-        List<Ray> jitteredReflectionRays = reflectionRay.getNJitteredRays(roughness * 180, reflectiveSamples);
+        List<Ray> jitteredReflectionRays = reflectionRay.getNJitteredRays(roughness * 90, reflectiveSamples);
         Color reflectionColor = new Color(0, 0, 0);
         for (Ray jitteredReflectionRay : jitteredReflectionRays) {
             T nextNode = createNode(jitteredReflectionRay, this.world, this.nodeDepth+1, renderSettings);
@@ -156,7 +156,7 @@ public abstract class Node<T extends Node<T>> {
             nextNode.getColorContribution();
         }
 
-        List<Ray> jitteredRefractionRays = refractionRay.getNJitteredRays(roughness * 180, refractiveSamples);
+        List<Ray> jitteredRefractionRays = refractionRay.getNJitteredRays(roughness * 90, refractiveSamples);
         for (Ray jitteredRefractionRay : jitteredRefractionRays) {
             T nextNode = createNode(
                     jitteredRefractionRay,

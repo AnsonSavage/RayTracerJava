@@ -18,7 +18,7 @@ public class HDRImage extends Image {
     private void loadHDRImage(String filePath) {
         try {
             String pythonScriptPath = "ReadHDRImage.py";
-            String[] cmd = {"python", pythonScriptPath, filePath};
+            String[] cmd = {"python3", pythonScriptPath, filePath};
 
             Process process = Runtime.getRuntime().exec(cmd);
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
