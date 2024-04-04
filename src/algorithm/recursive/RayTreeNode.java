@@ -1,15 +1,8 @@
 package algorithm.recursive;
 
 import algorithm.RenderSettings;
-import algorithm.illumination_model.PhongIlluminationModel;
-import algorithm.utils.ObjectDistancePair;
-import algorithm.utils.RayOperations;
 import utilities.*;
 import world.World;
-import world.scene_objects.renderable_objects.RenderableObject;
-import world.scene_objects.renderable_objects.Surface;
-
-import java.util.List;
 
 public class RayTreeNode extends Node<RayTreeNode> {
     // A ray tree node holds some data about the ray on its path to the object it hits, hit object.
@@ -22,7 +15,7 @@ public class RayTreeNode extends Node<RayTreeNode> {
     }
 
     @Override
-    protected Color combineSubsequentBounces(Color currentSurfaceColor) {
+    protected Color combineSubsequentBounces(Color currentSurfaceColor, UVCoordinates uvCoordinates) {
         Material material = this.hitObject.getMaterial();
         // Compute reflective contributions
         if (material.getReflectivity() > 0) {

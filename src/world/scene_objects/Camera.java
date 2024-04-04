@@ -23,6 +23,7 @@ public class Camera extends WorldObject {
         // Note that both fieldOfViewX and fieldOfView Y are in radians
     }
 
+
     public Vector3 getLookAtVector() {
         return this.lookAt;
     }

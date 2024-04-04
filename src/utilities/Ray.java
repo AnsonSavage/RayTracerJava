@@ -49,6 +49,40 @@ public class Ray {
         return originalLength;
     }
 
+    public void jitterRayOriginAndDirection(double maxJitterAmount, double distanceToPoint) {
+        // Jitter the origin within a sphere of radius maxJitterAmount
+        double offsetX = (Math.random() * 2 - 1) * maxJitterAmount;
+        double offsetY = (Math.random() * 2 - 1) * maxJitterAmount;
+        double offsetZ = (Math.random() * 2 - 1) * maxJitterAmount;
+        Vector3 jitterOrigin = new Vector3(offsetX, offsetY, offsetZ);
+
+        if (jitterOrigin.magnitude() > maxJitterAmount) {
+            jitterOrigin.normalize(); // Normalize the jitter direction
+            jitterOrigin = jitterOrigin.multiplyNew(maxJitterAmount); // Scale to the max jitter amount
+        }
+
+        // Apply the jitter to the ray's origin
+        Vector3 newOrigin = this.origin.addNew(jitterOrigin);
+
+        // Determine the constraint point the jittered ray must pass through
+        Vector3 constraintPoint = this.getRayEnd(distanceToPoint);
+
+        // Adjust the direction of the ray to ensure it goes through the constraint point
+        Vector3 newDirection = constraintPoint.subtractNew(newOrigin);
+        double newDirectionMagnitude = newDirection.magnitude();
+        newDirection.normalize(); // The direction should be normalized
+
+        // Update the ray's properties
+        this.origin = newOrigin;
+        this.direction = newDirection;
+        // Since the direction has changed, you might need to adjust the originalLength or any other related properties
+//
+//        // Optionally, if the concept of originalLength is to maintain the 'distance' concept,
+//        // it could be set to the magnitude of the vector from the new origin to the constraint point.
+//        this.originalLength = newDirectionMagnitude;
+    }
+
+
     public Ray sampleJitteredRay(double maxOffsetAngleDegrees) {
         return getNJitteredRays(maxOffsetAngleDegrees, 1).get(0);
     }

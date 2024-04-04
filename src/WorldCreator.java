@@ -1582,7 +1582,7 @@ public class WorldCreator {
 
         public static World createHDRIWorld(IntersectionTester intersectionTester) {
                 Camera camera = new Camera(
-                                new Vector3(0, 0, 2),
+                                new Vector3(0, 0, 3.2),
                                 new Vector3(0, 0, 0),
                                 new Vector3(0, 1, 0),
                                 90,
@@ -1592,7 +1592,7 @@ public class WorldCreator {
                 World world = new World(camera, intersectionTester);
 
                 Background background = new EquirectangularImageBackground(
-                        new HDRImage("/home/anson/Documents/CS_455/Ray_Tracer_Java/RayTracerJava/textures/metro_noord_1k.exr"), 0
+                        new HDRImage("/home/anson/Documents/CS_455/Ray_Tracer_Java/RayTracerJava/textures/buikslotermeerplein_1k.exr"), 0
                 );
 
                 world.setBackground(background);

@@ -62,15 +62,17 @@ public abstract class Node<T extends Node<T>> {
             return resultantColor;
         }
 
-        return combineSubsequentBounces(resultantColor);
+        return combineSubsequentBounces(resultantColor, uvCoordinates);
     }
 
     /**
      * Takes the color of the surface and combines it with subsequent bounces (either due to the future ray tree or the future ray path)
+     *
      * @param currentSurfaceColor The color computed at the surface
+     * @param uvCoordinates
      * @return This surface color combined with the color contribution of subsequent bounces
      */
-    protected abstract Color combineSubsequentBounces(Color currentSurfaceColor);
+    protected abstract Color combineSubsequentBounces(Color currentSurfaceColor, UVCoordinates uvCoordinates);
 
 
     protected Color computeIlluminationModel(Material material, UVCoordinates uvCoordinates) {

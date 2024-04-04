@@ -3,10 +3,8 @@ package utilities.image;
 import utilities.Color;
 import utilities.image.Image;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class HDRImage extends Image {
 
@@ -15,50 +13,60 @@ public class HDRImage extends Image {
         loadHDRImage(filePath);
     }
 
-    private void loadHDRImage(String filePath) {
-        try {
-            String pythonScriptPath = "ReadHDRImage.py";
-            String[] cmd = {"python3", pythonScriptPath, filePath};
+        private void loadHDRImage(String filePath) {
+            try {
 
-            Process process = Runtime.getRuntime().exec(cmd);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//                String pythonScriptPath = "ReadHDRImage.py";
+                String outputFilePath =filePath.substring(0, filePath.lastIndexOf('.')) + ".txt";
+//
+//                String[] cmd = {"python3", pythonScriptPath, filePath, " >> ", outputFilePath};
+//
+//                // Start the process builder
+//                ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+//                // Redirect the output of the process to a file
+//
+////                processBuilder.redirectOutput(new File(outputFilePath));
+//
+//                Process process = processBuilder.start();
+//                process.waitFor();
+//
+//                // Now read the output from the file
+                File file = new File(outputFilePath);
+                BufferedReader reader = new BufferedReader(new FileReader(file));
 
-            String line;
-            int x = 0, y = 0;
-            boolean isFirstLine = false;
-            while ((line = reader.readLine()) != null) {
-                // Initialize the pixels array on the first line to set the image dimensions
-                if(isFirstLine) {
-                    // This example assumes the Python script also outputs the dimensions as the first line
-                    String[] resolutionValues = line.split(",");
-                    this.resolutionX = Integer.parseInt(resolutionValues[0]);
-                    this.resolutionY = Integer.parseInt(resolutionValues[1]);
-                    this.pixels = new Color[resolutionX][resolutionY]; // Generate
-                    isFirstLine = false;
-                    continue; // Skip the rest of the loop to avoid trying to set a pixel color here
-                }
+                boolean isFirstLine = true;
+                int x = 0, y = 0;
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (isFirstLine) {
+                        String[] resolutionValues = line.split(",");
+                        this.resolutionX = Integer.parseInt(resolutionValues[0]);
+                        this.resolutionY = Integer.parseInt(resolutionValues[1]);
+                        this.pixels = new Color[this.resolutionX][this.resolutionY];
+                        isFirstLine = false;
+                    } else {
+                        String[] rgbValues = line.split(",");
+                        if (rgbValues.length >= 3) {
+                            double red = Double.parseDouble(rgbValues[0]);
+                            double green = Double.parseDouble(rgbValues[1]);
+                            double blue = Double.parseDouble(rgbValues[2]);
+                            this.pixels[x][y] = new Color(red, green, blue);
 
-                String[] rgbValues = line.split(",");
-                if(rgbValues.length >= 3) {
-                    float red = Float.parseFloat(rgbValues[0]);
-                    float green = Float.parseFloat(rgbValues[1]);
-                    float blue = Float.parseFloat(rgbValues[2]);
-
-
-                    this.pixels[x][y] = new Color(red, green, blue);
-
-                    // Increment x and y appropriately
-                    x++;
-                    if(x == this.resolutionX) {
-                        x = 0;
-                        y++;
+                            x++;
+                            if (x == this.resolutionX) {
+                                x = 0;
+                                y++;
+                            }
+                        }
                     }
                 }
+                reader.close();
+
+                // Optionally, delete the output file if it is no longer needed
+//                file.delete();
+
+            } catch (IOException e) { // | InterruptedException e) {
+                System.err.println("Failed to load HDR image: " + e.getMessage());
             }
-            reader.close();
-            process.waitFor();
-        } catch (IOException | InterruptedException e) {
-            System.err.println("Failed to load HDR image: " + e.getMessage());
         }
     }
-}

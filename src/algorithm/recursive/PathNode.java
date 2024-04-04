@@ -1,14 +1,8 @@
 package algorithm.recursive;
 
 import algorithm.RenderSettings;
-import algorithm.utils.RayOperations;
-import utilities.Color;
-import utilities.Material;
-import utilities.Ray;
-import utilities.Vector3;
+import utilities.*;
 import world.World;
-
-import java.util.List;
 
 public class PathNode extends Node<PathNode> {
     public PathNode(Ray incomingRay, World world, int nodeDepth, RenderSettings renderSettings) {
@@ -16,7 +10,7 @@ public class PathNode extends Node<PathNode> {
     }
 
     @Override
-    protected Color combineSubsequentBounces(Color currentSurfaceColor) {
+    protected Color combineSubsequentBounces(Color currentSurfaceColor, UVCoordinates uvCoordinates) {
         Material material = this.hitObject.getMaterial();
         double coefficientTotal = material.getDiffuseCoefficient() + material.getReflectivity() + material.getTransmission(); // I think we should use reflectivity here instead of the specular coefficient because the specular coefficient just has to do with how prevelant the specular highlight is...
         double randomNumber = Math.random() * coefficientTotal;
@@ -33,6 +27,7 @@ public class PathNode extends Node<PathNode> {
             double cosine = Math.abs(this.normalAtIntersection.dot(diffuseRay.getDirection()));
             double hemispherePDF = 1.0 / (2 * Math.PI);
             subsequentRayContribution = nextPath.getColorContribution().multiplyNew(cosine);
+            subsequentRayContribution = material.getDiffuseColor(uvCoordinates).componentWiseMultiply(subsequentRayContribution);
         } else if (randomNumber < material.getDiffuseCoefficient() + material.getReflectivity()) {
             // Send a reflection ray
             subsequentRayContribution = computeReflectionContribution(material);

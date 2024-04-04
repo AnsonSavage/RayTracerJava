@@ -21,8 +21,8 @@ public class EquirectangularImageBackground extends Background{
         dir.normalize();
 
         // Convert direction to spherical coordinates
-        double phi = Math.atan2(dir.getY(), dir.getX());
-        double theta = Math.acos(dir.getZ());
+        double phi = Math.atan2(dir.getZ(), dir.getX());
+        double theta = Math.acos(dir.getY()); // Because we're doing Y up
 
         // Fit spherical coordinates to UV coordinates
         double u = fit(phi, -Math.PI, Math.PI, 0, 1);
@@ -39,7 +39,7 @@ public class EquirectangularImageBackground extends Background{
         // Get color from the HDRI/EXR image
         Color color = equirectangularImage.getColorAtPixel(x, y);
 
-        return color;
+        return color.multiplyNew(0.08);
     }
 
     // Utility function to fit a value from one range to another
