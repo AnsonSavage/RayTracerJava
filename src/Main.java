@@ -21,7 +21,7 @@ public class Main {
         double aspectRatio = (double) imageWidth / imageHeight;
 
 //        World world = WorldCreator.createRefractivityTest(1.3, new NaiveIntersectionTester());
-        World world = WorldCreator.createHDRIWorld(new NaiveIntersectionTester());
+        World world = WorldCreator.createHDRIWorldWithFStop(new NaiveIntersectionTester(), 3.6, 3.2);
 
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 7, 7, 2, 2, 2);
 
