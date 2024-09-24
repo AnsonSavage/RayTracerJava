@@ -16,7 +16,6 @@ public class ObjectDistancePair {
     }
     private double distance;
 
-
     private RenderableObject object;
 
 }

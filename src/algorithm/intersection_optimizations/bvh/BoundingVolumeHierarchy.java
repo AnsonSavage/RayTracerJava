@@ -11,11 +11,9 @@ import java.util.List;
 
 public class BoundingVolumeHierarchy {
     private BVHNode root;
-
     public boolean isInitialized() {
         return isInitialized;
     }
-
     private boolean isInitialized;
 
     public BoundingVolumeHierarchy() {

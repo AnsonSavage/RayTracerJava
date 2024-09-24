@@ -1,7 +1,7 @@
 package output;
 
 import utilities.Color;
-import utilities.Image;
+import utilities.image.Image;
 
 import java.io.*;
 

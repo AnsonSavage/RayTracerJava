@@ -1,4 +1,6 @@
-package utilities;
+package utilities.image;
+
+import utilities.Color;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -6,11 +8,14 @@ import java.io.File;
 import java.io.IOException;
 
 public class Image {
-    private int resolutionX;
-    private int resolutionY;
-    private Color[][] pixels;
+    protected int resolutionX;
+    protected int resolutionY;
+    protected Color[][] pixels;
 
     // Existing constructor
+    public Image() {
+    }
+
     public Image(int resolutionX, int resolutionY) {
         this.resolutionX = resolutionX;
         this.resolutionY = resolutionY;
@@ -36,7 +41,7 @@ public class Image {
         for (int x = 0; x < resolutionX; x++) {
             for (int y = 0; y < resolutionY; y++) {
                 java.awt.Color awtColor = new java.awt.Color(image.getRGB(x, y));
-                // Convert java.awt.Color to your custom Color class
+                // Convert java.awt.Color to custom Color class
                 float red = awtColor.getRed() / 255f;
                 float green = awtColor.getGreen() / 255f;
                 float blue = awtColor.getBlue() / 255f;

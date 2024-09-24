@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NaiveIntersectionTester extends IntersectionTester{
-
     private List<RenderableObject> renderableObjects = new ArrayList<>();
 
     @Override

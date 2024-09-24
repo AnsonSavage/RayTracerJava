@@ -4,6 +4,7 @@ import utilities.Color;
 import utilities.Ray;
 import utilities.Vector3;
 import world.World;
+import world.scene_objects.Camera;
 
 import java.util.Random;
 
@@ -27,6 +28,15 @@ public class MultiSampleRayTracer extends SimpleRecursiveRayTracer {
             for (int j = 0; j < settings.getSquareSamplesPerPixel(); j++) {
                 double subPixelYOffset = subPixelOffset * j;
                 Ray ray = getRayDirection(pixelX + subPixelXOffset, pixelY + subPixelYOffset);
+
+                // Adjust ray for depth of field, if applicable
+                Camera camera = world.getCamera();
+                if (camera.getfStop() != Double.MAX_VALUE) {
+                    double maxJitterAmount = camera.getAperatureSize();
+                    double rayFocusPointT = camera.getFocusDistance() / (camera.getLookAtVector().dot(ray.getDirection()));
+                    ray.jitterRayOriginAndDirection(maxJitterAmount, rayFocusPointT);
+                }
+
                 Color rayContribution = traceRay(ray);
                 finalColor.add(rayContribution);
             }

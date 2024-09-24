@@ -40,10 +40,6 @@ public abstract class RayTracer extends RenderAlgorithm {
     private void singleThreadedRenderImplementation() {
         for (int i = 0; i < settings.getResolutionX(); i++) { // Each thread renders all x pixels for a given range of y pixels
             for (int j = 0; j < settings.getResolutionY(); j++) {
-//                System.out.println("Computing pixel value for pixel" + i + ", " + j);
-//                if (i == 250 && j == 250) {
-//                    System.out.println("Color at pixel 250, 250: ");
-//                }
                 Color color = computePixelValue(i, j);
                 image.setPixel(i, j, color);
             }
@@ -81,7 +77,7 @@ public abstract class RayTracer extends RenderAlgorithm {
             e.printStackTrace();
         }
 
-        System.out.println("Rendering completed in " + (System.currentTimeMillis() - startTime) + " milliseconds, using " + numThreads + " threads");
+        System.out.println("Rendering completed in " + ((System.currentTimeMillis() - startTime)/1000) + " seconds, using " + numThreads + " threads");
 
     }
 

@@ -8,19 +8,6 @@ import world.scene_objects.light.SunLight;
 import world.scene_objects.renderable_objects.Triangle;
 
 class RayOperationsTest {
-
-    @org.junit.jupiter.api.Test
-    void getClosestObject() {
-    }
-
-    @org.junit.jupiter.api.Test
-    void getShadowRays() {
-    }
-
-    @org.junit.jupiter.api.Test
-    void getNonShadowCastingLights() {
-    }
-
     @org.junit.jupiter.api.Test
     void isShadowRayInShadowForLight() {
         Vector3 intersectionPoint = new Vector3(0, -1, 0);
@@ -57,10 +44,5 @@ class RayOperationsTest {
         expectedDirection.normalize();
 
         Assertions.assertEquals(expectedDirection, outgoingRay.getDirection());
-    }
-
-    @org.junit.jupiter.api.Test
-    void createRefractionRay() {
-
     }
 }

@@ -8,8 +8,7 @@ public class FixedExtentBVHNode extends BVHNode {
     public FixedExtentBVHNode(Extent extent) {
         super();
         this.extent = extent;
-//        this.extent.scaleUpByEpsilon(); // TODO: well this seemed like it broke everything...
-        // Interesting: If this is enabled and maxDepth >= 3, then the testTriangleIntersection test fails. Why?
+
         if (this.extent.getMin().getX() == this.extent.getMax().getX()) {
             this.extent.getMin().setX(this.extent.getMin().getX() - Extent.EPSILON);
             this.extent.getMax().setX(this.extent.getMax().getX() + Extent.EPSILON);

@@ -1,5 +1,7 @@
 package utilities;
 
+import utilities.image.Image;
+
 public class TextureSurfaceColor extends SurfaceColor {
     Image image;
     double uScale;

@@ -107,4 +107,14 @@ public class Color {
     public String toString() {
         return "Color(" + getRDouble() + ", " + getGDouble() + ", " + getBDouble() + ")";
     }
+
+    public static Color blendColors(Color color1, Color color2, double blendingFactor) {
+        // Ensure blending factor is within [0, 1] range
+        double factor = Math.max(0, Math.min(blendingFactor, 1));
+
+        // Blend the colors
+        Color blend = color1.multiplyNew(1 - factor).addNew(color2.multiplyNew(factor));
+        return blend;
+    }
+
 }

@@ -10,7 +10,15 @@ public class Camera extends WorldObject {
 
     private Vector3 lookAt;
 
+    private double fStop;
+
+    private double focusDistance;
+
     public Camera(Vector3 position, Vector3 lookAt, Vector3 up, double fieldOfViewX, double aspectRatio, double focalLength) {
+        this(position, lookAt, up, fieldOfViewX, aspectRatio, focalLength, Double.MAX_VALUE, focalLength);
+    }
+
+    public Camera(Vector3 position, Vector3 lookAt, Vector3 up, double fieldOfViewX, double aspectRatio, double focalLength, double fStop, double focusDistance) {
         super(position);
 
         this.lookAt = lookAt.subtractNew(position); // The lookat vector is the vector from the camera position to the lookat point
@@ -21,7 +29,11 @@ public class Camera extends WorldObject {
         this.up = up;
         this.fieldOfViewY = computeFieldOfViewY(aspectRatio);
         // Note that both fieldOfViewX and fieldOfView Y are in radians
+
+        this.fStop = fStop;
+        this.focusDistance = focusDistance;
     }
+
 
     public Vector3 getLookAtVector() {
         return this.lookAt;
@@ -70,4 +82,17 @@ public class Camera extends WorldObject {
         // And finally, the field of view is just the inverse tangent of this value times two
         return 2 * Math.atan(y);
     }
+
+    public double getfStop() {
+        return fStop;
+    }
+
+    public double getFocusDistance() {
+        return focusDistance;
+    }
+
+    public double getAperatureSize() {
+        return focalLength / fStop; // The aperture size is proportional to the focal length divided by the f-stop value
+    }
+
 }

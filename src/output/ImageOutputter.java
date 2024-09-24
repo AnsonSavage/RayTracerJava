@@ -1,9 +1,8 @@
 package output;
 
 
-import utilities.Image;
+import utilities.image.Image;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public interface ImageOutputter {
