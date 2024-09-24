@@ -21,8 +21,6 @@ public class FilmicColorTransformer extends ColorTransformer{
     }
     @Override
     public Color transformPixel(Color color) {
-        // This applies the filmic tone mapping to this color
-        // Note: These parameters can be tweaked to achieve different looks
         Color result = new Color(
                 applyCurve(color.getRDouble()),
                 applyCurve(color.getGDouble()),

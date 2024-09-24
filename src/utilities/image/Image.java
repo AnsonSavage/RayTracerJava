@@ -41,7 +41,7 @@ public class Image {
         for (int x = 0; x < resolutionX; x++) {
             for (int y = 0; y < resolutionY; y++) {
                 java.awt.Color awtColor = new java.awt.Color(image.getRGB(x, y));
-                // Convert java.awt.Color to your custom Color class
+                // Convert java.awt.Color to custom Color class
                 float red = awtColor.getRed() / 255f;
                 float green = awtColor.getGreen() / 255f;
                 float blue = awtColor.getBlue() / 255f;

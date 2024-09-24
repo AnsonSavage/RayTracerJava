@@ -18,7 +18,6 @@ public class MedianSplitIntersectionTester extends IntersectionTester{
     public BoundingVolumeHierarchy getBvh() {
         return bvh;
     }
-
     private BoundingVolumeHierarchy bvh;
     private int maxDepth = 8;
 

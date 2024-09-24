@@ -21,6 +21,7 @@ public class PathNode extends Node<PathNode> {
             Ray normalRay = new Ray(this.intersectionPoint, this.normalAtIntersection);
             Ray diffuseRay = normalRay.sampleJitteredRay(90); // Sample from the hemisphere... 90 degrees is the max offset from the vector
             PathNode nextPath = new PathNode(diffuseRay, world, nodeDepth + 1, renderSettings);
+
             // Apparently, because we are sampling from a hemisphere and not a cosine distribution, we must both:
             // 1. fall off by the cosine of the angle and
             // 2. Multiply by the PDF of sampling from a hemisphere (1/(2PI)
@@ -36,12 +37,6 @@ public class PathNode extends Node<PathNode> {
         }
 
         return currentSurfaceColor.addNew(subsequentRayContribution);
-//        if (nodeDepth > 1) {
-//        }
-//        else {
-//            return subsequentRayContribution;
-//        }
-
     }
 
     @Override

@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorldCreator {
+        /**
+         * This class holds static methods for different example scenes that can be rendered.
+         */
         public static World createScene1World() {
                 /**
                  * CameraLookAt 0 0 0

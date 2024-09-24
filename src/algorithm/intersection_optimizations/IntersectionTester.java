@@ -10,11 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class IntersectionTester {
-
     public abstract void addRenderableObject(RenderableObject renderableObject);
-
     public abstract ObjectDistancePair getClosestObject(Ray ray);
-
     public abstract void initialize();
 
     public boolean isRayBlocked(Ray ray) {

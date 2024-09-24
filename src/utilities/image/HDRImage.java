@@ -1,10 +1,8 @@
 package utilities.image;
 
 import utilities.Color;
-import utilities.image.Image;
 
 import java.io.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class HDRImage extends Image {
 
@@ -16,21 +14,7 @@ public class HDRImage extends Image {
         private void loadHDRImage(String filePath) {
             try {
 
-//                String pythonScriptPath = "ReadHDRImage.py";
                 String outputFilePath =filePath.substring(0, filePath.lastIndexOf('.')) + ".txt";
-//
-//                String[] cmd = {"python3", pythonScriptPath, filePath, " >> ", outputFilePath};
-//
-//                // Start the process builder
-//                ProcessBuilder processBuilder = new ProcessBuilder(cmd);
-//                // Redirect the output of the process to a file
-//
-////                processBuilder.redirectOutput(new File(outputFilePath));
-//
-//                Process process = processBuilder.start();
-//                process.waitFor();
-//
-//                // Now read the output from the file
                 File file = new File(outputFilePath);
                 BufferedReader reader = new BufferedReader(new FileReader(file));
 
@@ -61,9 +45,6 @@ public class HDRImage extends Image {
                     }
                 }
                 reader.close();
-
-                // Optionally, delete the output file if it is no longer needed
-//                file.delete();
 
             } catch (IOException e) { // | InterruptedException e) {
                 System.err.println("Failed to load HDR image: " + e.getMessage());

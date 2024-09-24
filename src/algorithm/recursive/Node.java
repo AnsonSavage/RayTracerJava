@@ -35,6 +35,8 @@ public abstract class Node<T extends Node<T>> {
         this.hitObject = objectDistancePair.getObject();
     }
 
+    protected abstract T createNode (Ray ray, World world, int nodeDepth, RenderSettings renderSettings);
+
     public Color getColorContribution() {
         if (this.hitObject == null) {
             return world.getBackground().getColor(this.incomingRay.getDirection()); // Get the background in the direction of the incoming ray
@@ -74,7 +76,6 @@ public abstract class Node<T extends Node<T>> {
      */
     protected abstract Color combineSubsequentBounces(Color currentSurfaceColor, UVCoordinates uvCoordinates);
 
-
     protected Color computeIlluminationModel(Material material, UVCoordinates uvCoordinates) {
         Vector3 viewingDirection = this.incomingRay.getDirection().multiplyNew(-1);
 
@@ -90,8 +91,6 @@ public abstract class Node<T extends Node<T>> {
 
         return phongIlluminationModel.computeColor();
     }
-
-    protected abstract T createNode (Ray ray, World world, int nodeDepth, RenderSettings renderSettings);
 
     protected Color computeReflectionContribution(Material material) {
         double reflectivity = material.getReflectivity();

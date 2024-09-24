@@ -14,13 +14,9 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        // Create multple refractive images with different iors
-        // Iors to test: 1.0, 1.01, 1.1, 1.3, 1.5, 2.0
-        int imageWidth = 1000;
+        int imageWidth = 100;
         int imageHeight = imageWidth;
-        double aspectRatio = (double) imageWidth / imageHeight;
 
-//        World world = WorldCreator.createRefractivityTest(1.3, new NaiveIntersectionTester());
         World world = WorldCreator.createHDRIWorldWithFStop(new NaiveIntersectionTester(), 3.6, 3.2);
 
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 7, 7, 2, 2, 2);
@@ -29,10 +25,10 @@ public class Main {
         multiSamplePathTracer.render();
         try {
             ImageOutputter imageOutputter = new PPMOutputter();
-            // Set the file name to be the current time in seconds
+
             Image pathTracerOutputImage = multiSamplePathTracer.getImage();
             Image transformedImage = (new FilmicColorTransformer(pathTracerOutputImage)).transform();
-            imageOutputter.outputImage(transformedImage, "output:" + System.currentTimeMillis() / 1000 + ".ppm");
+            imageOutputter.outputImage(transformedImage, "output:" + System.currentTimeMillis() / 1000 + ".ppm"); // Set the file name to be the current time in seconds
         } catch (IOException e) {
             System.out.println("Could not write to file");
         }

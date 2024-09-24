@@ -19,6 +19,4 @@ class RayTest {
             assertTrue(jitteredRay.getDirection().dot(ray.getDirection()) >= 0);
         }
     }
-
-
 }

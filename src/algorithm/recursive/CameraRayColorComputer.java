@@ -8,6 +8,7 @@ import world.World;
 public abstract class CameraRayColorComputer {
     protected Node root;
     protected RenderSettings renderSettings;
+
     public CameraRayColorComputer(Ray cameraRay, World world, RenderSettings renderSettings) {
         this.renderSettings = renderSettings;
     }

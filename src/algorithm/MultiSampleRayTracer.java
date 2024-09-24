@@ -21,9 +21,6 @@ public class MultiSampleRayTracer extends SimpleRecursiveRayTracer {
 
     @Override
     protected Color computePixelValue(int pixelX, int pixelY) {
-        if (pixelX == 157 && pixelY == 249) {
-            System.out.println("Hit our favorite pixel!");
-        }
         Color finalColor = new Color(0, 0, 0); // Initialize the final color of the pixel to black
         double subPixelOffset = 1.0 / settings.getSquareSamplesPerPixel();
         for (int i = 0; i < settings.getSquareSamplesPerPixel(); i++) {

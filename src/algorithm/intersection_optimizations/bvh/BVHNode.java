@@ -14,7 +14,6 @@ public abstract class BVHNode {
     public RenderableObject getRenderableObject() {
         return renderableObject;
     }
-
     protected RenderableObject renderableObject = null;
     protected Extent extent = null;
     protected List<BVHNode> children = new ArrayList<>();

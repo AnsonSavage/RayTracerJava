@@ -75,11 +75,6 @@ public class Ray {
         // Update the ray's properties
         this.origin = newOrigin;
         this.direction = newDirection;
-        // Since the direction has changed, you might need to adjust the originalLength or any other related properties
-//
-//        // Optionally, if the concept of originalLength is to maintain the 'distance' concept,
-//        // it could be set to the magnitude of the vector from the new origin to the constraint point.
-//        this.originalLength = newDirectionMagnitude;
     }
 
 
