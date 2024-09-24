@@ -1,7 +1,4 @@
-import algorithm.MultiSamplePathTracer;
-import algorithm.RayTracer;
-import algorithm.RenderSettings;
-import algorithm.MultiSampleRayTracer;
+import algorithm.*;
 import algorithm.intersection_optimizations.MedianSplitIntersectionTester;
 import algorithm.intersection_optimizations.NaiveIntersectionTester;
 import output.FilmicColorTransformer;
@@ -21,7 +18,7 @@ public class Main {
 
         RenderSettings settings = new RenderSettings(imageWidth, imageHeight, 7, 7, 2, 2, 2);
 
-        RayTracer multiSamplePathTracer = new MultiSamplePathTracer(settings, world, true);
+        RenderAlgorithm multiSamplePathTracer = new MultiSamplePathTracer(settings, world, true);
         multiSamplePathTracer.render();
         try {
             ImageOutputter imageOutputter = new PPMOutputter();
